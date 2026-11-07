@@ -1,6 +1,6 @@
 {
     "name": "Tailwind CSS",
-    "description": "A utility-first CSS framework.",
+    "description": "以工具类为核心的 CSS 框架。",
     "icon": "logos:tailwindcss-icon",
     "category": "frontend",
     "level": "beginner",
@@ -9,7 +9,7 @@
         "months": 3
     },
     "projects": [
-        "Twilight"
+        "Twilight 博客模板"
     ],
     "color": "#06B6D4"
 }

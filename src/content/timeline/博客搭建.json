@@ -1,0 +1,28 @@
+{
+    "title": "搭建个人博客",
+    "description": "用 Astro 模板搭好博客，并完成 GitHub Pages 自动部署。",
+    "type": "project",
+    "startDate": "2026-11-07",
+    "endDate": "",
+    "skills": [
+        "Astro",
+        "GitHub Actions",
+        "GitHub Pages"
+    ],
+    "achievements": [],
+    "links": [
+        {
+            "name": "在线站点",
+            "url": "https://2648782102.github.io/flowli-blog/",
+            "type": "project"
+        },
+        {
+            "name": "代码仓库",
+            "url": "https://github.com/2648782102/flowli-blog",
+            "type": "project"
+        }
+    ],
+    "icon": "fa6-solid:code",
+    "color": "#4F8CFF",
+    "featured": true
+}

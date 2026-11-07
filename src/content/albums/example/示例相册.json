@@ -1,0 +1,27 @@
+{
+    "title": "示例相册",
+    "description": "一组用来展示相册版式的照片。",
+    "cover": "https://picsum.photos/800/600?random=1",
+    "date": "2025-01-01T00:00:00.000Z",
+    "location": "未填写",
+    "tags": ["示例"],
+    "layout": "masonry",
+    "columns": 3,
+    "photos": [
+        {
+            "src": "./智子_ASK.jpg",
+            "alt": "智子",
+            "title": "智子",
+            "description": "本地图片示例",
+            "tags": ["人物"]
+        },
+        {
+            "src": "https://picsum.photos/800/600?random=2",
+            "alt": "风景",
+            "title": "风景",
+            "description": "外链图片示例",
+            "tags": ["风景"]
+        }
+    ],
+    "visible": true
+}

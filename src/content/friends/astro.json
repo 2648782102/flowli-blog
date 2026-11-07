@@ -1,7 +1,7 @@
 {
     "title": "Astro",
     "imgurl": "https://avatars.githubusercontent.com/u/44914786?s=210&v=4",
-    "desc": "The web framework for content-driven websites.",
+    "desc": "适合内容型网站的 Web 框架。",
     "siteurl": "https://github.com/withastro/astro",
-    "tags": ["Framework"]
+    "tags": ["框架"]
 }

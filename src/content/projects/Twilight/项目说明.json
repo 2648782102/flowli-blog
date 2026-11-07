@@ -1,6 +1,6 @@
 {
-    "title": "Twilight Blog Template",
-    "description": "A CMS integrated blog theme built with Astro framework.",
+    "title": "Twilight 博客模板",
+    "description": "基于 Astro 的静态博客模板，本站由它搭建。",
     "image": "./Twilight_Cover.jpg",
     "category": "website",
     "techStack": [
@@ -15,7 +15,7 @@
     "endDate": "",
     "featured": true,
     "tags": [
-        "Personal Project",
-        "Open Source Project"
+        "个人项目",
+        "开源项目"
     ]
 }

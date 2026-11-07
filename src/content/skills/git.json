@@ -1,6 +1,6 @@
 {
     "name": "Git",
-    "description": "A distributed version control system.",
+    "description": "分布式版本控制系统。",
     "icon": "logos:git-icon",
     "category": "tools",
     "level": "advanced",
