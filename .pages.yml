@@ -1,0 +1,29 @@
+media:
+  - name: images
+    label: 图片
+    input: public/assets/images
+    output: /assets/images
+    categories: [image]
+
+content:
+  - name: posts
+    label: 文章
+    type: collection
+    path: src/content/posts
+    subfolders: true
+    filename: "{slug}.md"
+    fields:
+      - { name: title, label: 标题, type: string }
+      - { name: published, label: 发布日期, type: date }
+      - { name: description, label: 摘要, type: text, required: false }
+      - { name: cover, label: 封面图片, type: image, options: { media: images }, required: false }
+      - { name: tags, label: 标签, type: string, list: true, required: false }
+      - { name: category, label: 分类, type: string, required: false }
+      - { name: draft, label: 草稿, type: boolean, required: false }
+      - { name: body, label: 正文, type: rich-text, required: true }
+  - name: about
+    label: 关于我
+    type: file
+    path: src/content/about.md
+    fields:
+      - { name: body, label: 正文, type: rich-text, required: true }
