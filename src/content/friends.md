@@ -1,20 +1,14 @@
 ---
-title: Friends
+title: 友链
 ---
 
-## How to Apply
+## 申请友链
 
-Please send your website information to: xxx@xxx.com
+欢迎交换友链。可以把站点名称、简介和链接发给我，确认后我会加到这里。
 
-Email Subject:
-```
-Request to Add Friend
-```
+建议附上：
 
-Email Content (Template):
-```
-Site Name: [Your Site Name]
-Site Desc: [Your Site Description]
-Site Link: [Your Site Link]
-Avatar Link: [Your Avatar Link]
-```
+- 站点名称
+- 一句话简介
+- 站点链接
+- 头像链接（可选）

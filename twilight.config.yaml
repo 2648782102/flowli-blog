@@ -7,7 +7,7 @@ site:
     # 站点副标题
     subtitle: "记录技术、工具与日常"
     # 语言配置
-    lang: "zh_CN"
+    lang: "zh_hans"
     # 翻译配置
     translate:
         # 启用翻译功能
@@ -44,7 +44,7 @@ site:
         # 主题色的默认色相 (范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345)
         hue: 255
     # 默认主题 ("system" 跟随系统 | "light" 浅色 | "dark" 深色)
-    defaultTheme: "dark"
+    defaultTheme: "system"
     # 壁纸配置
     wallpaper:
         # 模式 ("banner" 横幅 | "fullscreen" 全屏 | "none" 纯色)
@@ -77,10 +77,10 @@ site:
                 # 在主页显示文本
                 enable: true
                 # 主标题
-                title: "Twilight"
+                title: "云的个人博客"
                 # 副标题，支持单个字符串或字符串数组
                 subtitle:
-                    - "Illuminate Our Paths"
+                    - "记录技术、工具与日常"
                 # 副标题打字机效果
                 typewriter:
                     # 启用副标题打字机效果
@@ -102,7 +102,7 @@ site:
             # 导航栏配置
             navbar:
                 # 导航栏透明模式 ("semi" 半透明加圆角 | "full" 完全透明 | "semifull" 动态透明)
-                transparentMode: "semifull"
+                transparentMode: "semi"
             # 水波纹效果配置
             waves:
                 # 启用水波纹效果
@@ -135,7 +135,7 @@ site:
             # 是否启用加载标题
             enable: true
             # 加载标题文本
-            content: "LOADING"
+            content: "加载中"
             # 动画周期 (s)
             interval: 1.5
         # 加载动画配置
@@ -176,29 +176,15 @@ navbar:
             "Home"
         - # 一级导航链接 - 归档 (预设)
             "Archive"
-        - # 一级导航链接 - 展览 (自定义)
+        - # 一级导航链接 - 作品 (自定义)
             # 导航名称
-            name: "Exhibition"
+            name: "作品"
             # 导航链接
-            url: "/exhibition/"
+            url: "/projects/"
             # 导航图标
-            icon: "material-symbols:person"
+            icon: "fa6-solid:diagram-project"
             # 导航描述
-            description: "A collection of my creative works and experiences"
-            # 子链接
-            children:
-                - # 二级导航链接 - 项目 (预设)
-                    "Projects"
-                - # 二级导航链接 - 技能 (预设)
-                    "Skills"
-                - # 二级导航链接 - 历程 (预设)
-                    "Timeline"
-                - # 二级导航链接 - 日记 (预设)
-                    "Diary"
-                - # 二级导航链接 - 相册 (预设)
-                    "Albums"
-                - # 二级导航链接 - 动画 (预设)
-                    "Anime"
+            description: "记录做过的项目和尝试过的工具"
         - # 一级导航链接 - 好友 (预设)
             "Friends"
         - # 一级导航链接 - 关于 (预设)
@@ -374,7 +360,7 @@ footer:
 # 粒子特效配置
 particle:
     # 启用粒子特效
-    enable: true
+    enable: false
     # 粒子数量
     particleNum: 12
     # 粒子越界限制次数，-1为无限循环

@@ -28,6 +28,10 @@ pnpm install
 pnpm dev
 ```
 
+## 视觉风格
+
+站点采用「液态玻璃」网页近似实现：浅色与深色主题、柔和背景光晕、半透明胶囊导航与悬浮面板、清晰的正文层。玻璃层主要用于导航、按钮和卡片边缘，正文保持高对比度；桌面端启用适度的背景模糊，手机端、系统减少透明度和不支持 `backdrop-filter` 时使用高不透明度回退。受浏览器能力限制，它不包含原生系统的实时折射效果。视觉实现位于 `src/styles/liquid-glass.css`。
+
 ## 模板来源
 
 网站基于 [Spr-Aachen/Twilight](https://github.com/Spr-Aachen/Twilight)，遵循 MIT License；原始许可保留在 [LICENSE](LICENSE)。

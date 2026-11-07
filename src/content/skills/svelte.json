@@ -1,6 +1,6 @@
 {
     "name": "Svelte",
-    "description": "A compiler-based UI framework.",
+    "description": "以编译为核心的 UI 框架。",
     "icon": "logos:svelte-icon",
     "category": "frontend",
     "level": "beginner",
@@ -9,7 +9,7 @@
         "months": 3
     },
     "projects": [
-        "Twilight"
+        "Twilight 博客模板"
     ],
     "color": "#FF3E00"
 }
