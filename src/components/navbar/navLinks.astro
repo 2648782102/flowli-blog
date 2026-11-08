@@ -2,7 +2,7 @@
 import { Icon } from "astro-icon/components";
 
 import { type NavbarLink } from "@/types/config";
-import { url } from "@utils/url";
+import { pathsEqual, url } from "@utils/url";
 
 
 interface Props {
@@ -11,12 +11,15 @@ interface Props {
 }
 
 const { link, class: className } = Astro.props;
+const linkUrl = link.external ? link.url : url(link.url);
+const isCurrentPage = !link.external && pathsEqual(Astro.url.pathname, linkUrl);
 ---
 
 <div class:list={["nav-link-container", className]}>
     <a
         aria-label={link.name}
-        href={link.external ? link.url : url(link.url)}
+        href={linkUrl}
+        aria-current={isCurrentPage ? "page" : undefined}
         target={link.external ? "_blank" : null}
         class="btn-plain scale-animation rounded-lg h-11 font-bold px-3 active:scale-95 nav-link-item"
         data-link-name={link.name}

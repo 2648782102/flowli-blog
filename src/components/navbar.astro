@@ -30,7 +30,7 @@ let links: NavbarLink[] = navbarConfig.links.map(
 );
 ---
 
-<div id="navbar" class="z-50 onload-animation-down px-3 sm:px-6 md:px-0" data-transparent-mode={navbarTransparentMode}>
+<div id="navbar" class="z-50 px-3 sm:px-6 md:px-0" data-transparent-mode={navbarTransparentMode}>
     <div class="absolute h-8 left-0 right-0 -top-8 bg-(--card-bg) transition"></div> <!-- used for onload animation -->
     <div class:list={[
         className,
@@ -58,24 +58,19 @@ let links: NavbarLink[] = navbarConfig.links.map(
 </div>
 
 <script>
-// 为semifull模式添加滚动检测逻辑
-function initSemifullScrollDetection() {
+function initLiquidGlassNavbar() {
     const navbar = document.getElementById('navbar');
     if (!navbar) return;
 
-    const transparentMode = navbar.getAttribute('data-transparent-mode');
-    if (transparentMode !== 'semifull') return;
-
-    // 移除之前的滚动事件监听器（如果存在）
-    if (window.semifullScrollHandler) {
-        window.removeEventListener('scroll', window.semifullScrollHandler);
+    if (window.liquidGlassNavbarHandler) {
+        window.removeEventListener('scroll', window.liquidGlassNavbarHandler);
     }
 
     let ticking = false;
 
     function updateNavbarState() {
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const threshold = 50; // 滚动阈值
+        const threshold = 32;
 
         if (scrollTop > threshold) {
             navbar?.classList.add('scrolled');
@@ -88,29 +83,38 @@ function initSemifullScrollDetection() {
 
     function requestTick() {
         if (!ticking) {
-            requestAnimationFrame(updateNavbarState);
             ticking = true;
+            requestAnimationFrame(updateNavbarState);
         }
     }
 
-    // 保存新的事件处理器引用
-    window.semifullScrollHandler = requestTick;
+    const capsule = navbar.querySelector(':scope > div:last-child') as HTMLElement | null;
+    function updatePointer(event: PointerEvent) {
+        if (!capsule || event.pointerType === 'touch') return;
+        const rect = capsule.getBoundingClientRect();
+        navbar.style.setProperty('--lg-pointer-x', `${event.clientX - rect.left}px`);
+        navbar.style.setProperty('--lg-pointer-y', `${event.clientY - rect.top}px`);
+    }
 
-    // 监听滚动事件
+    function resetPointer() {
+        navbar.style.setProperty('--lg-pointer-x', '50%');
+        navbar.style.setProperty('--lg-pointer-y', '50%');
+    }
+
+    window.liquidGlassNavbarHandler = requestTick;
     window.addEventListener('scroll', requestTick, { passive: true });
+    navbar.addEventListener('pointermove', updatePointer, { passive: true });
+    navbar.addEventListener('pointerleave', resetPointer, { passive: true });
 
-    // 初始化状态
     updateNavbarState();
 }
 
-// 将函数暴露到全局对象，供页面切换时调用
-window.initSemifullScrollDetection = initSemifullScrollDetection;
+window.initSemifullScrollDetection = initLiquidGlassNavbar;
 
-// 页面加载完成后初始化滚动检测
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSemifullScrollDetection);
+    document.addEventListener('DOMContentLoaded', initLiquidGlassNavbar);
 } else {
-    initSemifullScrollDetection();
+    initLiquidGlassNavbar();
 }
 </script>
 

@@ -43,6 +43,7 @@ import LoadingOverlay from "@components/loadingOverlay.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
 import MusicPlayer from "@components/musicPlayer.svelte";
 import Pio from "@components/pio.svelte";
+import LiquidGlassFilter from "@components/liquidGlassFilter.astro";
 import "@styles/navbar.css";
 import "@styles/banner.css";
 import "@styles/fancybox.css";
@@ -247,6 +248,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <LoadingOverlay />
         <!-- 全局配置载体 -->
         <ConfigCarrier />
+        <LiquidGlassFilter />
         <!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
         {shouldShowTopHighlight && <div class="top-gradient-highlight"></div>}
         <!-- 页面内容 -->
