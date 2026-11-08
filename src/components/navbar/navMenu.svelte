@@ -16,6 +16,9 @@ let isOpen = $state(false);
 
 function togglePanel() {
     isOpen = !isOpen;
+    if (isOpen) {
+        document.dispatchEvent(new CustomEvent('twilight:sync-navbar-current'));
+    }
 }
 
 // 点击外部关闭面板
@@ -49,6 +52,8 @@ onMount(() => {
             <div class="mobile-menu-item">
                 <a href={link.external ? link.url : url(link.url)} 
                     class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8 hover:bg-(--btn-plain-bg-hover) active:bg-(--btn-plain-bg-active) transition"
+                    aria-current={null}
+                    data-link-name={link.name}
                     target={link.external ? "_blank" : null}
                 >
                     <div class="flex items-center transition text-black/75 dark:text-white/75 font-bold group-hover:text-(--primary) group-active:text-(--primary)">

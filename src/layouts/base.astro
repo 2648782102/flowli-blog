@@ -49,6 +49,7 @@ import "@styles/banner.css";
 import "@styles/fancybox.css";
 import "@styles/liquid-glass.css";
 import "@styles/liquid-glass-system.css";
+import "@styles/navy-liquid-glass-palette.css";
 
 
 interface Props {
@@ -191,10 +192,16 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         {favicons.map(favicon => (
             <link rel="icon"
                   href={favicon.src.startsWith('/') ? url(favicon.src) : favicon.src}
+                  type={favicon.type}
                   sizes={favicon.sizes}
                   media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
             />
         ))}
+        <link rel="apple-touch-icon" href={url("/favicon/apple-touch-icon-light.png")} sizes="180x180" media="(prefers-color-scheme: light)" />
+        <link rel="apple-touch-icon" href={url("/favicon/apple-touch-icon-dark.png")} sizes="180x180" media="(prefers-color-scheme: dark)" />
+        <link rel="manifest" href={url("/favicon/site.webmanifest")} />
+        <meta name="theme-color" content="#173A6D" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#07152B" media="(prefers-color-scheme: dark)" />
         <!-- Set the theme before the page is rendered to avoid a flash -->
         <script is:inline define:vars={{LIGHT_MODE, DARK_MODE, SYSTEM_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, NAVBAR_HEIGHT, configHue, defaultTheme: siteConfig.defaultTheme}}>
             // Load the theme from local storage
@@ -222,7 +229,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
             const expressiveTheme = isDark ? "github-dark" : "github-light";
             document.documentElement.setAttribute("data-theme", expressiveTheme);
             // Load the hue from local storage
-            const hue = localStorage.getItem('hue') || configHue;
+            const hue = localStorage.getItem('hue-v2') || configHue;
             // Apply the hue to the document
             document.documentElement.style.setProperty('--hue', hue);
             // calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
@@ -364,6 +371,25 @@ import { setupParticleEffects } from "@/utils/particle";
 // 揭开流程里等待 CSS 过渡的兜底超时
 const TRANSITION_FALLBACK_MS = TRANSITION_DURATION_SLOWER * 2;
 
+const syncNavbarCurrentPage = (pathname: string) => {
+    const links = document.querySelectorAll<HTMLAnchorElement>(
+        '#navbar .nav-link-item, #nav-menu-panel .mobile-menu-item > a',
+    );
+
+    links.forEach((link) => {
+        const href = link.getAttribute('href');
+        const currentUrl = href ? new URL(href, window.location.href) : null;
+        const isInternal = currentUrl?.origin === window.location.origin;
+        const isCurrentPage = isInternal && pathsEqual(pathname, currentUrl!.pathname);
+
+        if (isCurrentPage) {
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.removeAttribute('aria-current');
+        }
+    });
+};
+
 
 // 初始化Swup
 const setup = () => {
@@ -372,8 +398,8 @@ const setup = () => {
         // Update main grid layout class name after page transition
         const gridClassCarrier = document.getElementById("grid-class-carrier");
         if (gridClassCarrier) {
-            const gridClass = gridClassCarrier.getAttribute("data-grid-class");
             const mainGrid = document.getElementById("main-grid");
+            const gridClass = gridClassCarrier.getAttribute("data-grid-class");
             if (mainGrid && gridClass) {
                 const currentClasses = mainGrid.className.split(" ");
                 const newClasses = currentClasses.filter(c => !c.startsWith("lg:grid-cols-") && !c.startsWith("md:grid-cols-") && !c.startsWith("grid-cols-"));
@@ -381,6 +407,15 @@ const setup = () => {
                 mainGrid.className = [...newClasses, ...gridClasses].join(" ");
             }
         }
+        // Swup keeps the persistent grid element, so align its editorial classes with the destination page.
+        const mainGrid = document.getElementById("main-grid");
+        const topRow = document.getElementById("top-row");
+        const isHomePage = pathsEqual(window.location.pathname, url('/'));
+        const isEditorialHome = isHomePage && document.body.classList.contains('enable-banner');
+        mainGrid?.classList.toggle('editorial-grid', isEditorialHome);
+        topRow?.classList.toggle('editorial-top-row', document.body.classList.contains('enable-banner'));
+        const outerContent = mainGrid?.closest('.z-30');
+        outerContent?.classList.toggle('editorial-home', isEditorialHome);
         // Restore pause-swup-transition class to newly replaced persistent elements
         pausedElementIds.forEach(id => {
             const el = document.getElementById(id as string);
@@ -397,6 +432,14 @@ const setup = () => {
         // Change banner height immediately when a link is clicked
         const bodyElement = document.querySelector('body')
         const isHomePage = pathsEqual(visit.to.url, url('/'))
+        syncNavbarCurrentPage(new URL(visit.to.url, window.location.origin).pathname);
+        const mainGrid = document.getElementById('main-grid');
+        const topRow = document.getElementById('top-row');
+        const isEditorialHome = isHomePage && document.body.classList.contains('enable-banner');
+        mainGrid?.classList.toggle('editorial-grid', isEditorialHome);
+        topRow?.classList.toggle('editorial-top-row', document.body.classList.contains('enable-banner'));
+        const outerContent = mainGrid?.closest('.z-30');
+        outerContent?.classList.toggle('editorial-home', isEditorialHome);
         if (isHomePage) {
             bodyElement!.classList.add('is-home');
         } else {
@@ -478,6 +521,7 @@ const setup = () => {
         }, 300)
     });
     window.swup.hooks.on('page:view', () => {
+        syncNavbarCurrentPage(window.location.pathname);
         // Scroll to top of the page after page transition
         window.scrollTo({
             top: 0,
@@ -510,6 +554,10 @@ if (window?.swup?.hooks) {
 } else {
     document.addEventListener('swup:enable', setup)
 }
+syncNavbarCurrentPage(window.location.pathname);
+document.addEventListener('twilight:sync-navbar-current', () => {
+    syncNavbarCurrentPage(window.location.pathname);
+});
 
 // 初始化返回顶部按钮元素，用于控制返回顶部按钮的显示与隐藏
 let backToTopBtn = document.getElementById('back-to-top-btn');

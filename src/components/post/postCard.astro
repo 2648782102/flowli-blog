@@ -51,7 +51,7 @@ const { remarkPluginFrontmatter } = await render(entry);
 // derive image base path from the real file path to preserve directory casing
 const imageBaseDir = getFileDirFromPath(entry.filePath || "");
 
-const defaultCoverGradient = "linear-gradient(135deg, color-mix(in oklch, oklch(from var(--primary) l c calc(h - 30)) 51%, transparent) 0%, color-mix(in oklch, var(--primary) 51%, transparent) 50%, color-mix(in oklch, oklch(from var(--primary) l c calc(h + 30)) 51%, transparent) 100%)";
+const defaultCoverGradient = "linear-gradient(145deg, #dce9f7 0%, #a9c7e8 46%, #6fa8d6 100%)";
 ---
 
 <div class:list={["card-base flex flex-col-reverse @min-[768px]:flex-col w-full rounded-(--radius-large) overflow-hidden relative @container", className]} style={style}>

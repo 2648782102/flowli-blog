@@ -43,6 +43,8 @@ const hasBannerLink = !!siteConfig.wallpaper.banner?.credit?.url;
 
 // 检查是否为首页
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+const isBannerMode = siteConfig.wallpaper.mode === "banner";
+const editorialClass = isHomePage && siteConfig.wallpaper.mode === "banner" ? "editorial-home" : "";
 
 // 检查是否应该启用半透明效果
 const shouldEnableTransparency = siteConfig.wallpaper.mode === "banner" || siteConfig.wallpaper.mode === "fullscreen";
@@ -80,7 +82,8 @@ const {
     <slot slot="head" name="head" />
     <div
         id="top-row"
-        class="z-50 pointer-events-none relative transition-all duration-600 max-w-(--page-width) px-0 md:px-4 mx-auto h-(--top-row-height)"
+        class={`z-50 pointer-events-none relative transition-all duration-600 max-w-(--page-width) px-0 md:px-4 mx-auto h-(--top-row-height) ${isBannerMode ? "editorial-top-row" : ""}`}
+        style={isBannerMode ? "height: 0" : undefined}
     >
         <div
             id="navbar-wrapper"
@@ -114,7 +117,8 @@ const {
 
     <!-- Main content -->
     <div
-        class={`absolute w-full z-30 pointer-events-none transition-transform duration-600 top-0 min-h-[calc(100vh-var(--main-content-top))] ${siteConfig.wallpaper.mode !== "banner" ? "no-banner-layout" : ""} ${transparentClass}`}
+        id="main-content"
+        class={`absolute w-full z-30 pointer-events-none transition-transform duration-600 top-0 min-h-[calc(100vh-var(--main-content-top))] ${siteConfig.wallpaper.mode !== "banner" ? "no-banner-layout" : ""} ${transparentClass} ${editorialClass}`}
         style="transform: translateY(var(--main-content-top))"
     >
         <div
@@ -122,7 +126,7 @@ const {
         >
             <div
                 id="main-grid"
-                class={`w-full left-0 right-0 grid ${gridCols} grid-rows-[auto] mx-auto gap-4 px-0 md:px-4 ${!hasAnyComponents ? "mobile-no-sidebar" : ""} ${(hasLeftSidebar || hasRightSidebar) ? "mobile-both-sidebar" : ""}`}
+                class={`w-full left-0 right-0 grid ${gridCols} grid-rows-[auto] mx-auto gap-4 px-0 md:px-4 ${!hasAnyComponents ? "mobile-no-sidebar" : ""} ${(hasLeftSidebar || hasRightSidebar) ? "mobile-both-sidebar" : ""} ${editorialClass === "editorial-home" ? "editorial-grid" : ""}`}
             >
                 <!-- Banner image credit -->
                 {

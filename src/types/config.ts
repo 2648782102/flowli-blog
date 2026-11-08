@@ -33,6 +33,7 @@ export type AnalyticsConfig = {
 // Favicon 配置
 export type Favicon = {
     src: string;
+    type?: string;
     theme?: "light" | "dark";
     sizes?: string;
 };
