@@ -30,7 +30,9 @@ pnpm dev
 
 ## 视觉风格
 
-站点采用「液态玻璃」网页近似实现：浅色与深色主题、柔和背景光晕、半透明胶囊导航与悬浮面板、清晰的正文层。玻璃层主要用于导航、按钮和卡片边缘，正文保持高对比度；桌面端启用适度的背景模糊，手机端、系统减少透明度和不支持 `backdrop-filter` 时使用高不透明度回退。受浏览器能力限制，它不包含原生系统的实时折射效果。视觉实现位于 `src/styles/liquid-glass.css`。
+站点把玻璃严格限制在导航和临时菜单这一功能层：正文卡片、侧栏和按钮保持不透明的纸张式表面，避免正文被模糊或折射干扰。桌面 Chromium 会在导航胶囊边缘使用 SVG `feDisplacementMap` 对实时背景做轻微折射，并叠加方向性镜面高光、亮/暗边缘和指针响应；滚动时胶囊会提高不透明度与阴影。Safari、Firefox、手机、减少透明度偏好和不支持 `backdrop-filter` 的环境自动使用克制的冻结玻璃回退。
+
+这是浏览器环境下的渐进增强近似，不是 Apple 系统控件的原生实时光学渲染；实现位于 `src/styles/liquid-glass.css`、`src/components/liquidGlassFilter.astro` 和 `src/components/navbar.astro`。技术方向参考了 [Nordify 的 CSS/SVG 折射研究](https://github.com/nordify/css-liquid-glass) 与 Apple 的 [Materials HIG](https://developer.apple.com/design/human-interface-guidelines/materials)。
 
 ## 模板来源
 
