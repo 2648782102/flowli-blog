@@ -274,7 +274,7 @@ const stats = {
                             const statusInfo = getStatusInfo(anime.status);
                             const progressPercent = anime.totalEpisodes > 0 ? (anime.progress / anime.totalEpisodes) * 100 : 0;
                             return (
-                                <div class="group relative bg-(--card-bg) border border-(--line-divider) rounded-(--radius-large) overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+                                <div class="anime-card group relative bg-(--card-bg) border border-(--line-divider) rounded-(--radius-large) overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
                                     <!-- 封面区域 - 竖屏比例 -->
                                     <div class="relative aspect-2/3 overflow-hidden">
                                         <a href={anime.link} target="_blank" rel="noopener noreferrer" class="block w-full h-full">
