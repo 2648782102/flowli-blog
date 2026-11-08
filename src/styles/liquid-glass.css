@@ -406,3 +406,262 @@ html.lg-refract :is(#banner-wrapper ~ *, body:has(#banner-wrapper)) #navbar[data
         width: 100% !important;
     }
 }
+
+:root {
+    --lg-accent: oklch(0.49 0.14 242);
+    --lg-surface: #fff;
+    --lg-surface-subtle: oklch(0.975 0.006 242);
+    --lg-line: rgb(26 42 60 / 0.11);
+    --lg-paper-shadow: 0 1px 0 rgb(20 35 50 / 0.04);
+}
+
+:root.dark {
+    --lg-accent: oklch(0.78 0.105 225);
+    --lg-surface: oklch(0.205 0.012 242);
+    --lg-surface-subtle: oklch(0.18 0.012 242);
+    --lg-line: rgb(255 255 255 / 0.10);
+    --lg-paper-shadow: 0 1px 0 rgb(0 0 0 / 0.22);
+}
+
+body.enable-banner.is-home {
+    --main-content-top: 64vh !important;
+    --top-row-height: calc(var(--main-content-top) - var(--navbar-gap));
+}
+
+body.enable-banner.is-home #banner-wrapper,
+body.enable-banner.is-home #banner {
+    height: 50vh !important;
+}
+
+body.enable-banner.is-home #banner-wrapper {
+    top: -20vh !important;
+}
+
+body.enable-banner.is-home .banner-text-overlay {
+    display: none !important;
+}
+
+.home-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1rem 0 2rem;
+    margin: 0 0 1rem;
+    border-bottom: 0;
+}
+
+@media (max-width: 767px) {
+    #main-grid,
+    #main-grid main,
+    #swup-container,
+    #content-wrapper {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .mobile-both-sidebar {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .mobile-both-sidebar main {
+        min-width: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .mobile-both-sidebar > div.contents {
+        min-width: 0;
+    }
+
+    .home-intro {
+        min-width: 0;
+        margin-right: 0.75rem;
+        border-bottom: 0;
+    }
+
+    .home-intro-copy,
+    .home-intro-description {
+        min-width: 0;
+        max-width: 100%;
+    }
+}
+
+.home-intro-copy {
+    position: relative;
+    max-width: 42rem;
+    padding-left: 1.25rem;
+}
+
+.home-intro-mark {
+    position: absolute;
+    top: 0.32rem;
+    bottom: 0.45rem;
+    left: 0;
+    width: 2px;
+    background: var(--lg-accent);
+}
+
+.home-intro-kicker {
+    margin: 0 0 0.55rem;
+    color: var(--lg-muted);
+    font-size: 0.82rem;
+}
+
+.home-intro h1 {
+    margin: 0;
+    color: var(--lg-ink);
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    font-weight: 620;
+    letter-spacing: -0.055em;
+    line-height: 1.2;
+}
+
+.home-intro-description {
+    max-width: 38rem;
+    margin: 0.7rem 0 0;
+    color: var(--lg-muted);
+    font-size: 0.98rem;
+    line-height: 1.75;
+}
+
+.home-intro-link {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0;
+    color: var(--lg-accent);
+    font-size: 0.9rem;
+    font-weight: 550;
+    text-decoration: none;
+}
+
+.home-intro-link span {
+    transition: translate 160ms ease;
+}
+
+.home-intro-link:hover span {
+    translate: 2px -2px;
+}
+
+body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) {
+    min-height: 13rem;
+    background: transparent !important;
+    border: 0;
+    border-top: 1px solid var(--lg-line);
+    border-radius: 0 !important;
+    box-shadow: none;
+}
+
+body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]):hover {
+    background: transparent !important;
+}
+
+body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) > div:first-child {
+    padding: 1.5rem 1.25rem 1.5rem 1.75rem;
+}
+
+body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) > div:first-child > a {
+    margin-bottom: 0.55rem;
+    font-size: clamp(1.25rem, 2vw, 1.55rem);
+    letter-spacing: -0.035em;
+}
+
+body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) > a:last-child {
+    align-self: stretch;
+    max-height: none;
+    height: auto;
+    margin: 1.25rem 0 1.25rem 1rem;
+    border-radius: 0.5rem;
+}
+
+body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) > a:last-child img {
+    transition: transform 350ms cubic-bezier(.2,.7,.2,1);
+}
+
+body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]):hover > a:last-child img {
+    transform: scale(1.035);
+}
+
+#left-sidebar .card-base,
+#right-sidebar .card-base,
+#middle-sidebar .card-base {
+    border-radius: 0.8rem !important;
+}
+
+#left-sidebar [id^="profile-"] img,
+#right-sidebar [id^="profile-"] img,
+#middle-sidebar [id^="profile-"] img {
+    border-radius: 0.55rem;
+}
+
+@media (max-width: 767px) {
+    body.enable-banner.is-home {
+        --main-content-top: 62vh !important;
+    }
+
+    body.enable-banner.is-home #banner-wrapper {
+        top: -23vh !important;
+        height: 42vh !important;
+    }
+
+    body.enable-banner.is-home #banner {
+        height: 42vh !important;
+    }
+
+    .home-intro {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0.5rem 0 1.25rem;
+        margin-inline: 0.25rem;
+    }
+
+    .home-intro-copy {
+        padding-left: 0.85rem;
+    }
+
+    .home-intro-description {
+        margin-top: 0.55rem;
+        font-size: 0.92rem;
+    }
+
+    .home-intro-link {
+        padding-left: 0.85rem;
+    }
+
+    body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) {
+        display: flex !important;
+        flex-direction: column-reverse !important;
+        min-height: 0;
+        width: calc(100% - 1.5rem) !important;
+        max-width: 100%;
+        margin-inline: 0.75rem;
+        overflow: hidden;
+    }
+
+    body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) > div:first-child {
+        padding: 1.1rem 1rem 1.25rem;
+    }
+
+    body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) > a:last-child {
+        flex: 0 0 auto;
+        width: auto !important;
+        max-width: calc(100% - 1.5rem) !important;
+        height: 10rem;
+        margin: 0.75rem 0.75rem 0;
+    }
+
+    body.is-home #content-wrapper .card-base:has(> a[href*="/posts/"]) > div:first-child {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-intro-link span,
+    body.is-home #content-wrapper .card-base img {
+        transition: none !important;
+    }
+}
