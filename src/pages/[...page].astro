@@ -9,10 +9,8 @@ import { getSortedPosts } from "@utils/post";
 import Pagination from "@components/pagination.astro";
 import PostPage from "@components/postPage.astro";
 import GridLayout from "@layouts/grid.astro";
-import { pathsEqual, url } from "@utils/url";
 import { siteConfig } from "@/config";
-
-
+import { pathsEqual, url } from "@utils/url";
 export const getStaticPaths = (async ({ paginate }) => {
     const allBlogPosts = await getSortedPosts();
     return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
@@ -30,14 +28,15 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
     {isHomePage && (
         <section class="home-intro" aria-labelledby="home-intro-title">
             <div class="home-intro-copy">
-                <span class="home-intro-mark" aria-hidden="true"></span>
-                <p class="home-intro-kicker">欢迎来到这里</p>
+                <p class="home-intro-kicker">flowli 的个人博客</p>
                 <h1 id="home-intro-title">把好奇心写下来。</h1>
-                <p class="home-intro-description">{siteConfig.subtitle}。这里是云的个人记录，关于前端、工具，也关于日常里值得留下的片刻。</p>
+                <p class="home-intro-description">{siteConfig.subtitle}。这里是 flowli 的个人记录，关于前端、工具，也关于日常里值得留下的片刻。</p>
             </div>
             <a class="home-intro-link" href={url('/archive/')}>浏览全部文章 <span aria-hidden="true">↗</span></a>
         </section>
     )}
-    <PostPage page={page}></PostPage>
-    <Pagination class="mx-auto onload-animation-up" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
+    <div class="home-feed">
+        <PostPage page={page}></PostPage>
+        <Pagination class="mx-auto onload-animation-up" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
+    </div>
 </GridLayout>

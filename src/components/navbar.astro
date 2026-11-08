@@ -59,7 +59,7 @@ let links: NavbarLink[] = navbarConfig.links.map(
 
 <script>
 function initLiquidGlassNavbar() {
-    const navbar = document.getElementById('navbar');
+    const navbar = document.getElementById('navbar') as HTMLElement | null;
     if (!navbar) return;
 
     if (window.liquidGlassNavbarHandler) {
@@ -92,13 +92,17 @@ function initLiquidGlassNavbar() {
     function updatePointer(event: PointerEvent) {
         if (!capsule || event.pointerType === 'touch') return;
         const rect = capsule.getBoundingClientRect();
-        navbar.style.setProperty('--lg-pointer-x', `${event.clientX - rect.left}px`);
-        navbar.style.setProperty('--lg-pointer-y', `${event.clientY - rect.top}px`);
+        const nav = document.getElementById('navbar') as HTMLElement | null;
+        if (!nav) return;
+        nav.style.setProperty('--lg-pointer-x', `${event.clientX - rect.left}px`);
+        nav.style.setProperty('--lg-pointer-y', `${event.clientY - rect.top}px`);
     }
 
     function resetPointer() {
-        navbar.style.setProperty('--lg-pointer-x', '50%');
-        navbar.style.setProperty('--lg-pointer-y', '50%');
+        const nav = document.getElementById('navbar') as HTMLElement | null;
+        if (!nav) return;
+        nav.style.setProperty('--lg-pointer-x', '50%');
+        nav.style.setProperty('--lg-pointer-y', '50%');
     }
 
     window.liquidGlassNavbarHandler = requestTick;

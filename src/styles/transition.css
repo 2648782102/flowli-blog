@@ -38,21 +38,19 @@ html.is-animating.is-leaving .transition-leaving {
     opacity: 0;
 }
 
-/* Swup fade 动画 - 保持兼容性 */
+/* Swup fade 动画 - 只作用于透明度，避免内容整体上下滑动 */
 html.is-changing .transition-swup-fade {
-    transition: all var(--transition-duration-medium) ease-out;
+    transition: opacity var(--transition-duration-medium) var(--transition-ease-page-in);
 }
 
 html.is-animating .transition-swup-fade:not(.pause-swup-transition) {
     opacity: 0;
-    translate: 0 1.5rem;
 }
 
 /* 暂停 Swup 过渡动画，用于特定页面切换场景 */
 .pause-swup-transition {
     transition: none !important;
     opacity: 1 !important;
-    translate: 0 0 !important;
 }
 
 /* Loading 状态下禁止滚动 */
