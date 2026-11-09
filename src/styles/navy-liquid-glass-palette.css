@@ -257,11 +257,24 @@ body.enable-banner.is-home .home-intro {
     box-shadow: 0 24px 60px rgb(7 21 43 / 0.16), inset 0 1px 0 rgb(255 255 255 / 0.64) !important;
 }
 
+body.enable-banner.is-home .home-intro {
+    background: linear-gradient(90deg, rgb(238 245 252 / 0.90), rgb(238 245 252 / 0.56) 68%, transparent) !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--lg-glass-hairline) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
 :root.dark body.enable-banner.is-home .home-intro {
     background:
         linear-gradient(135deg, rgb(16 45 86 / 0.90), rgb(7 21 43 / 0.82)),
         var(--lg-glass-panel) !important;
     border-color: rgb(220 233 247 / 0.18) !important;
+}
+
+:root.dark body.enable-banner.is-home .home-intro {
+    background: linear-gradient(90deg, rgb(16 45 86 / 0.76), rgb(7 21 43 / 0.4) 68%, transparent) !important;
+    border-bottom-color: var(--lg-glass-hairline) !important;
 }
 
 body.enable-banner.is-home .home-intro-kicker,
@@ -280,12 +293,12 @@ body.enable-banner.is-home .home-intro-kicker,
 
 body.enable-banner.is-home .home-intro-link {
     border-color: rgb(23 58 109 / 0.30) !important;
-    background: rgb(220 233 247 / 0.54) !important;
+    background: transparent !important;
 }
 
 :root.dark body.enable-banner.is-home .home-intro-link {
     border-color: rgb(169 199 232 / 0.30) !important;
-    background: rgb(35 83 143 / 0.24) !important;
+    background: transparent !important;
 }
 
 body.enable-banner.is-home :is(#left-sidebar, #middle-sidebar, #right-sidebar) widget-layout > div:first-child::before,

@@ -1,7 +1,6 @@
 ---
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
-import ImageWrapper from "@components/common/imageWrapper.astro";
 
 
 export interface Props {
@@ -15,7 +14,7 @@ export interface Props {
         status: "completed" | "in-progress" | "planned";
         demoUrl?: string;
         sourceUrl?: string;
-        startDate: string;
+        startDate?: string;
         endDate?: string;
         featured?: boolean;
         tags?: string[];
@@ -26,156 +25,62 @@ export interface Props {
     maxTechStack?: number;
 }
 
-const {
-    project,
-    size = "medium",
-    showImage = true,
-    maxTechStack = 4,
-} = Astro.props;
+const { project, maxTechStack = 4 } = Astro.props;
 
-// 状态样式映射
-const getStatusStyle = (status: string) => {
-    switch (status) {
-        case "completed":
-            return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-        case "in-progress":
-            return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
-        case "planned":
-            return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
-        default:
-            return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
-    }
+const statusLabels = {
+    completed: i18n(I18nKey.projectsCompleted),
+    "in-progress": i18n(I18nKey.projectsInProgress),
+    planned: i18n(I18nKey.projectsPlanned),
 };
 
-// 状态文本映射
-const getStatusText = (status: string) => {
-    switch (status) {
-        case "completed":
-            return i18n(I18nKey.projectsCompleted);
-        case "in-progress":
-            return i18n(I18nKey.projectsInProgress);
-        case "planned":
-            return i18n(I18nKey.projectsPlanned);
-        default:
-            return status;
-    }
+const categoryLabels: Record<string, string> = {
+    website: "个人网站",
 };
 
-// 尺寸样式映射
-const getSizeClasses = (size: string) => {
-    switch (size) {
-        case "small":
-            return {
-                container: "p-4",
-                title: "text-lg",
-                description: "text-sm line-clamp-2",
-                tech: "text-xs",
-                links: "text-sm",
-            };
-        case "large":
-            return {
-                container: "p-6",
-                title: "text-xl",
-                description: "text-base line-clamp-3",
-                tech: "text-sm",
-                links: "text-base",
-            };
-        default: // medium
-            return {
-                container: "p-5",
-                title: "text-lg",
-                description: "text-sm line-clamp-2",
-                tech: "text-xs",
-                links: "text-sm",
-            };
-    }
+const formattedDate = (date?: string) => {
+    if (!date) return "";
+    const parsed = new Date(`${date}T00:00:00`);
+    return Number.isNaN(parsed.getTime())
+        ? date
+        : new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "short" }).format(parsed);
 };
 
-const sizeClasses = getSizeClasses(size);
+const period = project.endDate
+    ? `${formattedDate(project.startDate)} — ${formattedDate(project.endDate)}`
+    : formattedDate(project.startDate);
 ---
 
-<div class="project-card bg-white dark:bg-gray-800 rounded-lg border border-black/10 dark:border-white/10 overflow-hidden hover:shadow-lg transition-all duration-300 group">
-    <!-- 项目图片 -->
-    {showImage && project.image && (
-        <div class={`overflow-hidden ${size === 'large' ? 'aspect-video' : 'aspect-4/3'}`}>
-            <ImageWrapper
-                src={project.image}
-                basePath={project.basePath}
-                alt={project.title}
-                class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-            />
+<article class:list={["project-card", { "project-card-featured": project.featured }]}>
+    <div class="project-card-content">
+        <div class="project-card-meta">
+            <span>{categoryLabels[project.category] ?? project.category}</span>
+            {period && <span>{period}</span>}
+            <span class="project-card-status">{statusLabels[project.status]}</span>
         </div>
-    )}
-    <!-- 项目内容 -->
-    <div class={sizeClasses.container}>
-        <!-- 标题和状态 -->
-        <div class="flex items-start justify-between mb-3">
-            <h3 class={`font-semibold text-black/90 dark:text-white/90 ${sizeClasses.title} ${size === 'small' ? 'line-clamp-1' : ''}`}>
-                {project.title}
-            </h3>
-            <span class={`px-2 py-1 text-xs rounded-full shrink-0 ml-2 ${getStatusStyle(project.status)}`}>
-                {getStatusText(project.status)}
-            </span>
-        </div>
-        <!-- 分类标签 -->
-        {project.category && (
-            <div class="mb-2">
-                <span class="px-2 py-1 text-xs bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 rounded-sm">
-                    {project.category}
-                </span>
-            </div>
+        <h2>{project.title}</h2>
+        <p class="project-card-description">{project.description}</p>
+        {project.techStack.length > 0 && (
+            <ul class="project-card-tech" aria-label={i18n(I18nKey.projectsTechStack)}>
+                {project.techStack.slice(0, maxTechStack).map((tech) => <li>{tech}</li>)}
+                {project.techStack.length > maxTechStack && <li>+{project.techStack.length - maxTechStack}</li>}
+            </ul>
         )}
-        <!-- 项目描述 -->
-        <p class={`text-black/60 dark:text-white/60 mb-4 ${sizeClasses.description}`}>
-            {project.description}
-        </p>
-        <!-- 技术栈 -->
-        {project.techStack && project.techStack.length > 0 && (
-            <div class="flex flex-wrap gap-1 mb-4">
-                {project.techStack.slice(0, maxTechStack).map((tech) => (
-                    <span class={`px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-sm ${sizeClasses.tech}`}>
-                        {tech}
-                    </span>
-                ))}
-                {project.techStack.length > maxTechStack && (
-                    <span class={`px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400 rounded-sm ${sizeClasses.tech}`}>
-                        +{project.techStack.length - maxTechStack}
-                    </span>
-                )}
-            </div>
-        )}
-        <!-- 标签 -->
         {project.tags && project.tags.length > 0 && (
-            <div class="flex flex-wrap gap-1 mb-4">
-                {project.tags.map((tag) => (
-                    <span class={`px-2 py-1 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 rounded-sm ${sizeClasses.tech}`}>
-                        #{tag}
-                    </span>
-                ))}
-            </div>
+            <ul class="project-card-tags" aria-label="项目标签">
+                {project.tags.map((tag) => <li>#{tag}</li>)}
+            </ul>
         )}
-        <!-- 链接 -->
-        <div class="flex gap-3">
+        <div class="project-card-links">
             {project.demoUrl && (
-                <a
-                    href={project.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class={`inline-flex items-center px-3 py-1.5 rounded-md border border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 font-medium transition-colors ${sizeClasses.links}`}
-                >
-                    {i18n(I18nKey.projectsDemo)}
+                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                    {i18n(I18nKey.projectsDemo)} <span aria-hidden="true">↗</span>
                 </a>
             )}
             {project.sourceUrl && (
-                <a
-                    href={project.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class={`inline-flex items-center px-3 py-1.5 rounded-md border border-gray-400 text-gray-700 dark:border-gray-500 dark:text-gray-200 bg-gray-50/80 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium transition-colors ${sizeClasses.links}`}
-                >
-                    {i18n(I18nKey.projectsSource)}
+                <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">
+                    {i18n(I18nKey.projectsSource)} <span aria-hidden="true">↗</span>
                 </a>
             )}
         </div>
     </div>
-</div>
+</article>
