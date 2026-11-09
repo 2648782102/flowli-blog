@@ -311,7 +311,7 @@ announcement:
         # 启用链接
         enable: true
         # 链接文本
-        text: "Learn More"
+        text: "了解更多"
         # 链接 URL
         url: "/about/"
         # 是否外部链接
