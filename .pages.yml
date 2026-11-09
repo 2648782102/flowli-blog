@@ -11,7 +11,9 @@ content:
     type: collection
     path: src/content/posts
     subfolders: true
-    filename: "{slug}.md"
+    filename: "{year}-{month}-{day}-{hour}-{minute}-{second}-{primary}.md"
+    view:
+      primary: title
     fields:
       - { name: title, label: 标题, type: string }
       - { name: published, label: 发布日期, type: date }
