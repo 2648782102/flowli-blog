@@ -8,13 +8,13 @@ export const LinkPresets: { [key in LinkPreset]: NavbarLink } = {
         name: i18n(I18nKey.home),
         url: "/",
         icon: "material-symbols:home",
-        description: "flowli 的个人记录，关于技术、工具与日常。",
+        description: "Twilight - A simple, clean, and beautiful blog theme.",
     },
     [LinkPreset.Archive]: {
         name: i18n(I18nKey.archive),
         url: "/archive/",
         icon: "material-symbols:archive",
-        description: "按时间顺序浏览发布过的文章。",
+        description: "A chronological list of all published posts.",
     },
     [LinkPreset.Projects]: {
         name: i18n(I18nKey.projects),
@@ -50,13 +50,13 @@ export const LinkPresets: { [key in LinkPreset]: NavbarLink } = {
         name: i18n(I18nKey.anime),
         url: "/anime/",
         icon: "material-symbols:movie",
-        description: "记录看过的动画与作品。",
+        description: "A list of anime I have watched.",
     },
     [LinkPreset.Friends]: {
         name: i18n(I18nKey.friends),
         url: "/friends/",
         icon: "material-symbols:group",
-        description: "收录值得一逛的朋友们的网站。",
+        description: "A curated list of friend sites.",
     },
     [LinkPreset.About]: {
         name: i18n(I18nKey.about),
