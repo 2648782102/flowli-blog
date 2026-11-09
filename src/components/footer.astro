@@ -32,20 +32,19 @@ if (footerConfig.enable) {
 }
 ---
 
-<footer class="site-footer">
-    <div class="site-footer-main">
-        <span class="site-footer-mark" aria-hidden="true">FLOWLI <span>·</span> 个人记录</span>
-        <span class="site-footer-copyright">© {currentYear} {profileConfig.name}</span>
-    </div>
-    <nav class="site-footer-links" aria-label="站点订阅与索引">
-        <a href={url('rss.xml')}>RSS</a>
-        <a href={url('atom.xml')}>Atom</a>
-        <a href={url('sitemap-index.xml')}>站点地图</a>
-    </nav>
-    <div class="site-footer-credit">
+<div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
+<div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
+    <div class="transition text-50 text-sm text-center leading-6">
         {customFooterHtml && (
-            <div class="site-footer-custom" set:html={customFooterHtml}></div>
+            <div class="mb-2" set:html={customFooterHtml}></div>
         )}
-        <span>用 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 写成</span>
+        &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved. /
+        <a class="transition link text-(--primary) font-medium" href={url('rss/')} onclick={`event.preventDefault(); navigateToPage('${url('rss/')}')`}>RSS</a> /
+        <a class="transition link text-(--primary) font-medium" href={url('atom/')} onclick={`event.preventDefault(); navigateToPage('${url('atom/')}')`}>Atom</a> /
+        <a class="transition link text-(--primary) font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a><br>
+        Powered by
+        <a class="transition link text-(--primary) font-medium" target="_blank" href="https://astro.build">Astro</a> &
+        <a class="transition link text-(--primary) font-medium" target="_blank" href="https://github.com/Spr-Aachen/Twilight">Twilight</a>&nbsp; Version <a class="transition link text-(--primary) font-medium" target="_blank" href="https://github.com/Spr-Aachen/Twilight/releases">1.0</a><br>
+
     </div>
-</footer>
+</div>
