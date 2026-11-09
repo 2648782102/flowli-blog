@@ -12,7 +12,7 @@ export interface Project {
     status: "completed" | "in-progress" | "planned";
     demoUrl?: string;
     sourceUrl?: string;
-    startDate?: string;
+    startDate: string;
     endDate?: string;
     featured?: boolean;
     tags?: string[];
