@@ -104,12 +104,10 @@ const jsonLd = {
     inLanguage: entry.data.lang
         ? entry.data.lang.replace("_", "-")
         : siteConfig.lang.replace("_", "-"),
-    // TODO include cover image here
 };
 ---
 
 <GridLayout
-    banner={entry.data.cover}
     title={entry.data.title}
     description={entry.data.description}
     lang={entry.data.lang}
