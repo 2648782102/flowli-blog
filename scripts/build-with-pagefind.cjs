@@ -2,56 +2,11 @@
 
 const { execSync } = require('child_process');
 const { existsSync } = require('fs');
-const { join } = require('path');
-
-// Detect the platform
-function detectPlatform() {
-    // Check environment variables
-    if (process.env.GITHUB_ACTIONS) {
-        return 'github';
-    }
-    if (process.env.CF_PAGES) {
-        return 'cloudflare';
-    }
-    if (process.env.NETLIFY) {
-        return 'netlify';
-    }
-    if (process.env.EDGEONE) {
-        return 'edgeone';
-    }
-    if (process.env.VERCEL) {
-        return 'vercel';
-    }
-
-    // Check if specific directories exist
-    if (existsSync('.vercel')) {
-        return 'vercel';
-    }
-
-    // Default to standard dist directory
-    return 'default';
-}
-
-// Get Pagefind output directory
-function getPagefindOutputDir(platform) {
-    const outputDirs = {
-        default: 'dist',
-        github: 'dist',
-        cloudflare: 'dist',
-        netlify: 'dist',
-        edgeone: 'dist',
-        vercel: '.vercel/output/static',
-    };
-
-    return outputDirs[platform] || 'dist';
-}
 
 // Main function
 function main() {
-    const platform = detectPlatform();
-    const outputDir = getPagefindOutputDir(platform);
+    const outputDir = 'dist';
 
-    console.log(`🚀 Detected deployment platform: ${platform}`);
     console.log(`📁 Pagefind output directory: ${outputDir}`);
 
     try {

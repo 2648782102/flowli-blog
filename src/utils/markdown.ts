@@ -78,7 +78,9 @@ export function initMarkdownActions() {
                     textArea.focus();
                     textArea.select();
                     try {
-                        document.execCommand('copy');
+                        (document as Document & {
+                            execCommand(command: string): boolean;
+                        }).execCommand('copy');
                     } catch (execErr) {
                         console.error('execCommand 也失败了:', execErr);
                         throw new Error('所有复制方法都失败了');

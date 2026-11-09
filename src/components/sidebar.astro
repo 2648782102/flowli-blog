@@ -69,7 +69,7 @@ function renderComponent(component: any, index: number) {
     // 使用原始组件引用获取类名（因为 getComponentClass 依赖对象引用判断来源）
     const originalComponent = component._original || component;
     let componentClass = widgetManager.getComponentClass(originalComponent, index, side);
-    const componentStyle = widgetManager.getComponentStyle(component, index);
+    const componentStyle = widgetManager.getComponentStyle(component);
 
     // 如果组件需要动画，添加 transition-swup-fade 类
     if (component.shouldAnimate) {

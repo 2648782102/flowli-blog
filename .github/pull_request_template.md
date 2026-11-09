@@ -8,7 +8,7 @@
 
 ## Checklist
 
-- [ ] I have checked to ensure that this Pull Request is not for personal changes.
+- [ ] I have reviewed the changes and their impact on the blog.
 - [ ] I have performed a self-review of my own code.
 - [ ] My changes generate no new issues.
 

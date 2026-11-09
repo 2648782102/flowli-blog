@@ -606,13 +606,12 @@ body.enable-banner.is-home #swup-container .card-base:has(> a[href*="/posts/"]) 
     border-radius: 1rem;
 }
 
-/* Archive, taxonomy, album, diary, project, skill, timeline, and anime modules. */
+/* Archive, taxonomy, album, diary, project, skill, and timeline modules. */
 .project-card,
 .skill-card,
 .timeline-card,
 .album-card,
 .moment-item,
-#content-wrapper .anime-card,
 #content-wrapper .menu-card,
 #content-wrapper .group.relative:has(.aspect-2\/3) {
     color: var(--lg-ink);
@@ -630,7 +629,6 @@ body.enable-banner.is-home #swup-container .card-base:has(> a[href*="/posts/"]) 
 .timeline-card:hover,
 .album-card:hover,
 .moment-item:hover,
-#content-wrapper .anime-card:hover,
 #content-wrapper .menu-card:hover,
 #content-wrapper .group.relative:has(.aspect-2\/3):hover {
     translate: 0 -3px;

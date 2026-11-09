@@ -33,8 +33,8 @@ site:
     timeZone: 8
     # 字体配置
     font:
-        # 示例字体配置 - Zen Maru Gothic
-        "Example - ZenMaruGothic":
+        # 字体配置 - Zen Maru Gothic
+        "ZenMaruGothic":
             # 字体源 (字体 CSS 链接 | 字体文件路径)
             src: "https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap"
             # 字体名 (font-family)
@@ -162,10 +162,6 @@ site:
         - src: "/favicon/icon-dark.ico"
           sizes: "96x96"
           theme: "dark"
-    # bangumi 配置
-    bangumi:
-        # 用户 ID
-        userId: "your-bangumi-id"
     # OpenGraph 配置
     generateOgImages: false
 
@@ -290,7 +286,7 @@ profile:
     bio: "记录技术实践、工具折腾和生活片段。"
     # 链接配置
     links:
-        - # 链接示例
+        - # GitHub 链接
             # 名字
             name: "GitHub"
             # 图标
@@ -366,13 +362,6 @@ post:
             # 语言 (留空则使用站点语言)
             lang: ""
 
-# 页脚配置
-footer:
-    # 启用 Footer HTML 注入功能
-    enable: false
-    # 自定义 HTML 内容，用于添加备案号等信息
-    customHtml: ""
-
 # 粒子特效配置
 particle:
     # 启用粒子特效
@@ -423,7 +412,7 @@ musicPlayer:
     # meting 模式专属配置
     meting:
         # Meting API 地址
-        meting_api: "https://meting.spr-aachen.com/api"
+        meting_api: "https://api.injahow.cn/meting/"
         # 音乐平台
         server: "netease"
         # 类型 ("playlist" 歌单 | "song" 单曲)
@@ -432,60 +421,7 @@ musicPlayer:
         id: "2161912966"
     # local 模式专属配置
     local:
-        # 播放列表
-        playlist:
-            - # 列表示例
-                # 序号
-                id: 1
-                # 标题
-                title: "深海之息"
-                # 作者
-                artist: "Youzee Music"
-                # 封面
-                cover: "https://p1.music.126.net/PhKOqFtljgHDDpKYM2ADUA==/109951169858309716.jpg"
-                # 音乐路径
-                url: "assets/music/深海之息.m4a"
-                # 歌词路径
-                lrc: "assets/music/深海之息.lrc"
-                # 时长
-                duration: 146
+        # 播放列表（通过本地音乐文件填写）
+        playlist: []
     # 是否自动播放
     autoplay: true
-
-# 看板娘配置
-pio:
-    # 启用看板娘
-    enable: false
-    # 模型文件路径
-    models:
-        - "/pio/models/pio/model.json"
-    # 看板娘位置
-    position: "left"
-    # 看板娘宽度
-    width: 280
-    # 看板娘高度
-    height: 250
-    # 展现模式
-    mode: "draggable"
-    # 是否在移动设备上隐藏
-    hiddenOnMobile: true
-    # 对话框配置
-    dialog:
-        # 欢迎词
-        welcome: "Welcome!"
-        # 触摸提示
-        touch:
-            - "What are you doing?"
-            - "Stop touching me!"
-            - "Don't bully me like that!"
-            - "(｡í _ ì｡)"
-        # 首页提示
-        home: "Click here to go back to homepage!"
-        # 换装提示
-        skin:
-            - "Want to see my new outfit?"
-            - "The new outfit looks great~"
-        # 关闭提示
-        close: "See you next time~"
-        # 关于链接
-        link: "https://nav.kungal.org"

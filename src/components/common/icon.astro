@@ -12,7 +12,6 @@ export interface Props {
     style?: string;
     size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
     color?: string;
-    fallback?: string;
     loading?: "lazy" | "eager";
 }
 
@@ -22,7 +21,6 @@ const {
     style = "",
     size = "md",
     color,
-    fallback = "●",
     loading = "lazy",
 } = Astro.props;
 

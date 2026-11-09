@@ -172,23 +172,6 @@ export const zh_hant: Translation = {
     [Key.albumsPhotoCount]: "張照片",
     [Key.albumsPhotosCount]: "張照片",
 
-    // 番劇頁面
-    [Key.anime]: "追番",
-    [Key.animeTitle]: "我的追番記錄",
-    [Key.animeSubtitle]: "記錄我的二次元之旅",
-    [Key.animeList]: "追番列表",
-    [Key.animeTotal]: "總數",
-    [Key.animeWatching]: "追番中",
-    [Key.animeCompleted]: "已追完",
-    [Key.animeAvgRating]: "平均評分",
-    [Key.animeStatusWatching]: "追番中",
-    [Key.animeStatusCompleted]: "已追完",
-    [Key.animeStatusPlanned]: "計劃中",
-    [Key.animeYear]: "年份",
-    [Key.animeStudio]: "製作",
-    [Key.animeEmpty]: "暫無追番資料",
-    [Key.animeEmptyBangumi]: "請檢查 Bangumi 設定或網路連線",
-
     // 友鏈頁面
     [Key.friends]: "友鏈",
 

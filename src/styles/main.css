@@ -2,8 +2,6 @@
 
 /* 导入相册样式 */
 @import './albums.css' layer(base);
-/* 导入追番页面样式 */
-@import './anime.css' layer(base);
 /* 导入动过渡样式 */
 @import './transition.css' layer(base);
 
@@ -172,21 +170,6 @@
 }
 
 @utility wallpaper-transparent {
-    .is-theme-transitioning &body #navbar > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-
-    .is-theme-transitioning &body #navbar[data-transparent-mode] > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-
-    .is-theme-transitioning &body #navbar[data-transparent-mode].scrolled > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-
     /* 全屏壁纸模式下的半透明效果 */
     & .card-base {
     @apply bg-(--card-bg-transparent);
