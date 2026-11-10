@@ -6,6 +6,7 @@ import { skillsData } from "./skills";
 import { timelineData } from "./timeline";
 import { i18n } from "../i18n/translation";
 import I18nKey from "../i18n/i18nKey";
+import { getPostUrl, url } from "./url";
 
 
 export interface DirectoryNode {
@@ -44,7 +45,7 @@ export async function getDirectoryTree(): Promise<DirectoryNode[]> {
         const parts = post.id.split('/');
         const fileName = parts.pop()!;
         const paths = [rootMap.posts, ...parts];
-        addNode(paths, post.data.directoryTitle || post.data.title || fileName, `/posts/${post.id}/`);
+        addNode(paths, post.data.directoryTitle || post.data.title || fileName, getPostUrl(post));
     }
 
     for (const album of sortedAlbums) {
@@ -52,35 +53,35 @@ export async function getDirectoryTree(): Promise<DirectoryNode[]> {
         const basePathParts = album.basePath?.split('/') || [];
         if (basePathParts[0] === 'content') basePathParts.shift();
         if (basePathParts[0] === 'albums') basePathParts[0] = rootMap.albums;
-        addNode(basePathParts, album.title || album.id, `/albums/${album.id}/`);
+        addNode(basePathParts, album.title || album.id, url(`/albums/${album.id}/`));
     }
 
     for (const moment of sortedMoments) {
         const basePathParts = moment.basePath?.split('/') || [];
         if (basePathParts[0] === 'content') basePathParts.shift();
         if (basePathParts[0] === 'diary') basePathParts[0] = rootMap.diary;
-        addNode(basePathParts, moment.title || moment.id, `/diary/`);
+        addNode(basePathParts, moment.title || moment.id, url("/diary/"));
     }
 
     for (const project of projectsData) {
         const basePathParts = project.basePath?.split('/') || [];
         if (basePathParts[0] === 'content') basePathParts.shift();
         if (basePathParts[0] === 'projects') basePathParts[0] = rootMap.projects;
-        addNode(basePathParts, project.title || project.id, `/projects/`);
+        addNode(basePathParts, project.title || project.id, url("/projects/"));
     }
 
     for (const skill of skillsData) {
         const basePathParts = skill.basePath?.split('/') || [];
         if (basePathParts[0] === 'content') basePathParts.shift();
         if (basePathParts[0] === 'skills') basePathParts[0] = rootMap.skills;
-        addNode(basePathParts, skill.name || skill.id, `/skills/`);
+        addNode(basePathParts, skill.name || skill.id, url("/skills/"));
     }
 
     for (const item of timelineData) {
         const basePathParts = item.basePath?.split('/') || [];
         if (basePathParts[0] === 'content') basePathParts.shift();
         if (basePathParts[0] === 'timeline') basePathParts[0] = rootMap.timeline;
-        addNode(basePathParts, item.title || item.id, `/timeline/`);
+        addNode(basePathParts, item.title || item.id, url("/timeline/"));
     }
 
     function toArray(obj: Record<string, any>): DirectoryNode[] {

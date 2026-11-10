@@ -78,6 +78,15 @@
             <div 
                 class="min-w-0 flex items-center px-2 py-1.5 my-0.5 rounded-md cursor-pointer transition-colors duration-300 hover:text-(--primary) hover:bg-(--btn-plain-bg-hover) {expandedFolders[currentPathStr] ? 'font-medium text-90' : 'font-medium text-75'}" 
                 onclick={(e) => toggleFolder(currentPathStr, e)}
+                onkeydown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleFolder(currentPathStr, e);
+                    }
+                }}
+                role="button"
+                tabindex="0"
+                aria-expanded={expandedFolders[currentPathStr] ?? false}
             >
                 <svg class="w-4 h-4 mr-1.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/>
