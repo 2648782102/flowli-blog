@@ -15,6 +15,11 @@ import { getFileDirFromPath, getPostUrl } from "@utils/url";
 
 const markdownParser = new MarkdownIt();
 
+function resolveSiteAsset(src: string, site: URL): string {
+    if (/^https?:\/\//i.test(src)) return src;
+    return new URL(src.replace(/^\/+/, ""), site).href;
+}
+
 // get dynamic import of images as a map collection
 const imagesGlob = import.meta.glob<{ default: ImageMetadata }>(
     "/src/content/**/*.{jpeg,jpg,png,gif,webp}", // include posts and assets
@@ -81,7 +86,7 @@ export async function GET(context: APIContext) {
                 }
             } else if (src.startsWith("/")) {
                 // images starting with `/` are in public dir
-                img.setAttribute("src", new URL(src, context.site).href);
+                img.setAttribute("src", resolveSiteAsset(src, context.site));
             }
         }
 
