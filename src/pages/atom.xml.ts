@@ -13,6 +13,11 @@ import { getFileDirFromPath, getPostUrl } from "@utils/url";
 
 const markdownParser = new MarkdownIt();
 
+function resolveSiteAsset(src: string, site: URL): string {
+    if (/^https?:\/\//i.test(src)) return src;
+    return new URL(src.replace(/^\/+/, ""), site).href;
+}
+
 function escapeXml(value: string) {
     return value
         .replace(/&/g, "&amp;")
@@ -104,7 +109,7 @@ export async function GET(context: APIContext) {
                 }
             } else if (src.startsWith("/")) {
                 // images starting with `/` are in public dir
-                img.setAttribute("src", new URL(src, context.site).href);
+                img.setAttribute("src", resolveSiteAsset(src, context.site));
             }
         }
 

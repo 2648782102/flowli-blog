@@ -28,7 +28,9 @@ export function getPostUrlBySlug(slug: string): string {
 
 export function getPostUrlByRouteName(routeName: string): string {
     // 移除开头的斜杠并确保固定链接在 /posts/ 路径下
-    const cleanRouteName = routeName.replace(/^\/+/, "");
+    const cleanRouteName = routeName
+        .replace(/^\/+/, "")
+        .replace(/^posts\//, "");
     return url(`/posts/${cleanRouteName}/`);
 }
 

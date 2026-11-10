@@ -6,6 +6,7 @@ import { formatDateToYYYYMMDD } from "@utils/date";
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
 import GridLayout from "@layouts/grid.astro";
+import { getPostUrl } from "@utils/url";
 
 
 const posts = (await getSortedPosts()).filter((post) => !post.data.encrypted);
@@ -63,7 +64,7 @@ const recentPosts = posts.slice(0, 6);
                 {recentPosts.map((post) => (
                     <article class="bg-(--card-bg) rounded-xl p-4 border border-(--line-divider) hover:border-(--primary) transition-all duration-300">
                         <h3 class="text-lg font-semibold text-90 mb-2 hover:text-(--primary) transition-colors">
-                            <a href={`/posts/${post.id}/`} class="hover:underline">
+                            <a href={getPostUrl(post)} class="hover:underline">
                                 {post.data.title}
                             </a>
                         </h3>
