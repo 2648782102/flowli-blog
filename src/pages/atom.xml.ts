@@ -15,6 +15,7 @@ const markdownParser = new MarkdownIt();
 
 function resolveSiteAsset(src: string, site: URL): string {
     if (/^https?:\/\//i.test(src)) return src;
+    if (src.startsWith("//")) return `${site.protocol}${src}`;
     return new URL(src.replace(/^\/+/, ""), site).href;
 }
 
