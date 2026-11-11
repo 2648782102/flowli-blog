@@ -1,6 +1,5 @@
 ---
 import type { MarkdownHeading } from "astro";
-import { Icon } from "astro-icon/components";
 
 import { siteConfig } from "@/config";
 import { pathsEqual, url } from "@utils/url";
@@ -16,7 +15,12 @@ import BaseLayout from "./base.astro";
 import "@styles/grid.css";
 
 /**
- * Wallpaper
+ * LETTERPRESS layout.
+ *
+ * 视觉层完全重写：普通文档流 + 真正 sticky 的报头导航 + 居中的期刊版心，
+ * 不再使用绝对定位悬浮 / banner 视差 / 玻璃卡片网格。
+ * 功能层（Swup 容器、widgetManager、wallpaper、reveal）所需的所有 DOM id
+ * 与 class hook 一律保留，避免任何页面失效。
  */
 
 interface Props {
@@ -36,25 +40,12 @@ const {
     postSlug,
     headings = [],
 } = Astro.props;
-const hasBannerCredit = siteConfig.wallpaper.mode === "banner" && siteConfig.wallpaper.banner?.credit?.enable;
-const hasBannerLink = !!siteConfig.wallpaper.banner?.credit?.url;
 
-// 检查是否为首页
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
-const isBannerMode = siteConfig.wallpaper.mode === "banner";
-const editorialClass = isHomePage && siteConfig.wallpaper.mode === "banner" ? "editorial-home" : "";
+const shouldEnableTransparency =
+    siteConfig.wallpaper.mode === "banner" ||
+    siteConfig.wallpaper.mode === "fullscreen";
 
-// 检查是否应该启用半透明效果
-const shouldEnableTransparency = siteConfig.wallpaper.mode === "banner" || siteConfig.wallpaper.mode === "fullscreen";
-
-// 为组件添加半透明效果的CSS类
-const transparentClass = shouldEnableTransparency ? "wallpaper-transparent" : "";
-
-/**
- * Sidebar
- */
-
-// 检查侧边栏是否启用，动态调整网格布局
 const {
     hasLeftSidebar,
     hasRightSidebar,
@@ -75,28 +66,18 @@ const {
     setOGTypeArticle={setOGTypeArticle}
     postSlug={postSlug}
 >
-    <!-- Navbar -->
     <slot slot="head" name="head" />
-    <div
-        id="top-row"
-        class={`z-50 pointer-events-none relative transition-all duration-600 max-w-(--page-width) px-0 md:px-4 mx-auto h-(--top-row-height) ${isBannerMode ? "editorial-top-row" : ""}`}
-        style={isBannerMode ? "height: 0" : undefined}
-    >
-        <div
-            id="navbar-wrapper"
-            class="pointer-events-auto sticky top-0 transition-all"
-        >
+
+    <!-- 报头导航：sticky 于整页顶部 -->
+    <div id="top-row" class="ed-topbar sticky top-0 z-50 w-full">
+        <div id="navbar-wrapper" class="w-full">
             <Navbar />
         </div>
     </div>
 
-    <!-- 全屏壁纸 - 总是渲染但通过CSS控制可见性 -->
-    <FullscreenWallpaper
-        config={siteConfig.wallpaper}
-        class={siteConfig.wallpaper.mode === "fullscreen" ? "" : "hidden"}
-    />
-
-    <!-- 为全屏壁纸模式添加body类 -->
+    <!-- 功能层保留：wallpaper.ts / reveal 依赖这些 DOM，视觉上由 editorial.css 隐藏 -->
+    <FullscreenWallpaper config={siteConfig.wallpaper} class="hidden" />
+    <Banner config={siteConfig.wallpaper} isHomePage={isHomePage} class="hidden" />
     {
         shouldEnableTransparency && (
             <script>
@@ -105,72 +86,26 @@ const {
         )
     }
 
-    <!-- Banner - 总是渲染但通过CSS控制可见性 -->
-    <Banner
-        config={siteConfig.wallpaper}
-        isHomePage={isHomePage}
-        class={siteConfig.wallpaper.mode === "banner" ? "" : "hidden"}
-    />
-
-    <!-- Main content -->
-    <div
-        id="main-content"
-        class={`absolute w-full z-30 pointer-events-none transition-transform duration-600 top-0 min-h-[calc(100vh-var(--main-content-top))] ${siteConfig.wallpaper.mode !== "banner" ? "no-banner-layout" : ""} ${transparentClass} ${editorialClass}`}
-        style="transform: translateY(var(--main-content-top))"
-    >
-        <div
-            class="relative max-w-(--page-width) mx-auto pointer-events-auto"
-        >
+    <!-- 主内容：普通文档流 -->
+    <div id="main-content" class="ed-main relative z-30 w-full">
+        <div class="ed-container max-w-(--page-width) mx-auto px-4 md:px-8">
             <div
                 id="main-grid"
-                class={`w-full left-0 right-0 grid ${gridCols} grid-rows-[auto] mx-auto gap-4 px-0 md:px-4 ${!hasAnyComponents ? "mobile-no-sidebar" : ""} ${(hasLeftSidebar || hasRightSidebar) ? "mobile-both-sidebar" : ""} ${editorialClass === "editorial-home" ? "editorial-grid" : ""}`}
+                class:list={[
+                    "ed-grid w-full grid mx-auto gap-0 md:gap-4",
+                    gridCols,
+                    { "mobile-no-sidebar": !hasAnyComponents },
+                    { "mobile-both-sidebar": hasLeftSidebar || hasRightSidebar },
+                ]}
             >
-                <!-- Banner image credit -->
-                {
-                    hasBannerCredit && (
-                        <a
-                            href={siteConfig.wallpaper.banner?.credit?.url}
-                            id="banner-credit"
-                            target="_blank"
-                            rel="noopener"
-                            aria-label="Visit image source"
-                            class:list={[
-                                "group onload-animation-up transition-all absolute flex justify-center items-center rounded-full " +
-                                    "px-3 right-4 -top-13 bg-black/60 hover:bg-black/70 h-9",
-                                {
-                                    "hover:pr-9 active:bg-black/80":
-                                        hasBannerLink,
-                                },
-                            ]}
-                        >
-                            <Icon
-                                class="text-white/75 text-[1.25rem] mr-1"
-                                name="material-symbols:copyright-outline-rounded"
-                            />
-                            <div class="text-white/75 text-xs">
-                                {siteConfig.wallpaper.banner?.credit?.text}
-                            </div>
-                            <Icon
-                                class:list={[
-                                    "transition absolute text-[oklch(0.75_0.14_var(--hue))] right-4 text-[0.75rem] opacity-0",
-                                    {
-                                        "group-hover:opacity-100":
-                                            hasBannerLink,
-                                    },
-                                ]}
-                                name="fa6-solid:arrow-up-right-from-square"
-                            />
-                        </a>
-                    )
-                }
-
+                <!-- 侧边栏列：平板合并、桌面分列，逻辑沿用 widgetManager -->
                 <div class="contents lg:contents md:flex md:flex-col md:col-start-1 md:row-start-1 md:gap-4">
                     {
                         hasLeftSidebar ? (
                             <Sidebar
                                 id="left-sidebar"
                                 side="left"
-                                class={`${leftSidebarClass} ${transparentClass} onload-animation-up`}
+                                class={`${leftSidebarClass} onload-animation-up`}
                                 headings={headings}
                             />
                         ) : (
@@ -182,7 +117,7 @@ const {
                             <Sidebar
                                 id="right-sidebar"
                                 side="right"
-                                class={`${rightSidebarClass} ${transparentClass} onload-animation-up`}
+                                class={`${rightSidebarClass} onload-animation-up`}
                                 headings={headings}
                             />
                         ) : (
@@ -191,19 +126,11 @@ const {
                     }
                 </div>
 
-                <main
-                    id="swup-container"
-                    class={`${mainContentClass} transition-swup-fade`}
-                >
+                <main id="swup-container" class:list={[mainContentClass, "transition-swup-fade"]}>
                     <div id="grid-class-carrier" data-grid-class={gridCols} class="hidden"></div>
-                    <div
-                        id="content-wrapper"
-                        class="onload-animation-up transition-leaving"
-                    >
+                    <div id="content-wrapper" class="onload-animation-up transition-leaving">
                         <slot />
-                        <div
-                            class="footer col-span-2 onload-animation-up hidden lg:block transition-swup-fade"
-                        >
+                        <div class="footer col-span-2 onload-animation-up hidden lg:block transition-swup-fade">
                             <Footer />
                         </div>
                     </div>
@@ -213,7 +140,7 @@ const {
                     <Sidebar
                         id="middle-sidebar"
                         side="middle"
-                        class={`${transparentClass} onload-animation-up`}
+                        class="onload-animation-up"
                         headings={headings}
                     />
                 </div>
@@ -221,13 +148,10 @@ const {
                 <div class={mobileFooterClass}>
                     <Footer />
                 </div>
-
             </div>
         </div>
     </div>
 
     <TocButton />
-
     <BackToTopButton />
-
 </BaseLayout>

@@ -49,6 +49,7 @@ import "@styles/fancybox.css";
 import "@styles/liquid-glass.css";
 import "@styles/liquid-glass-system.css";
 import "@styles/navy-liquid-glass-palette.css";
+import "@styles/editorial.css";
 
 
 interface Props {
@@ -120,6 +121,8 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="preconnect" href="https://code.iconify.design">
+        <!-- LETTERPRESS: 衬线刊头字体 -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600;6..72,700&amp;family=Noto+Serif+SC:wght@600;700&amp;display=swap">
         <!-- Font Loader -->
         <FontLoader />
         <!-- title -->
@@ -166,8 +169,8 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <link rel="apple-touch-icon" href={url("/favicon/apple-touch-icon-light.png")} sizes="180x180" media="(prefers-color-scheme: light)" />
         <link rel="apple-touch-icon" href={url("/favicon/apple-touch-icon-dark.png")} sizes="180x180" media="(prefers-color-scheme: dark)" />
         <link rel="manifest" href={url("/favicon/site.webmanifest")} />
-        <meta name="theme-color" content="#173A6D" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#07152B" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#f7f4ec" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#16150f" media="(prefers-color-scheme: dark)" />
         <!-- Set the theme before the page is rendered to avoid a flash -->
         <script is:inline define:vars={{LIGHT_MODE, DARK_MODE, SYSTEM_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, NAVBAR_HEIGHT, configHue, defaultTheme: siteConfig.defaultTheme}}>
             // Load the theme from local storage
@@ -602,7 +605,6 @@ if (typeof window !== 'undefined') {
 
     const onReveal = async () => {
         const overlay = document.getElementById('loading-overlay');
-        const enableBanner = document.body.classList.contains('enable-banner');
 
         // 遮罩淡出（CSS transition）
         if (overlay) {
@@ -611,13 +613,7 @@ if (typeof window !== 'undefined') {
             overlay.style.display = 'none';
         }
 
-        if (enableBanner) {
-            // banner 高度从 0 恢复（CSS transition）
-            document.documentElement.classList.add('banner-restoring');
-            await whenTransitionEnds(document.getElementById('banner-wrapper'), 'height', TRANSITION_FALLBACK_MS);
-        }
-
-        // 摘除 is-loading：首屏可见，此时 banner 轮播才被允许启动（见 @utils/wallpaper）
+        // 摘除 is-loading：首屏可见
         document.documentElement.classList.remove('is-loading');
         // 触发各容器淡入动画
         document.documentElement.classList.add('show-initial-animation');
