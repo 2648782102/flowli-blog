@@ -1,17 +1,16 @@
-/* utils */
+// LETTERPRESS palette — 与 editorial.css 保持一致。
+// 说明：本文件为历史遗留的 Stylus 变量表（当前构建未被引用），保留以维护
+// 与旧工具链的兼容性；真实生效的令牌定义在 src/styles/editorial.css。
+
 white(a)
     rgba(255, 255, 255, a)
 
 black(a)
     rgba(0, 0, 0, a)
 
-rainbow-light = linear-gradient(to right, oklch(0.80 0.10 0), oklch(0.80 0.10 30), oklch(0.80 0.10 60), oklch(0.80 0.10 90), oklch(0.80 0.10 120), oklch(0.80 0.10 150), oklch(0.80 0.10 180), oklch(0.80 0.10 210), oklch(0.80 0.10 240), oklch(0.80 0.10 270), oklch(0.80 0.10 300), oklch(0.80 0.10 330), oklch(0.80 0.10 360))
-rainbow-dark = linear-gradient(to right, oklch(0.70 0.10 0), oklch(0.70 0.10 30), oklch(0.70 0.10 60), oklch(0.70 0.10 90), oklch(0.70 0.10 120), oklch(0.70 0.10 150), oklch(0.70 0.10 180), oklch(0.70 0.10 210), oklch(0.70 0.10 240), oklch(0.70 0.10 270), oklch(0.70 0.10 300), oklch(0.70 0.10 330), oklch(0.70 0.10 360))
-
 :root
-    --radius-large 1rem
+    --radius-large 2px
 
-/* An util to define variables that vary with light and dark mode */
 define(vars)
     :root
         for key, value in vars
@@ -22,78 +21,24 @@ define(vars)
                 {key}: value[1]
 
 define({
-    --primary: #173a6d #a9c7e8
-    --page-bg: #e8f1fa #07152b
-    --card-bg: rgba(255, 255, 255, 0.84) rgba(16, 45, 86, 0.82)
-    --card-bg-transparent: rgba(255, 255, 255, 0.72) rgba(13, 35, 66, 0.76)
-
-    --btn-content: #102d56 #dce9f7
-
-    --btn-regular-bg: rgba(220, 233, 247, 0.62) rgba(23, 58, 109, 0.54)
-    --btn-regular-bg-hover: rgba(169, 199, 232, 0.58) rgba(35, 83, 143, 0.62)
-    --btn-regular-bg-active: rgba(111, 168, 214, 0.48) rgba(35, 83, 143, 0.72)
-
-    --btn-plain-bg-hover: rgba(220, 233, 247, 0.64) rgba(23, 58, 109, 0.48)
-    --btn-plain-bg-active: rgba(238, 245, 252, 0.84) rgba(16, 45, 86, 0.66)
-
-    --btn-card-bg-hover: rgba(238, 245, 252, 0.90) rgba(23, 58, 109, 0.56)
-    --btn-card-bg-active: rgba(220, 233, 247, 0.78) rgba(35, 83, 143, 0.64)
-
-    --enter-btn-bg: var(--btn-regular-bg)
-    --enter-btn-bg-hover: var(--btn-regular-bg-hover)
-    --enter-btn-bg-active: var(--btn-regular-bg-active)
-
-    --deep-text: #0a1830
-
-    --title-active: #23538f
-
-    --line-divider: rgba(10, 24, 48, 0.10) rgba(220, 233, 247, 0.12)
-
-    --line-color: rgba(10, 24, 48, 0.14) rgba(220, 233, 247, 0.16)
-    --meta-divider: rgba(10, 24, 48, 0.24) rgba(220, 233, 247, 0.28)
-    --content-meta: rgba(10, 24, 48, 0.62) rgba(220, 233, 247, 0.66)
-
-    --inline-code-bg: var(--btn-regular-bg)
-    --inline-code-color: var(--btn-content)
-    --selection-bg: rgba(111, 168, 214, 0.36) rgba(35, 83, 143, 0.48)
-    --codeblock-selection: rgba(169, 199, 232, 0.40) rgba(35, 83, 143, 0.52)
-    --codeblock-bg: rgba(238, 245, 252, 0.94) rgba(7, 21, 43, 0.86)
-    --codeblock-topbar-bg: rgba(220, 233, 247, 0.82) rgba(10, 24, 48, 0.92)
-
-    --license-block-bg: black(0.03) var(--codeblock-bg)
-
-    --link-underline: rgba(111, 168, 214, 0.46) rgba(169, 199, 232, 0.54)
-    --link-hover: rgba(220, 233, 247, 0.86) rgba(35, 83, 143, 0.48)
-    --link-active: rgba(169, 199, 232, 0.64) rgba(23, 58, 109, 0.58)
-
-    --float-panel-bg: rgba(238, 245, 252, 0.92) rgba(13, 35, 66, 0.92)
-
-    --scrollbar-bg-light: black(0.4)
-    --scrollbar-bg-hover-light: black(0.5)
-    --scrollbar-bg-active-light: black(0.6)
-
-    --scrollbar-bg-dark: white(0.4)
-    --scrollbar-bg-hover-dark: white(0.5)
-    --scrollbar-bg-active-dark: white(0.6)
-
-    --scrollbar-bg: var(--scrollbar-bg-light) var(--scrollbar-bg-dark)
-    --scrollbar-bg-hover: var(--scrollbar-bg-hover-light) var(--scrollbar-bg-hover-dark)
-    --scrollbar-bg-active: var(--scrollbar-bg-active-light) var(--scrollbar-bg-active-dark)
-
-    --color-selection-bar: rainbow-light rainbow-dark
-
-    --display-light-icon: 1 0
-    --display-dark-icon: 0 1
-
-    --admonitions-color-tip: oklch(0.7 0.14 180) oklch(0.75 0.14 180)
-    --admonitions-color-note: oklch(0.7 0.14 250) oklch(0.75 0.14 250)
-    --admonitions-color-important: oklch(0.7 0.14 310) oklch(0.75 0.14 310)
-    --admonitions-color-warning: oklch(0.7 0.14 60) oklch(0.75 0.14 60)
-    --admonitions-color-caution: oklch(0.6 0.2 25) oklch(0.65 0.2 25)
-
-    --toc-badge-bg: rgba(220, 233, 247, 0.78) var(--btn-regular-bg)
-    --toc-btn-hover: rgba(220, 233, 247, 0.72) rgba(23, 58, 109, 0.46)
-    --toc-btn-active: rgba(169, 199, 232, 0.58) rgba(35, 83, 143, 0.54)
-    --toc-width: calc((100vw - var(--page-width)) / 2 - 1rem)
-    --toc-item-active: #173a6d #a9c7e8
+    --primary: #a4321f #e87e66
+    --page-bg: #f7f4ec #16150f
+    --card-bg: #fdfbf6 #1e1c16
+    --card-bg-transparent: #fdfbf6 #1e1c16
+    --btn-content: #1b1a16 #ece6d8
+    --btn-regular-bg: #efe9dc #27241c
+    --btn-regular-bg-hover: #f1e0d9 #3a2620
+    --deep-text: #1b1a16 #ece6d8
+    --title-active: #7c2314 #f19c87
+    --line-divider: #dcd5c6 #363229
+    --line-color: #dcd5c6 #363229
+    --meta-divider: #c2b9a5 #4c4638
+    --content-meta: #4b473e #bcb5a5
+    --inline-code-bg: #efe9dc #27241c
+    --inline-code-color: #7c2314 #f19c87
+    --selection-bg: #ecd3c8 #4a2c24
+    --codeblock-bg: #efe9dc #27241c
+    --float-panel-bg: #fdfbf6 #1e1c16
+    --toc-badge-bg: #efe9dc #27241c
+    --toc-item-active: #a4321f #e87e66
 })

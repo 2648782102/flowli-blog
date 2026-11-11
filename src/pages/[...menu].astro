@@ -49,15 +49,11 @@ const pageDescription = link.description || "";
         <div class="card-base z-10 px-9 py-6 relative w-full">
             <BackwardButton currentPath={Astro.url.pathname} />
             <!-- 标题 -->
-            <header class="mb-8">
-                <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">
-                    {pageTitle}
-                </h1>
-                {pageDescription && (
-                    <p class="text-neutral-600 dark:text-neutral-400">
-                        {pageDescription}
-                    </p>
-                )}
+            <header class="ed-page-head">
+                <p class="ed-kicker">栏目 &nbsp;/&nbsp; SECTION</p>
+                <h1 class="ed-page-title">{pageTitle}</h1>
+                {pageDescription && <p class="ed-page-lead">{pageDescription}</p>}
+                <div class="ed-page-rule"></div>
             </header>
             <!-- 链接网格 -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

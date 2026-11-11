@@ -1,7 +1,6 @@
 ---
 export const prerender = true;
 
-
 import type { GetStaticPaths } from "astro";
 
 import { PAGE_SIZE } from "@constants/pagination";
@@ -11,32 +10,54 @@ import PostPage from "@components/postPage.astro";
 import GridLayout from "@layouts/grid.astro";
 import { siteConfig } from "@/config";
 import { pathsEqual, url } from "@utils/url";
+
 export const getStaticPaths = (async ({ paginate }) => {
     const allBlogPosts = await getSortedPosts();
     return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
 }) satisfies GetStaticPaths;
-// https://github.com/withastro/astro/issues/6507#issuecomment-1489916992
-
 
 const { page } = Astro.props;
 
 const len = page.data.length;
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+const totalPosts = page.total ?? len;
+
+const now = new Date();
+const issueLabel = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月`;
 ---
 
 <GridLayout>
     {isHomePage && (
-        <section class="home-intro" aria-labelledby="home-intro-title">
-            <div class="home-intro-copy">
-                <p class="home-intro-kicker">flowli 的个人博客</p>
-                <h1 id="home-intro-title">把好奇心写下来。</h1>
-                <p class="home-intro-description">{siteConfig.subtitle}。这里是 flowli 的个人记录，关于前端、工具，也关于日常里值得留下的片刻。</p>
+        <header class="ed-masthead" aria-labelledby="ed-masthead-title">
+            <div class="ed-masthead-top">
+                <span class="ed-kicker">个人刊物 &nbsp;·&nbsp; PERSONAL JOURNAL</span>
+                <span class="ed-masthead-date">{issueLabel}</span>
             </div>
-            <a class="home-intro-link" href={url('/archive/')}>浏览全部文章 <span aria-hidden="true">↗</span></a>
-        </section>
+            <div class="ed-masthead-rule"></div>
+            <h1 id="ed-masthead-title" class="ed-masthead-title">把好奇心，<br />写下来。</h1>
+            <div class="ed-masthead-bottom">
+                <p class="ed-masthead-lead">
+                    {siteConfig.subtitle}。这里是 flowli 的个人记录，关于前端、工具，也关于日常里值得留下的片刻。不追热点，只把想明白的事情写清楚。
+                </p>
+                <a class="ed-masthead-link" href={url('/archive/')}>查阅全部目录 <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="ed-masthead-meta">
+                <span>编辑 <b>flowli</b></span>
+                <span>共 <b>{totalPosts}</b> 篇</span>
+                <span>记录技术 · 工具 · 日常</span>
+            </div>
+        </header>
     )}
-    <div class="home-feed">
+
+    <section class="ed-feed" aria-label="文章列表">
+        <div class="ed-feed-head">
+            <span class="ed-section-no">01</span>
+            <h2 class="ed-section-title">{isHomePage ? "最新文章" : "文章"}</h2>
+            <span class="ed-section-line"></span>
+            <span class="ed-section-count">第 {page.currentPage} / {page.lastPage} 页</span>
+        </div>
+
         <PostPage page={page}></PostPage>
-        <Pagination class="mx-auto onload-animation-up" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
-    </div>
+        <Pagination class="ed-pagination mx-auto onload-animation-up" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
+    </section>
 </GridLayout>
