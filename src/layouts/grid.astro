@@ -15,12 +15,12 @@ import BaseLayout from "./base.astro";
 import "@styles/grid.css";
 
 /**
- * LETTERPRESS layout.
+ * B 杂志网格布局。
  *
- * 视觉层完全重写：普通文档流 + 真正 sticky 的报头导航 + 居中的期刊版心，
- * 不再使用绝对定位悬浮 / banner 视差 / 玻璃卡片网格。
+ * 视觉层：一行顶栏 + 12 列命名主网格 + 首篇大稿跨列 + 次级文章两列 +
+ * 页脚三栏。所有页面共用这一套原语。
  * 功能层（Swup 容器、widgetManager、wallpaper、reveal）所需的所有 DOM id
- * 与 class hook 一律保留，避免任何页面失效。
+ * 与 class hook 一律保留；侧栏只做视觉隐藏，锚点仍在 DOM 中。
  */
 
 interface Props {
@@ -49,13 +49,11 @@ const shouldEnableTransparency =
 const {
     hasLeftSidebar,
     hasRightSidebar,
-    hasAnyComponents,
     gridCols,
     leftSidebarClass,
     rightSidebarClass,
     mainContentClass,
     middleSidebarClass,
-    mobileFooterClass,
 } = widgetManager.getGridLayout(headings, Astro.url.pathname);
 ---
 
@@ -68,14 +66,14 @@ const {
 >
     <slot slot="head" name="head" />
 
-    <!-- 报头导航：sticky 于整页顶部 -->
+    <!-- 一行顶栏：站点标识压成一行，无巨型字标 -->
     <div id="top-row" class="ed-topbar sticky top-0 z-50 w-full">
         <div id="navbar-wrapper" class="w-full">
             <Navbar />
         </div>
     </div>
 
-    <!-- 功能层保留：wallpaper.ts / reveal 依赖这些 DOM，视觉上由 editorial.css 隐藏 -->
+    <!-- 功能层保留：wallpaper.ts / reveal 依赖这些 DOM，视觉上隐藏 -->
     <FullscreenWallpaper config={siteConfig.wallpaper} class="hidden" />
     <Banner config={siteConfig.wallpaper} isHomePage={isHomePage} class="hidden" />
     {
@@ -86,20 +84,15 @@ const {
         )
     }
 
-    <!-- 主内容：普通文档流 -->
+    <!-- 12 列主网格 -->
     <div id="main-content" class="ed-main relative z-30 w-full">
         <div class="ed-container max-w-(--page-width) mx-auto px-4 md:px-8">
             <div
                 id="main-grid"
-                class:list={[
-                    "ed-grid w-full grid mx-auto gap-0 md:gap-4",
-                    gridCols,
-                    { "mobile-no-sidebar": !hasAnyComponents },
-                    { "mobile-both-sidebar": hasLeftSidebar || hasRightSidebar },
-                ]}
+                class:list={["ed-grid w-full grid mx-auto", gridCols]}
             >
-                <!-- 侧边栏列：平板合并、桌面分列，逻辑沿用 widgetManager -->
-                <div class="contents lg:contents md:flex md:flex-col md:col-start-1 md:row-start-1 md:gap-4">
+                <!-- 侧栏 rail：Swup 容器与 widgetManager 锚点保留，视觉隐藏 -->
+                <div class="ed-rail contents lg:contents md:flex md:flex-col md:col-start-1 md:row-start-1 md:gap-4">
                     {
                         hasLeftSidebar ? (
                             <Sidebar
@@ -126,17 +119,14 @@ const {
                     }
                 </div>
 
-                <main id="swup-container" class:list={[mainContentClass, "transition-swup-fade"]}>
+                <main id="swup-container" class:list={[mainContentClass, "ed-main-col transition-swup-fade"]}>
                     <div id="grid-class-carrier" data-grid-class={gridCols} class="hidden"></div>
-                    <div id="content-wrapper" class="onload-animation-up transition-leaving">
+                    <div id="content-wrapper" class="ed-content onload-animation-up transition-leaving">
                         <slot />
-                        <div class="footer col-span-2 onload-animation-up hidden lg:block transition-swup-fade">
-                            <Footer />
-                        </div>
                     </div>
                 </main>
 
-                <div class={middleSidebarClass}>
+                <div class:list={["ed-mid-rail", middleSidebarClass]}>
                     <Sidebar
                         id="middle-sidebar"
                         side="middle"
@@ -145,7 +135,8 @@ const {
                     />
                 </div>
 
-                <div class={mobileFooterClass}>
+                <!-- 全站统一页脚：分类 / 标签 / 归档三栏 -->
+                <div class="ed-site-footer transition-swup-fade">
                     <Footer />
                 </div>
             </div>
@@ -155,3 +146,29 @@ const {
     <TocButton />
     <BackToTopButton />
 </BaseLayout>
+
+<script>
+// 分类切换：CSS :has() 负责真重排，这里只用 View Transitions API 点睛；
+// 不支持时直接 DOM 更新。事件委托挂在 document 上，Swup 换页后依然有效。
+document.addEventListener('click', (event) => {
+    const target = event.target;
+    const chip = target instanceof Element ? target.closest('.ed-filter-chip') : null;
+    if (!chip) return;
+    const id = chip.getAttribute('for');
+    const input = id
+        ? (document.getElementById(id) as HTMLInputElement | null)
+        : null;
+    if (!input || input.checked) return;
+    event.preventDefault();
+    const apply = () => { input.checked = true; };
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const doc = document as Document & {
+        startViewTransition?: (callback: () => void) => unknown;
+    };
+    if (typeof doc.startViewTransition === 'function' && !reduce) {
+        doc.startViewTransition(apply);
+    } else {
+        apply();
+    }
+});
+</script>

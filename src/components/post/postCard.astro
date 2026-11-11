@@ -4,6 +4,7 @@ import type { CollectionEntry } from "astro:content";
 
 import { getPostUrl } from "@utils/url";
 import { formatDateToYYYYMMDD } from "@utils/date";
+import { getCategoryPathLabel } from "@utils/category";
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
 
@@ -11,10 +12,14 @@ interface Props {
     class?: string;
     entry: CollectionEntry<"posts">;
     style?: string;
+    index?: number;
+    featured?: boolean;
 }
 
 const className = Astro.props.class;
 const { entry, style } = Astro.props;
+const index = Astro.props.index ?? 0;
+const featured = Astro.props.featured ?? false;
 
 const postUrl = getPostUrl(entry);
 const { title, published, description, tags, category, pinned } = entry.data;
@@ -22,29 +27,33 @@ const { title, published, description, tags, category, pinned } = entry.data;
 const { remarkPluginFrontmatter } = await render(entry);
 const dateStr = published ? formatDateToYYYYMMDD(published) : "";
 const topTags = (tags || []).slice(0, 3);
+const catLabel = getCategoryPathLabel(category) ?? "";
 ---
 
-<article class:list={["ed-post", className]} style={style}>
-    <div class="ed-post-body">
-        <div class="ed-post-meta">
-            <time>{dateStr}</time>
-            {category && <><span class="ed-dot">·</span><span class="ed-post-cat">{category}</span></>}
-            {pinned && <span class="ed-post-pin">置顶</span>}
-        </div>
+<article
+    class:list={["ed-post", className]}
+    data-cat={catLabel}
+    data-featured={String(featured)}
+    style={style}
+>
+    <span class="ed-post-no" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
 
-        <h3 class="ed-post-title">
-            <a href={postUrl}>{title}</a>
-        </h3>
+    <div class="ed-post-meta">
+        <time>{dateStr}</time>
+        {catLabel && <><span class="ed-dot">·</span><span class="ed-post-cat">{catLabel}</span></>}
+        {pinned && <span class="ed-post-pin">置顶</span>}
+    </div>
 
-        <p class="ed-post-excerpt">{description || remarkPluginFrontmatter.excerpt}</p>
+    <h2 class="ed-post-title"><a href={postUrl}>{title}</a></h2>
 
-        <div class="ed-post-foot">
-            <span>{remarkPluginFrontmatter.words} {i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}</span>
-            <span>{remarkPluginFrontmatter.minutes} {i18n(remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}</span>
-            {topTags.length > 0 && (
-                <span class="ed-post-tags">{topTags.map((t) => <span>{t}</span>)}</span>
-            )}
-            <span class="ed-post-arrow" aria-hidden="true">阅读全文 ↗</span>
-        </div>
+    <p class="ed-post-excerpt">{description || remarkPluginFrontmatter.excerpt}</p>
+
+    <div class="ed-post-foot">
+        <span>{remarkPluginFrontmatter.words} {i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}</span>
+        <span>{remarkPluginFrontmatter.minutes} {i18n(remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}</span>
+        {topTags.length > 0 && (
+            <span class="ed-post-tags">{topTags.map((t) => <span>{t}</span>)}</span>
+        )}
+        <span class="ed-post-arrow" aria-hidden="true">阅读全文 ↗</span>
     </div>
 </article>
