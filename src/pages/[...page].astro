@@ -4,7 +4,7 @@ export const prerender = true;
 import type { GetStaticPaths } from "astro";
 
 import { PAGE_SIZE } from "@constants/pagination";
-import { getCategoryList, getSortedPosts } from "@utils/post";
+import { getSortedPosts } from "@utils/post";
 import Pagination from "@components/pagination.astro";
 import PostPage from "@components/postPage.astro";
 import GridLayout from "@layouts/grid.astro";
@@ -20,54 +20,25 @@ const { page } = Astro.props;
 const len = page.data.length;
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 const totalPosts = page.total ?? len;
-
-const now = new Date();
-const issueLabel = `${now.getFullYear()} / ${String(now.getMonth() + 1).padStart(2, "0")}`;
-
-const categories = await getCategoryList();
-
-// :has() 驱动的真重排筛选：每个分类一条规则，未匹配的卡片直接隐藏。
-// View Transitions 只包住 radio 状态更新（见 grid.astro 的事件委托）。
-const filterRules = categories
-    .map((c, i) =>
-        `.ed-feed:has(#ed-f-${i + 1}:checked) .ed-post:not([data-cat=${JSON.stringify(c.name)}]){display:none !important;}`,
-    )
-    .join("\n");
 ---
 
 <GridLayout>
-    {isHomePage && <Fragment set:html={`<style>${filterRules}</style>`} />}
-
-    <section class="ed-feed" data-count={len} aria-label="文章列表">
-        <div class="ed-feed-head">
-            <span class="ed-section-no">01</span>
-            <h2 class="ed-section-title">{isHomePage ? "最新文章" : "文章"}</h2>
-            <span class="ed-section-line"></span>
-            <span class="ed-section-count">
-                {issueLabel} &nbsp;·&nbsp; 共 {totalPosts} 篇 &nbsp;·&nbsp; 第 {page.currentPage} / {page.lastPage} 页
-            </span>
-        </div>
-
-        {isHomePage && (
-            <div class="ed-filter" role="group" aria-label="按分类筛选文章">
-                <span class="ed-filter-label">筛选 / FILTER</span>
-                <input type="radio" name="ed-filter" id="ed-f-all" class="ed-filter-input" checked />
-                <label for="ed-f-all" class="ed-filter-chip">全部 <span>{totalPosts}</span></label>
-                {categories.map((c, i) => (
-                    <>
-                        <input type="radio" name="ed-filter" id={`ed-f-${i + 1}`} class="ed-filter-input" />
-                        <label for={`ed-f-${i + 1}`} class="ed-filter-chip">{c.name} <span>{c.count}</span></label>
-                    </>
-                ))}
-            </div>
-        )}
+    <section class="ed-feed" aria-label="文章列表">
+        <header class="ed-page-head">
+            <p class="ed-kicker">博客 &nbsp;/&nbsp; JOURNAL</p>
+            <h1 class="ed-page-title">{isHomePage ? "最新文章" : `文章 · 第 ${page.currentPage} 页`}</h1>
+            <p class="ed-page-lead">共 {totalPosts} 篇，按时间倒序排列。</p>
+            <div class="ed-page-rule"></div>
+        </header>
 
         <PostPage page={page}></PostPage>
 
-        <Pagination
-            class="ed-pagination mx-auto onload-animation-up"
-            page={page}
-            style={`animation-delay: ${(len) * 50}ms`}
-        ></Pagination>
+        {page.lastPage > 1 && (
+            <Pagination
+                class="ed-pagination onload-animation-up"
+                page={page}
+                style={`animation-delay: ${len * 50}ms`}
+            ></Pagination>
+        )}
     </section>
 </GridLayout>

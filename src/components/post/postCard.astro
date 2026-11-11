@@ -13,13 +13,10 @@ interface Props {
     entry: CollectionEntry<"posts">;
     style?: string;
     index?: number;
-    featured?: boolean;
 }
 
 const className = Astro.props.class;
 const { entry, style } = Astro.props;
-const index = Astro.props.index ?? 0;
-const featured = Astro.props.featured ?? false;
 
 const postUrl = getPostUrl(entry);
 const { title, published, description, tags, category, pinned } = entry.data;
@@ -30,16 +27,9 @@ const topTags = (tags || []).slice(0, 3);
 const catLabel = getCategoryPathLabel(category) ?? "";
 ---
 
-<article
-    class:list={["ed-post", className]}
-    data-cat={catLabel}
-    data-featured={String(featured)}
-    style={style}
->
-    <span class="ed-post-no" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-
+<article class:list={["ed-post", className]} style={style}>
     <div class="ed-post-meta">
-        <time>{dateStr}</time>
+        <time datetime={dateStr}>{dateStr}</time>
         {catLabel && <><span class="ed-dot">·</span><span class="ed-post-cat">{catLabel}</span></>}
         {pinned && <span class="ed-post-pin">置顶</span>}
     </div>
@@ -49,8 +39,8 @@ const catLabel = getCategoryPathLabel(category) ?? "";
     <p class="ed-post-excerpt">{description || remarkPluginFrontmatter.excerpt}</p>
 
     <div class="ed-post-foot">
-        <span>{remarkPluginFrontmatter.words} {i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}</span>
         <span>{remarkPluginFrontmatter.minutes} {i18n(remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}</span>
+        <span>{remarkPluginFrontmatter.words} {i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}</span>
         {topTags.length > 0 && (
             <span class="ed-post-tags">{topTags.map((t) => <span>{t}</span>)}</span>
         )}

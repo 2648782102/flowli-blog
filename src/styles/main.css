@@ -218,15 +218,6 @@
     }
 }
 
-@utility dropdown-content {
-    /* 导航栏相关浮动面板的过渡禁用 */
-    .is-theme-transitioning & {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    @apply bg-(--float-panel-bg) rounded-(--radius-large) shadow-xl dark:shadow-none border border-black/5 dark:border-white/10 py-2 min-w-48;
-}
-
 @utility float-panel {
     .is-theme-transitioning & {
     transition: none !important;
@@ -246,10 +237,6 @@
     .wallpaper-transparent & {
     @apply bg-(--card-bg-transparent);
     }
-}
-
-@utility card-base-transparent {
-    @apply rounded-(--radius-large) overflow-hidden bg-(--card-bg-transparent) backdrop-blur-xs transition-colors duration-150;
 }
 
 @utility btn-card {
@@ -329,10 +316,6 @@
     background-color: var(--card-bg-transparent) !important;
     backdrop-filter: blur(8px) !important;
     }
-}
-
-@utility card-shadow {
-    @apply drop-shadow-sm;
 }
 
 @utility expand-animation {
@@ -429,19 +412,6 @@
     }
 }
 
-@utility link-underline {
-    @apply transition-colors duration-150 underline decoration-2 decoration-dashed decoration-(--link-underline)
-        hover:decoration-(--link-hover) active:decoration-(--link-active) underline-offset-4;
-}
-
-@utility hide-scrollbar {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar {
-    display: none;
-    }
-}
-
 @utility text-90 {
     @apply text-black/90 dark:text-white/90;
 }
@@ -458,131 +428,9 @@
     @apply text-black/30 dark:text-white/30;
 }
 
-@utility text-25 {
-    @apply text-black/25 dark:text-white/25;
-}
-
-@utility dropdown-container {
-    /* 下拉菜单样式 */
-    @apply relative;
-
-    &:hover .dropdown-menu {
-    @apply opacity-100 visible pointer-events-auto translate-y-0;
-    }
-
-    &:focus-within .dropdown-menu {
-    @apply opacity-100 visible pointer-events-auto translate-y-0;
-    }
-
-    &:hover .dropdown-arrow {
-    @apply rotate-180;
-    }
-
-    &:focus-within .dropdown-arrow {
-    @apply rotate-180;
-    }
-
-    /* 无障碍支持 */
-    &:focus-within .dropdown-menu {
-    @apply opacity-100 visible pointer-events-auto translate-y-0;
-    }
-}
-
-@utility dropdown-menu {
-    @apply absolute top-full left-0 pt-2 opacity-0 invisible pointer-events-none transition-all duration-200 ease-out translate-y-[-8px] z-50;
-
-    .dropdown-container:hover & {
-    @apply opacity-100 visible pointer-events-auto translate-y-0;
-    }
-
-    .dropdown-container:focus-within & {
-    @apply opacity-100 visible pointer-events-auto translate-y-0;
-    }
-
-    /* 无障碍支持 */
-    .dropdown-container:focus-within & {
-    @apply opacity-100 visible pointer-events-auto translate-y-0;
-    }
-}
-
-@utility dropdown-arrow {
-    .dropdown-container:hover & {
-    @apply rotate-180;
-    }
-
-    .dropdown-container:focus-within & {
-    @apply rotate-180;
-    }
-}
-
-@utility dropdown-item {
-    @apply flex items-center justify-between px-4 py-2.5 text-black/75 dark:text-white/75 hover:text-(--primary) hover:bg-(--btn-plain-bg-hover) transition-colors duration-150 font-medium;
-
-    &:first-child {
-    @apply rounded-t-[calc(var(--radius-large)-0.5rem)];
-    }
-
-    &:last-child {
-    @apply rounded-b-[calc(var(--radius-large)-0.5rem)];
-    }
-
-    &:focus {
-    @apply outline-hidden;
-    }
-}
-
-@utility mobile-submenu {
-    /* 移动端菜单样式 */
-    @apply max-h-0 overflow-hidden transition-all duration-300 ease-in-out;
-
-    .mobile-dropdown[data-expanded='true'] & {
-    @apply max-h-96;
-    }
-}
-
-@utility mobile-dropdown {
-    &[data-expanded='true'] .mobile-submenu {
-    @apply max-h-96;
-    }
-
-    &[data-expanded='true'] .mobile-dropdown-arrow {
-    @apply rotate-180;
-    }
-
-    & button:focus {
-    @apply outline-hidden;
-    }
-}
-
-@utility mobile-dropdown-arrow {
-    .mobile-dropdown[data-expanded='true'] & {
-    @apply rotate-180;
-    }
-}
-
 @utility meta-icon {
     @apply w-8 h-8 transition-colors duration-150 rounded-md flex items-center justify-center bg-(--btn-regular-bg)
         text-(--btn-content) mr-2;
-}
-
-@utility with-divider {
-    @apply before:content-['/'] before:ml-1.5 before:mr-1.5 before:text-(--meta-divider) before:text-sm
-        before:font-medium first-of-type:before:hidden before:transition-colors before:duration-150;
-}
-
-@utility btn-regular-dark {
-    @apply flex items-center justify-center
-        bg-[oklch(0.45_0.01_var(--hue))] hover:bg-[oklch(0.50_0.01_var(--hue))] active:bg-[oklch(0.55_0.01_var(--hue))]
-        dark:bg-[oklch(0.30_0.02_var(--hue))] dark:hover:bg-[oklch(0.35_0.03_var(--hue))] dark:active:bg-[oklch(0.40_0.03_var(--hue))];
-    &.success {
-    @apply bg-[oklch(0.75_0.14_var(--hue))] dark:bg-[oklch(0.75_0.14_var(--hue))];
-    }
-}
-
-@utility success {
-    &.btn-regular-dark {
-    @apply bg-[oklch(0.75_0.14_var(--hue))] dark:bg-[oklch(0.75_0.14_var(--hue))];
-    }
 }
 
 @layer utilities {
@@ -599,37 +447,6 @@
     display: none; /* Chrome, Safari and Opera */
     }
 
-    /* 页面顶部渐变高光效果 */
-    .top-gradient-highlight {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 180px;
-    background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.5) 0%,
-        rgba(255, 255, 255, 0.3) 30%,
-        rgba(255, 255, 255, 0.15) 60%,
-        rgba(255, 255, 255, 0.05) 80%,
-        transparent 100%
-    );
-    pointer-events: none;
-    z-index: 20;
-    transition: all var(--transition-duration-medium) var(--transition-ease-default);
-    }
-
-    /* 暗色主题下的渐变高光效果 */
-    :root.dark .top-gradient-highlight {
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.5) 0%,
-        rgba(0, 0, 0, 0.3) 30%,
-        rgba(0, 0, 0, 0.15) 60%,
-        rgba(0, 0, 0, 0.05) 80%,
-        transparent 100%
-    );
-    }
 }
 
 @layer components {

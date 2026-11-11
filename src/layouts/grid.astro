@@ -3,11 +3,9 @@ import type { MarkdownHeading } from "astro";
 
 import { siteConfig } from "@/config";
 import { pathsEqual, url } from "@utils/url";
-import { widgetManager } from "@utils/widget";
 import Navbar from "@components/navbar.astro";
 import FullscreenWallpaper from "@components/fullscreenWallpaper.astro";
 import Banner from "@components/banner.astro";
-import Sidebar from "@components/sidebar.astro";
 import Footer from "@components/footer.astro";
 import TocButton from "@components/tocButton.astro";
 import BackToTopButton from "@components/back2TopButton.astro";
@@ -15,12 +13,15 @@ import BaseLayout from "./base.astro";
 import "@styles/grid.css";
 
 /**
- * B 杂志网格布局。
+ * 博客本体布局。
  *
- * 视觉层：一行顶栏 + 12 列命名主网格 + 首篇大稿跨列 + 次级文章两列 +
- * 页脚三栏。所有页面共用这一套原语。
- * 功能层（Swup 容器、widgetManager、wallpaper、reveal）所需的所有 DOM id
- * 与 class hook 一律保留；侧栏只做视觉隐藏，锚点仍在 DOM 中。
+ * 一行站点标识 + 导航，下面是单栏阅读流（版心约 720–820px）：
+ * 首页是倒序文章列表，内容页共用同一套页头与容器语言，页脚收敛成一行。
+ *
+ * 功能层 DOM 锚点全部保留：Swup 的四个容器（#swup-container +
+ * #left/right/middle-sidebar）、wallpaper.ts / reveal 依赖的
+ * #banner-wrapper / #banner / 全屏壁纸、悬浮控件等。三个侧栏容器
+ * 只作为 Swup 替换锚点存在（hidden），不再渲染任何 widget 组件。
  */
 
 interface Props {
@@ -38,23 +39,12 @@ const {
     lang,
     setOGTypeArticle,
     postSlug,
-    headings = [],
 } = Astro.props;
 
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 const shouldEnableTransparency =
     siteConfig.wallpaper.mode === "banner" ||
     siteConfig.wallpaper.mode === "fullscreen";
-
-const {
-    hasLeftSidebar,
-    hasRightSidebar,
-    gridCols,
-    leftSidebarClass,
-    rightSidebarClass,
-    mainContentClass,
-    middleSidebarClass,
-} = widgetManager.getGridLayout(headings, Astro.url.pathname);
 ---
 
 <BaseLayout
@@ -66,7 +56,7 @@ const {
 >
     <slot slot="head" name="head" />
 
-    <!-- 一行顶栏：站点标识压成一行，无巨型字标 -->
+    <!-- 一行顶栏：站点标识 + 导航 -->
     <div id="top-row" class="ed-topbar sticky top-0 z-50 w-full">
         <div id="navbar-wrapper" class="w-full">
             <Navbar />
@@ -84,58 +74,23 @@ const {
         )
     }
 
-    <!-- 12 列主网格 -->
+    <!-- 单栏阅读流 -->
     <div id="main-content" class="ed-main relative z-30 w-full">
-        <div class="ed-container max-w-(--page-width) mx-auto px-4 md:px-8">
-            <div
-                id="main-grid"
-                class:list={["ed-grid w-full grid mx-auto", gridCols]}
-            >
-                <!-- 侧栏 rail：Swup 容器与 widgetManager 锚点保留，视觉隐藏 -->
-                <div class="ed-rail contents lg:contents md:flex md:flex-col md:col-start-1 md:row-start-1 md:gap-4">
-                    {
-                        hasLeftSidebar ? (
-                            <Sidebar
-                                id="left-sidebar"
-                                side="left"
-                                class={`${leftSidebarClass} onload-animation-up`}
-                                headings={headings}
-                            />
-                        ) : (
-                            <div id="left-sidebar" class="hidden"></div>
-                        )
-                    }
-                    {
-                        hasRightSidebar ? (
-                            <Sidebar
-                                id="right-sidebar"
-                                side="right"
-                                class={`${rightSidebarClass} onload-animation-up`}
-                                headings={headings}
-                            />
-                        ) : (
-                            <div id="right-sidebar" class="hidden"></div>
-                        )
-                    }
-                </div>
+        <div class="ed-container mx-auto px-4 md:px-8">
+            <div id="main-grid" class="w-full mx-auto">
+                <!-- Swup 侧栏容器锚点：保留但不渲染 widget，避免破坏页面切换 -->
+                <div id="left-sidebar" class="hidden"></div>
+                <div id="right-sidebar" class="hidden"></div>
+                <div id="middle-sidebar" class="hidden"></div>
 
-                <main id="swup-container" class:list={[mainContentClass, "ed-main-col transition-swup-fade"]}>
-                    <div id="grid-class-carrier" data-grid-class={gridCols} class="hidden"></div>
+                <main id="swup-container" class="ed-main-col transition-swup-fade">
+                    <div id="grid-class-carrier" class="hidden"></div>
                     <div id="content-wrapper" class="ed-content onload-animation-up transition-leaving">
                         <slot />
                     </div>
                 </main>
 
-                <div class:list={["ed-mid-rail", middleSidebarClass]}>
-                    <Sidebar
-                        id="middle-sidebar"
-                        side="middle"
-                        class="onload-animation-up"
-                        headings={headings}
-                    />
-                </div>
-
-                <!-- 全站统一页脚：分类 / 标签 / 归档三栏 -->
+                <!-- 全站统一的一行页脚 -->
                 <div class="ed-site-footer transition-swup-fade">
                     <Footer />
                 </div>
@@ -146,29 +101,3 @@ const {
     <TocButton />
     <BackToTopButton />
 </BaseLayout>
-
-<script>
-// 分类切换：CSS :has() 负责真重排，这里只用 View Transitions API 点睛；
-// 不支持时直接 DOM 更新。事件委托挂在 document 上，Swup 换页后依然有效。
-document.addEventListener('click', (event) => {
-    const target = event.target;
-    const chip = target instanceof Element ? target.closest('.ed-filter-chip') : null;
-    if (!chip) return;
-    const id = chip.getAttribute('for');
-    const input = id
-        ? (document.getElementById(id) as HTMLInputElement | null)
-        : null;
-    if (!input || input.checked) return;
-    event.preventDefault();
-    const apply = () => { input.checked = true; };
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const doc = document as Document & {
-        startViewTransition?: (callback: () => void) => unknown;
-    };
-    if (typeof doc.startViewTransition === 'function' && !reduce) {
-        doc.startViewTransition(apply);
-    } else {
-        apply();
-    }
-});
-</script>

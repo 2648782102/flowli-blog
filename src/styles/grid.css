@@ -1,27 +1,17 @@
 /* =====================================================================
-   grid.css — 网格安全边界
+   grid.css — 单栏阅读流安全边界
    ---------------------------------------------------------------------
-   主网格（12 列命名线 / grid-template-areas / subgrid）与全部布局规则
-   定义在 editorial.css；本文件只负责两件事：
-   1. 任何网格子项都不允许撑破轨道（1080 附近不横向溢出）；
-   2. subgrid 不可用时的退化，避免两列文章的高度对齐失效。
+   布局规则全部定义在 editorial.css；本文件只负责：任何阅读流子项
+   都不允许撑破版心（1080 / 360 等窄档不出现横向溢出）。
    ===================================================================== */
 
 #main-grid,
 #main-grid > *,
 .ed-feed,
 .ed-feed > *,
-.ed-post-grid,
+.ed-post-list,
 .ed-post,
-.ed-footer-cols,
-.ed-footer-col {
+.ed-footer,
+.ed-footer-line {
     min-width: 0;
-}
-
-/* 不支持 subgrid 的引擎：卡片内部用四条自动行，仍保持编号 / 标题 /
-   摘要 / 脚注的固定顺序，只是不再跨列对齐高度。 */
-@supports not (grid-template-rows: subgrid) {
-    .ed-post {
-        grid-template-rows: auto auto auto auto;
-    }
 }
