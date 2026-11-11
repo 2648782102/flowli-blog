@@ -26,6 +26,9 @@ const { Content, headings } = await render(aboutPost);
     <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32 mb-4">
         <div class="card-base z-10 px-9 py-6 relative w-full ">
             <BackwardButton currentPath={Astro.url.pathname} />
+            <header class="ed-page-head">
+                <p class="ed-kicker">关于 &nbsp;/&nbsp; ABOUT</p>
+            </header>
             <Markdown class="mt-2">
                 <Content />
             </Markdown>

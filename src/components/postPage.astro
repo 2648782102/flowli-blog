@@ -9,10 +9,12 @@ let delay = 0;
 const interval = 30;
 ---
 
-<div class="ed-post-list">
-    {page.data.map((entry: CollectionEntry<"posts">) => (
+<div class="ed-post-grid">
+    {page.data.map((entry: CollectionEntry<"posts">, i: number) => (
         <PostCard
             entry={entry}
+            index={i}
+            featured={i === 0}
             class="onload-animation-up"
             style={`animation-delay: ${delay++ * interval}ms;`}
         ></PostCard>

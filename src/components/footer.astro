@@ -1,15 +1,62 @@
 ---
 import { profileConfig } from "@/config";
-import { url } from "@utils/url";
+import { getCategoryList, getSortedPostsList, getTagList } from "@utils/post";
+import { getTagUrl, url } from "@utils/url";
 
 const currentYear = new Date().getFullYear();
+const categories = await getCategoryList();
+const tags = await getTagList();
+const posts = await getSortedPostsList();
+
+const months = [
+    ...new Set(
+        posts.map((p) => {
+            const d = new Date(p.data.published);
+            return `${d.getFullYear()} / ${String(d.getMonth() + 1).padStart(2, "0")}`;
+        }),
+    ),
+].slice(0, 6);
 ---
 
 <footer class="ed-footer">
     <div class="ed-footer-rule"></div>
-    <div class="ed-footer-grid">
+
+    <div class="ed-footer-cols">
+        <section class="ed-footer-col">
+            <h3>分类 &nbsp;/&nbsp; CATEGORIES</h3>
+            <ul>
+                {categories.length === 0 && <li><span>暂无分类</span></li>}
+                {categories.slice(0, 8).map((c) => (
+                    <li><a href={c.url}>{c.name}</a><span>{c.count}</span></li>
+                ))}
+            </ul>
+        </section>
+
+        <section class="ed-footer-col">
+            <h3>标签 &nbsp;/&nbsp; TAGS</h3>
+            <ul>
+                {tags.length === 0 && <li><span>暂无标签</span></li>}
+                {tags.slice(0, 8).map((t) => (
+                    <li><a href={getTagUrl(t.name)}>{t.name}</a><span>{t.count}</span></li>
+                ))}
+            </ul>
+        </section>
+
+        <section class="ed-footer-col">
+            <h3>归档 &nbsp;/&nbsp; ARCHIVE</h3>
+            <ul>
+                {months.map((m) => (
+                    <li><a href={url('/archive/')}>{m}</a></li>
+                ))}
+                <li><a href={url('/archive/')}>全部目录 ↗</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <div class="ed-footer-bottom">
         <span class="ed-footer-sig">flowli · 个人博客</span>
-        <span>&copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved.</span>
+        <span>&copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}</span>
+        <span>共 {posts.length} 篇</span>
         <nav aria-label="订阅与索引">
             <a href={url('rss/')} onclick={`event.preventDefault(); navigateToPage('${url('rss/')}')`}>RSS</a>
             &nbsp;/&nbsp;

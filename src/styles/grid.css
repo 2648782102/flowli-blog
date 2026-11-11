@@ -1,32 +1,27 @@
-/* LETTERPRESS layout helpers.
-   全局设计系统在 editorial.css；本文件只处理网格的响应式安全边界。 */
+/* =====================================================================
+   grid.css — 网格安全边界
+   ---------------------------------------------------------------------
+   主网格（12 列命名线 / grid-template-areas / subgrid）与全部布局规则
+   定义在 editorial.css；本文件只负责两件事：
+   1. 任何网格子项都不允许撑破轨道（1080 附近不横向溢出）；
+   2. subgrid 不可用时的退化，避免两列文章的高度对齐失效。
+   ===================================================================== */
 
-/* 主内容列永远不撑破网格（1080 附近不挤压、不横向溢出） */
-#main-grid > main,
-#main-grid > div,
-#main-grid {
+#main-grid,
+#main-grid > *,
+.ed-feed,
+.ed-feed > *,
+.ed-post-grid,
+.ed-post,
+.ed-footer-cols,
+.ed-footer-col {
     min-width: 0;
 }
 
-/* 移动端：所有 widget 与主内容单列堆叠，左右对称留白 */
-@media (max-width: 767px) {
-    .mobile-no-sidebar,
-    .mobile-both-sidebar {
-        display: block !important;
-        width: 100% !important;
-        grid-template-columns: 1fr !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-    .mobile-no-sidebar main,
-    .mobile-both-sidebar main,
-    .mobile-both-sidebar #content-wrapper {
-        grid-column: 1 / -1 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 auto !important;
-    }
-    .mobile-both-sidebar .footer {
-        grid-column: 1 / -1 !important;
+/* 不支持 subgrid 的引擎：卡片内部用四条自动行，仍保持编号 / 标题 /
+   摘要 / 脚注的固定顺序，只是不再跨列对齐高度。 */
+@supports not (grid-template-rows: subgrid) {
+    .ed-post {
+        grid-template-rows: auto auto auto auto;
     }
 }

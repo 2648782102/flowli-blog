@@ -4,11 +4,10 @@ export const prerender = true;
 import type { GetStaticPaths } from "astro";
 
 import { PAGE_SIZE } from "@constants/pagination";
-import { getSortedPosts } from "@utils/post";
+import { getCategoryList, getSortedPosts } from "@utils/post";
 import Pagination from "@components/pagination.astro";
 import PostPage from "@components/postPage.astro";
 import GridLayout from "@layouts/grid.astro";
-import { siteConfig } from "@/config";
 import { pathsEqual, url } from "@utils/url";
 
 export const getStaticPaths = (async ({ paginate }) => {
@@ -23,41 +22,52 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 const totalPosts = page.total ?? len;
 
 const now = new Date();
-const issueLabel = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月`;
+const issueLabel = `${now.getFullYear()} / ${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+const categories = await getCategoryList();
+
+// :has() 驱动的真重排筛选：每个分类一条规则，未匹配的卡片直接隐藏。
+// View Transitions 只包住 radio 状态更新（见 grid.astro 的事件委托）。
+const filterRules = categories
+    .map((c, i) =>
+        `.ed-feed:has(#ed-f-${i + 1}:checked) .ed-post:not([data-cat=${JSON.stringify(c.name)}]){display:none !important;}`,
+    )
+    .join("\n");
 ---
 
 <GridLayout>
-    {isHomePage && (
-        <header class="ed-masthead" aria-labelledby="ed-masthead-title">
-            <div class="ed-masthead-top">
-                <span class="ed-kicker">个人刊物 &nbsp;·&nbsp; PERSONAL JOURNAL</span>
-                <span class="ed-masthead-date">{issueLabel}</span>
-            </div>
-            <div class="ed-masthead-rule"></div>
-            <h1 id="ed-masthead-title" class="ed-masthead-title">把好奇心，<br />写下来。</h1>
-            <div class="ed-masthead-bottom">
-                <p class="ed-masthead-lead">
-                    {siteConfig.subtitle}。这里是 flowli 的个人记录，关于前端、工具，也关于日常里值得留下的片刻。不追热点，只把想明白的事情写清楚。
-                </p>
-                <a class="ed-masthead-link" href={url('/archive/')}>查阅全部目录 <span aria-hidden="true">↗</span></a>
-            </div>
-            <div class="ed-masthead-meta">
-                <span>编辑 <b>flowli</b></span>
-                <span>共 <b>{totalPosts}</b> 篇</span>
-                <span>记录技术 · 工具 · 日常</span>
-            </div>
-        </header>
-    )}
+    {isHomePage && <Fragment set:html={`<style>${filterRules}</style>`} />}
 
-    <section class="ed-feed" aria-label="文章列表">
+    <section class="ed-feed" data-count={len} aria-label="文章列表">
         <div class="ed-feed-head">
             <span class="ed-section-no">01</span>
             <h2 class="ed-section-title">{isHomePage ? "最新文章" : "文章"}</h2>
             <span class="ed-section-line"></span>
-            <span class="ed-section-count">第 {page.currentPage} / {page.lastPage} 页</span>
+            <span class="ed-section-count">
+                {issueLabel} &nbsp;·&nbsp; 共 {totalPosts} 篇 &nbsp;·&nbsp; 第 {page.currentPage} / {page.lastPage} 页
+            </span>
         </div>
 
+        {isHomePage && (
+            <div class="ed-filter" role="group" aria-label="按分类筛选文章">
+                <span class="ed-filter-label">筛选 / FILTER</span>
+                <input type="radio" name="ed-filter" id="ed-f-all" class="ed-filter-input" checked />
+                <label for="ed-f-all" class="ed-filter-chip">全部 <span>{totalPosts}</span></label>
+                {categories.map((c, i) => (
+                    <>
+                        <input type="radio" name="ed-filter" id={`ed-f-${i + 1}`} class="ed-filter-input" />
+                        <label for={`ed-f-${i + 1}`} class="ed-filter-chip">{c.name} <span>{c.count}</span></label>
+                    </>
+                ))}
+            </div>
+        )}
+
         <PostPage page={page}></PostPage>
-        <Pagination class="ed-pagination mx-auto onload-animation-up" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
+
+        <Pagination
+            class="ed-pagination mx-auto onload-animation-up"
+            page={page}
+            style={`animation-delay: ${(len) * 50}ms`}
+        ></Pagination>
     </section>
 </GridLayout>
