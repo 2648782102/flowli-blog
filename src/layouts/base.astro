@@ -43,12 +43,7 @@ import LoadingOverlay from "@components/loadingOverlay.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
 import MusicPlayer from "@components/musicPlayer.svelte";
 import LiquidGlassFilter from "@components/liquidGlassFilter.astro";
-import "@styles/navbar.css";
-import "@styles/banner.css";
 import "@styles/fancybox.css";
-import "@styles/liquid-glass.css";
-import "@styles/liquid-glass-system.css";
-import "@styles/navy-liquid-glass-palette.css";
 import "@styles/editorial.css";
 
 
@@ -68,13 +63,6 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 // defines global css variables
 // why doing this in BaseLayout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
 const configHue = siteConfig.themeColor.hue;
-
-// 获取导航栏透明模式配置
-const navbarTransparentMode =
-    siteConfig.wallpaper.banner?.navbar?.transparentMode || "semi";
-// 判断是否应该显示顶部高光效果（只在full和semifull模式下显示）
-const shouldShowTopHighlight =
-    navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
 
 const enableBanner = siteConfig.wallpaper.mode === "banner";
 
@@ -224,8 +212,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <!-- 全局配置载体 -->
         <ConfigCarrier />
         <LiquidGlassFilter />
-        <!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
-        {shouldShowTopHighlight && <div class="top-gradient-highlight"></div>}
         <!-- 页面内容 -->
         <slot />
         <!-- Analytics -->
@@ -314,14 +300,9 @@ import {
     BANNER_HEIGHT_EXTEND,
 } from "@/constants/layout";
 import {
-    BREAKPOINT_MD,
-    BREAKPOINT_LG,
-} from "@constants/breakpoints";
-import {
     TRANSITION_DURATION_SLOWER,
     TRANSITION_DURATION_VERY_SLOW,
 } from "@constants/transitions";
-import { widgetManager } from "@utils/widget";
 import { pathsEqual, url } from "@utils/url";
 import { initWallpaperMode } from "@utils/wallpaper";
 import { initTheme } from "@utils/theme";
@@ -357,37 +338,6 @@ const syncNavbarCurrentPage = (pathname: string) => {
 
 // 初始化Swup
 const setup = () => {
-    let pausedElementIds = new Set();
-    window.swup.hooks.on('content:replace', () => {
-        // Update main grid layout class name after page transition
-        const gridClassCarrier = document.getElementById("grid-class-carrier");
-        if (gridClassCarrier) {
-            const mainGrid = document.getElementById("main-grid");
-            const gridClass = gridClassCarrier.getAttribute("data-grid-class");
-            if (mainGrid && gridClass) {
-                const currentClasses = mainGrid.className.split(" ");
-                const newClasses = currentClasses.filter(c => !c.startsWith("lg:grid-cols-") && !c.startsWith("md:grid-cols-") && !c.startsWith("grid-cols-"));
-                const gridClasses = gridClass.split(" ");
-                mainGrid.className = [...newClasses, ...gridClasses].join(" ");
-            }
-        }
-        // Swup keeps the persistent grid element, so align its editorial classes with the destination page.
-        const mainGrid = document.getElementById("main-grid");
-        const topRow = document.getElementById("top-row");
-        const isHomePage = pathsEqual(window.location.pathname, url('/'));
-        const isEditorialHome = isHomePage && document.body.classList.contains('enable-banner');
-        mainGrid?.classList.toggle('editorial-grid', isEditorialHome);
-        topRow?.classList.toggle('editorial-top-row', document.body.classList.contains('enable-banner'));
-        const outerContent = mainGrid?.closest('.z-30');
-        outerContent?.classList.toggle('editorial-home', isEditorialHome);
-        // Restore pause-swup-transition class to newly replaced persistent elements
-        pausedElementIds.forEach(id => {
-            const el = document.getElementById(id as string);
-            if (el && el.hasAttribute('data-swup-persist')) {
-                el.classList.add('pause-swup-transition');
-            }
-        });
-    })
     window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
         // Disable scroll protection when a link is clicked to prevent interference with page jump scrolling to top
         if ((window as any).scrollProtectionManager && typeof (window as any).scrollProtectionManager.disable === 'function') {
@@ -397,13 +347,6 @@ const setup = () => {
         const bodyElement = document.querySelector('body')
         const isHomePage = pathsEqual(visit.to.url, url('/'))
         syncNavbarCurrentPage(new URL(visit.to.url, window.location.origin).pathname);
-        const mainGrid = document.getElementById('main-grid');
-        const topRow = document.getElementById('top-row');
-        const isEditorialHome = isHomePage && document.body.classList.contains('enable-banner');
-        mainGrid?.classList.toggle('editorial-grid', isEditorialHome);
-        topRow?.classList.toggle('editorial-top-row', document.body.classList.contains('enable-banner'));
-        const outerContent = mainGrid?.closest('.z-30');
-        outerContent?.classList.toggle('editorial-home', isEditorialHome);
         if (isHomePage) {
             bodyElement!.classList.add('is-home');
         } else {
@@ -436,47 +379,10 @@ const setup = () => {
         if (heightExtend) {
             heightExtend.classList.remove('hidden')
         }
-        // Handle animation logic for persistent sidebar components
-        const currentPath = window.location.pathname;
-        const nextPath = visit.to.url;
-        pausedElementIds.clear();
-        const width = window.innerWidth;
-        const deviceType = width >= BREAKPOINT_LG ? 'desktop' : (width >= BREAKPOINT_MD ? 'tablet' : 'mobile');
-        const configCarrier = widgetManager.getConfig();
-        const sideComponents = {
-            left: configCarrier.components.left || [],
-            right: configCarrier.components.right || []
-        };
-        ['left', 'right', 'middle'].forEach(side => {
-            const allComponents = [
-                ...widgetManager.getComponentsBySideAndPosition(side as any, "top"),
-                ...widgetManager.getComponentsBySideAndPosition(side as any, "sticky")
-            ];
-            let layoutShifted = false;
-            allComponents.forEach(config => {
-                if (deviceType === 'desktop') {
-                    if (side === 'left' && !sideComponents.left.includes(config)) return;
-                    if (side === 'right' && !sideComponents.right.includes(config)) return;
-                }
-                const isVisibleNow = widgetManager.isVisible(config, currentPath, deviceType);
-                const isVisibleNext = widgetManager.isVisible(config, nextPath, deviceType);
-                const elementId = config.type === "toc" ? `toc-wrapper-${side}` : `${config.type}-${side}`;
-                const el = document.getElementById(elementId);
-                if (el && el.hasAttribute('data-swup-persist')) {
-                    if (config.type !== "toc" && isVisibleNow && isVisibleNext && !layoutShifted) { // TOC 特殊处理：由于内容总是变化，不建议暂停动画
-                        el.classList.add('pause-swup-transition');
-                        pausedElementIds.add(el.id);
-                    } else {
-                        el.classList.remove('pause-swup-transition');
-                    }
-                }
-                if (isVisibleNow !== isVisibleNext) {
-                    layoutShifted = true;
-                }
-            });
-        });
     });
     window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
+        // history 此时已更新，刷新当前页高亮（page:view 阶段 location 可能仍是旧 URL）
+        syncNavbarCurrentPage(window.location.pathname);
         setTimeout(() => {
             const heightExtend = document.getElementById('page-height-extend')
             if (heightExtend) {
@@ -513,11 +419,21 @@ const setup = () => {
         { before: true },
     )
 }
-if (window?.swup?.hooks) {
-    setup()
-} else {
-    document.addEventListener('swup:enable', setup)
-}
+// @swup/astro 异步初始化：脚本执行时 window.swup 可能尚未就绪，且 swup:enable
+// 事件不保证派发。轮询到实例就绪后再注册，避免 hooks 整批丢失（页面切换后
+// is-home / 导航高亮 / fancybox / 评论初始化都会失效）。
+let setupDone = false;
+const trySetup = () => {
+    if (setupDone) return;
+    if (window.swup && window.swup.hooks) {
+        setupDone = true;
+        setup();
+    } else {
+        setTimeout(trySetup, 30);
+    }
+};
+trySetup();
+document.addEventListener('swup:enable', trySetup);
 syncNavbarCurrentPage(window.location.pathname);
 document.addEventListener('twilight:sync-navbar-current', () => {
     syncNavbarCurrentPage(window.location.pathname);
