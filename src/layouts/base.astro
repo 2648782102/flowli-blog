@@ -270,9 +270,7 @@ const syncNavbarCurrentPage = (pathname: string) => {
     const links = document.querySelectorAll<HTMLAnchorElement>(
         '#navbar .nav-link-item, #nav-menu-panel .mobile-menu-item > a',
     );
-    const basePath = import.meta.env.BASE_URL.replace(/\/+$/, "");
     const normalizedPath = pathname.replace(/\/+$/, "") || "/";
-    const archivePath = `${basePath}/archive`;
 
     links.forEach((link) => {
         const href = link.getAttribute('href');
@@ -280,11 +278,8 @@ const syncNavbarCurrentPage = (pathname: string) => {
         const isInternal = currentUrl?.origin === window.location.origin;
         const normalizedHref = currentUrl?.pathname.replace(/\/+$/, "") || "/";
         const isCurrentPage = isInternal && pathsEqual(normalizedPath, normalizedHref);
-        const isArchiveForPost = isInternal
-            && normalizedPath.startsWith(`${basePath}/posts/`)
-            && normalizedHref === archivePath;
 
-        if (isCurrentPage || isArchiveForPost) {
+        if (isCurrentPage) {
             link.setAttribute('aria-current', 'page');
         } else {
             link.removeAttribute('aria-current');
@@ -412,41 +407,17 @@ setupParticleEffects();
 
 // Remove is-loading class and trigger initial-animation after page load
 if (typeof window !== 'undefined') {
-    // 等待某条过渡真正结束；过渡被禁用（如 prefers-reduced-motion）时兜底超时，避免卡住揭开流程
-    const whenTransitionEnds = (el: Element | null, propertyName: string, fallbackMs: number): Promise<void> =>
-        new Promise<void>(resolve => {
-            if (!el) {
-                resolve();
-                return;
-            }
-            let finished = false;
-            const finish = () => {
-                if (finished) return;
-                finished = true;
-                el.removeEventListener('transitionend', onTransitionEnd);
-                clearTimeout(fallback);
-                resolve();
-            };
-            const onTransitionEnd = (event: TransitionEvent) => {
-                if (event.target === el && event.propertyName === propertyName) finish();
-            };
-            el.addEventListener('transitionend', onTransitionEnd);
-            const fallback = setTimeout(finish, fallbackMs);
-        });
-
     const onReveal = async () => {
         const overlay = document.getElementById('loading-overlay');
 
-        // 遮罩淡出（CSS transition）
         if (overlay) {
             overlay.classList.add('fade-out');
-            await whenTransitionEnds(overlay, 'opacity', TRANSITION_FALLBACK_MS);
-            overlay.style.display = 'none';
+            window.setTimeout(() => {
+                overlay.style.display = 'none';
+            }, TRANSITION_FALLBACK_MS);
         }
 
-        // 摘除 is-loading：首屏可见
         document.documentElement.classList.remove('is-loading');
-        // 触发各容器淡入动画
         document.documentElement.classList.add('show-initial-animation');
         setTimeout(() => {
             document.documentElement.classList.remove('show-initial-animation');
@@ -454,51 +425,18 @@ if (typeof window !== 'undefined') {
     };
 
     const configCarrier = document.getElementById('config-carrier');
-    const waitForFonts = configCarrier?.dataset.waitForFonts !== 'false';
-    const waitForImages = configCarrier?.dataset.waitForImages !== 'false';
-    const maxWait = Math.max(0, Number(configCarrier?.dataset.maxWait ?? 5) * 1000);
+    const maxWait = Math.max(0, Number(configCarrier?.dataset.maxWait ?? 0) * 1000);
 
-    // 基线信号：DOM 解析完成
     const domReady = document.readyState === 'loading'
         ? new Promise<void>(resolve => document.addEventListener('DOMContentLoaded', () => resolve(), { once: true }))
         : Promise.resolve();
 
-    // 等待字体就绪
-    const fontsReady = waitForFonts && document.fonts
-        ? document.fonts.ready.then(() => {})
-        : Promise.resolve();
-
-    // 等待单张图片解码完成
-    async function imageReady(img: HTMLImageElement): Promise<void> {
-        if (img.complete) return Promise.resolve();
-        if (typeof img.decode === 'function') {
-            return img.decode().catch(() => {});
+    domReady.then(() => {
+        if (maxWait > 0) {
+            window.setTimeout(onReveal, maxWait);
+        } else {
+            requestAnimationFrame(() => requestAnimationFrame(onReveal));
         }
-        return new Promise<void>(resolve => {
-            img.addEventListener('load', () => resolve(), { once: true });
-            img.addEventListener('error', () => resolve(), { once: true });
-        });
-    }
-    // 只等真正会出现在首屏的 eager 图片
-    const isFirstScreenImage = (img: HTMLImageElement) => {
-        if (typeof img.checkVisibility === 'function' && !img.checkVisibility({ visibilityProperty: true })) {
-            return false;
-        }
-        const rect = img.getBoundingClientRect();
-        return rect.width > 0 && rect.height > 0
-            && rect.bottom > 0 && rect.right > 0
-            && rect.top < window.innerHeight && rect.left < window.innerWidth;
-    };
-    const imagesReady = waitForImages
-        ? Promise.allSettled(Array.from(document.querySelectorAll<HTMLImageElement>('img[loading="eager"]'))
-            .filter(isFirstScreenImage)
-            .map(img => imageReady(img)))
-        : Promise.resolve();
-
-    // 各等待项全部就绪即揭开
-    Promise.race([
-        Promise.all([domReady, fontsReady, imagesReady]).then(() => {}),
-        new Promise<void>(resolve => setTimeout(resolve, maxWait)),
-    ]).then(onReveal);
+    });
 }
 </script>

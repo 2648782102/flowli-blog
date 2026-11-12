@@ -385,10 +385,6 @@ button:focus-visible {
     translate: none !important;
 }
 
-html.is-animating .transition-swup-fade:not(.pause-swup-transition) {
-    opacity: 0;
-}
-
 #content-wrapper,
 #content-wrapper *,
 .transition-leaving,
@@ -396,6 +392,73 @@ html.is-animating .transition-swup-fade:not(.pause-swup-transition) {
 .onload-animation-up,
 .onload-animation-down {
     opacity: 1 !important;
+}
+
+@keyframes flowli-page-enter {
+    from {
+        opacity: 0;
+        filter: blur(8px);
+        clip-path: inset(2% 0 0);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0);
+        clip-path: inset(0 0 0);
+    }
+}
+
+@keyframes flowli-nav-sheen {
+    from {
+        opacity: 0.75;
+        transform: scaleX(0.2);
+    }
+    to {
+        opacity: 0;
+        transform: scaleX(1);
+    }
+}
+
+html.is-changing #navbar > div:last-child::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: 2;
+    border-radius: inherit;
+    pointer-events: none;
+    transform-origin: left center;
+    background: linear-gradient(90deg, transparent, rgb(169 199 232 / 0.55), transparent);
+    animation: flowli-nav-sheen 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html.is-changing #swup-container,
+html.is-changing #editorial-sidebar-rail {
+    opacity: 1 !important;
+}
+
+html.is-changing #content-wrapper {
+    animation: flowli-page-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html.is-changing #content-wrapper > * {
+    animation: flowli-page-enter 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html.is-changing #content-wrapper > :nth-child(2) { animation-delay: 45ms; }
+html.is-changing #content-wrapper > :nth-child(3) { animation-delay: 90ms; }
+html.is-changing #content-wrapper > :nth-child(4) { animation-delay: 135ms; }
+html.is-changing #content-wrapper > :nth-child(5) { animation-delay: 180ms; }
+
+html.is-changing #editorial-sidebar-rail {
+    animation: flowli-page-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.is-changing #content-wrapper,
+    html.is-changing #content-wrapper > *,
+    html.is-changing #editorial-sidebar-rail,
+    html.is-changing #navbar > div:last-child::after {
+        animation: none !important;
+    }
 }
 
 /* Reading surfaces: translucent navy glass with a restrained refractive edge. */
