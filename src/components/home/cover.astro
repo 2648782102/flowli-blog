@@ -1,0 +1,368 @@
+---
+import { Icon } from "astro-icon/components";
+import { profileConfig, siteConfig } from "@/config";
+import { url } from "@utils/url";
+import ImageWrapper from "@components/common/imageWrapper.astro";
+
+interface Props {
+    postCount: number;
+    latestDate?: string;
+}
+
+const { postCount, latestDate } = Astro.props;
+const github = profileConfig.links.find((link) => link.name.toLowerCase() === "github");
+---
+
+<section class="night-cover" aria-labelledby="night-cover-title">
+    <div class="night-cover-field" aria-hidden="true"></div>
+    <div class="night-cover-lens" aria-hidden="true"></div>
+    <div class="night-cover-rule" aria-hidden="true"></div>
+
+    <div class="night-cover-inner">
+        <div class="night-cover-topline">
+            <a class="night-cover-signature" href={url("/")} aria-label="flowli 首页">
+                <span class="night-cover-mark">f</span>
+                <span>flowli</span>
+            </a>
+            <p>独立写作 / 前端工程 / 工具观察</p>
+            <span>{latestDate || "持续记录"}</span>
+        </div>
+
+        <div class="night-cover-statement">
+            <h1 id="night-cover-title">把好奇心<br />写下来<span>。</span></h1>
+            <p class="night-cover-intro">{siteConfig.subtitle}。这里保存那些不急着得到结论的片段：一次调试、一件工具、一个突然值得记下的日常。</p>
+        </div>
+
+        <div class="night-cover-footer">
+            <div class="night-cover-identity">
+                <div class="night-cover-avatar">
+                    <ImageWrapper src={profileConfig.avatar || ""} alt="flowli 的头像" loading="eager" />
+                </div>
+                <div>
+                    <span>长期维护</span>
+                    <strong>{profileConfig.name}</strong>
+                </div>
+            </div>
+
+            <dl class="night-cover-facts">
+                <div>
+                    <dt>已发布</dt>
+                    <dd>{postCount.toString().padStart(2, "0")}</dd>
+                </div>
+                <div>
+                    <dt>最近更新</dt>
+                    <dd>{latestDate || "—"}</dd>
+                </div>
+            </dl>
+
+            <div class="night-cover-actions">
+                <a class="night-cover-primary" href="#writing-desk">
+                    进入文章
+                    <Icon name="material-symbols:south-rounded" aria-hidden="true" />
+                </a>
+                {github && (
+                    <a class="night-cover-secondary" href={github.url} target="_blank" rel="noreferrer" aria-label="GitHub">
+                        <Icon name={github.icon} aria-hidden="true" />
+                        <span>GitHub</span>
+                    </a>
+                )}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .night-cover {
+        position: relative;
+        isolation: isolate;
+        min-height: min(700px, calc(100vh - 7rem));
+        overflow: hidden;
+        color: #f3f7ff;
+        background:
+            radial-gradient(circle at 76% 18%, rgb(91 145 199 / 0.24), transparent 30%),
+            radial-gradient(circle at 12% 88%, rgb(23 58 109 / 0.50), transparent 38%),
+            linear-gradient(148deg, #07152b 0%, #0a1e3d 52%, #061224 100%);
+        border: 1px solid rgb(169 199 232 / 0.18);
+        border-radius: 1.5rem;
+        box-shadow: 0 24px 64px rgb(3 12 28 / 0.20);
+    }
+
+    .night-cover::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        z-index: -1;
+        pointer-events: none;
+        border-radius: inherit;
+        background: linear-gradient(110deg, rgb(255 255 255 / 0.08), transparent 34%, rgb(91 145 199 / 0.05));
+    }
+
+    .night-cover-field {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        opacity: 0.42;
+        background-image:
+            linear-gradient(rgb(220 233 247 / 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(220 233 247 / 0.035) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: linear-gradient(to bottom, black, transparent 92%);
+    }
+
+    .night-cover-lens {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        right: 0;
+        width: min(30rem, 64%);
+        height: min(30rem, 64%);
+        translate: none !important;
+        transform: none !important;
+        border: 1px solid rgb(169 199 232 / 0.13);
+        border-radius: 50%;
+        box-shadow:
+            inset 0 0 0 5rem rgb(169 199 232 / 0.018),
+            inset 0 0 0 11rem rgb(169 199 232 / 0.012),
+            0 0 0 8rem rgb(91 145 199 / 0.025);
+    }
+
+    .night-cover-rule {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, rgb(169 199 232 / 0.10) 35%, transparent 85%);
+    }
+
+    .night-cover-inner {
+        display: flex;
+        flex-direction: column;
+        min-height: inherit;
+        padding: clamp(1.5rem, 3.5vw, 3.5rem);
+    }
+
+    .night-cover-topline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        color: rgb(220 233 247 / 0.66);
+        font-size: 0.72rem;
+        font-weight: 550;
+        letter-spacing: 0.04em;
+    }
+
+    .night-cover-topline p {
+        margin: 0;
+    }
+
+    .night-cover-signature {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: #f3f7ff;
+        font-family: var(--editorial-serif);
+        font-size: 1rem;
+        letter-spacing: 0.02em;
+        text-decoration: none;
+    }
+
+    .night-cover-mark {
+        display: grid;
+        width: 2rem;
+        height: 2rem;
+        place-items: center;
+        border: 1px solid rgb(220 233 247 / 0.32);
+        border-radius: 50%;
+        color: #a9c7e8;
+        font-family: var(--editorial-serif);
+        font-size: 1.15rem;
+    }
+
+    .night-cover-statement {
+        width: min(100%, 64rem);
+        margin: auto 0;
+        padding: clamp(3rem, 8vh, 6rem) 0;
+    }
+
+    .night-cover-statement h1 {
+        margin: 0;
+        color: #f3f7ff;
+        font-family: var(--editorial-serif);
+        font-size: clamp(4rem, 9vw, 8.4rem);
+        font-weight: 550;
+        letter-spacing: -0.085em;
+        line-height: 0.96;
+    }
+
+    .night-cover-statement h1 span {
+        color: #7fb0e6;
+    }
+
+    .night-cover-intro {
+        max-width: 39rem;
+        margin: 1.75rem 0 0;
+        color: rgb(220 233 247 / 0.76);
+        font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+        line-height: 1.9;
+    }
+
+    .night-cover-footer {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        align-items: end;
+        gap: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgb(220 233 247 / 0.14);
+    }
+
+    .night-cover-identity {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+    }
+
+    .night-cover-avatar {
+        width: 3rem;
+        height: 3rem;
+        overflow: hidden;
+        border: 1px solid rgb(220 233 247 / 0.28);
+        border-radius: 50%;
+    }
+
+    .night-cover-avatar :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .night-cover-identity span,
+    .night-cover-facts dt {
+        display: block;
+        color: rgb(220 233 247 / 0.48);
+        font-size: 0.68rem;
+        letter-spacing: 0.06em;
+    }
+
+    .night-cover-identity strong {
+        display: block;
+        margin-top: 0.2rem;
+        font-family: var(--editorial-serif);
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    .night-cover-facts {
+        display: flex;
+        gap: 2rem;
+        margin: 0;
+    }
+
+    .night-cover-facts dd {
+        margin: 0.25rem 0 0;
+        color: #f3f7ff;
+        font-family: var(--editorial-mono);
+        font-size: 0.86rem;
+    }
+
+    .night-cover-actions {
+        display: flex;
+        gap: 0.65rem;
+    }
+
+    .night-cover-primary,
+    .night-cover-secondary {
+        display: inline-flex;
+        min-height: 2.75rem;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0 1rem;
+        border: 1px solid rgb(220 233 247 / 0.26);
+        border-radius: 999px;
+        color: #f3f7ff;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .night-cover-primary {
+        background: rgb(220 233 247 / 0.12);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        backdrop-filter: blur(16px) saturate(150%);
+    }
+
+    .night-cover-secondary {
+        background: transparent;
+    }
+
+    .night-cover-primary:hover,
+    .night-cover-secondary:hover {
+        border-color: rgb(220 233 247 / 0.52);
+        background: rgb(220 233 247 / 0.18);
+    }
+
+    .night-cover-primary :global(svg),
+    .night-cover-secondary :global(svg) {
+        width: 1.05rem;
+        height: 1.05rem;
+    }
+
+    @media (max-width: 900px) {
+        .night-cover {
+            min-height: 640px;
+        }
+
+        .night-cover-topline p,
+        .night-cover-topline > span {
+            display: none;
+        }
+
+        .night-cover-statement h1 {
+            font-size: clamp(3.4rem, 15vw, 6rem);
+        }
+
+        .night-cover-footer {
+            grid-template-columns: 1fr;
+            align-items: start;
+            gap: 1.25rem;
+        }
+
+        .night-cover-facts {
+            justify-content: space-between;
+        }
+
+        .night-cover-actions {
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .night-cover {
+            min-height: 590px;
+            border-radius: 1rem;
+        }
+
+        .night-cover-inner {
+            padding: 1.25rem;
+        }
+
+        .night-cover-statement {
+            padding: 3rem 0;
+        }
+
+        .night-cover-intro {
+            font-size: 0.92rem;
+        }
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+        .night-cover-primary {
+            background: #173a6d;
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+        }
+    }
+</style>

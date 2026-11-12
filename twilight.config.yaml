@@ -31,24 +31,24 @@ site:
             - "pre"
     # 时区配置
     timeZone: 8
-    # 字体配置
+    # 字体配置：标题衬线 / 正文无衬线
     font:
-        # 字体配置 - Zen Maru Gothic
-        "ZenMaruGothic":
-            # 字体源 (字体 CSS 链接 | 字体文件路径)
-            src: "https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap"
-            # 字体名 (font-family)
-            family: "Zen Maru Gothic"
+        "EditorialSerif":
+            src: "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap"
+            family: "Noto Serif SC"
+        "EditorialSans":
+            src: "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap"
+            family: "Noto Sans SC"
     # 主题色配置
     themeColor:
         # 主题色的默认色相 (范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345)
-        hue: 250
+        hue: 220
     # 默认主题 ("system" 跟随系统 | "light" 浅色 | "dark" 深色)
     defaultTheme: "system"
     # 壁纸配置
     wallpaper:
         # 模式 ("banner" 横幅 | "fullscreen" 全屏 | "none" 纯色)
-        mode: "banner"
+        mode: "none"
         # 图片源配置 (fullscreen 和 banner 模式共享)
         src:
             # 桌面壁纸图片 (相对于 /public 目录; 支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播)
@@ -75,7 +75,7 @@ site:
             # 横幅文本配置
             homeText:
                 # 在主页显示文本
-                enable: true
+                enable: false
                 # 主标题
                 title: "flowli 的个人博客"
                 # 副标题，支持单个字符串或字符串数组
@@ -246,17 +246,6 @@ sidebar:
                     mode: "exclude"
                     # 页面路径匹配规则列表 (支持正则字符串)
                     paths: ["^/posts/", "^/archive"]
-            - # 组件 - 公告 (预设)
-                # 类型
-                type: "announcement"
-                # 位置策略 ("top" 顶部固定 | "sticky" 粘性)
-                position: "top"
-                # 页面可见性配置
-                visibility:
-                    # 匹配模式：'include' (包含), 'exclude' (排除)
-                    mode: "exclude"
-                    # 页面路径匹配规则列表 (支持正则字符串)
-                    paths: ["^/posts/", "^/archive"]
             - # 组件 - 文章目录 (预设)
                 # 类型
                 type: "toc"
@@ -297,9 +286,9 @@ profile:
 # 公告配置
 announcement:
     # 公告标题
-    title: "欢迎来访"
+    title: "正在写"
     # 公告内容
-    content: "这里会记录我正在学习、制作和思考的事情。"
+    content: "前端、工具和日常，持续更新。"
     # 允许用户关闭公告
     closable: true
     # 链接配置
@@ -307,7 +296,7 @@ announcement:
         # 启用链接
         enable: true
         # 链接文本
-        text: "Learn More"
+        text: "关于我"
         # 链接 URL
         url: "/about/"
         # 是否外部链接
@@ -326,11 +315,11 @@ post:
             # 封面上是否显示文字 (标题、标签、摘要)
             showContent: true
             # 无指定封面时是否显示默认封面
-            showDefaultCover: true
+            showDefaultCover: false
         # 标题大小 (Tailwind 文本大小类，例如 "text-3xl")
         titleSize: "text-2xl"
     # 显示"上次编辑"卡片
-    showLastModified: true
+    showLastModified: false
     # 代码高亮配置
     expressiveCode:
         # 主题
@@ -406,7 +395,7 @@ particle:
 # 音乐播放器配置
 musicPlayer:
     # 启用音乐播放器功能
-    enable: true
+    enable: false
     # 默认模式 ("meting" API | "local" 本地)
     mode: "meting"
     # meting 模式专属配置

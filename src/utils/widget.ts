@@ -132,17 +132,14 @@ export class WidgetManager {
             .filter(c => this.shouldShowComponent(c, currentPath));
 
         if (side === "left") {
-            // Left sidebar includes Right components on Tablet (merged)
-            return [...leftComponents, ...rightComponents];
+            return leftComponents;
         }
-        
+
         if (side === "right") {
-            // Right sidebar only shows Right components (Desktop only)
             return rightComponents;
         }
 
         if (side === "middle") {
-            // Middle sidebar includes all components
             return [...leftComponents, ...rightComponents];
         }
 
@@ -180,10 +177,18 @@ export class WidgetManager {
 
         if (side === "left") {
             if (isFromRight && !isFromLeft) {
-                // 如果是右侧组件在左侧栏渲染（平板模式），则仅在平板显示
-                classes.push("hidden md:block lg:hidden");
+                classes.push("hidden");
             }
-            // 左侧组件默认显示
+        }
+
+        if (side === "right") {
+            if (isFromLeft && !isFromRight) {
+                classes.push("hidden");
+            }
+        }
+
+        if (side === "middle") {
+            classes.push("editorial-rail-item");
         }
 
         return classes.join(" ");

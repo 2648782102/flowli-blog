@@ -1,7 +1,7 @@
 ---
 import "katex/dist/katex.css";
 
-import { siteConfig, profileConfig, musicPlayerConfig } from "@/config";
+import { siteConfig, profileConfig } from "@/config";
 import { getAnalyticsConfig } from "@utils/analytics";
 import type { Favicon } from "@/types/config";
 import { defaultFavicons } from "@constants/icon";
@@ -41,14 +41,8 @@ import { pathsEqual, url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
 import LoadingOverlay from "@components/loadingOverlay.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
-import MusicPlayer from "@components/musicPlayer.svelte";
-import LiquidGlassFilter from "@components/liquidGlassFilter.astro";
-import "@styles/navbar.css";
-import "@styles/banner.css";
 import "@styles/fancybox.css";
-import "@styles/liquid-glass.css";
-import "@styles/liquid-glass-system.css";
-import "@styles/navy-liquid-glass-palette.css";
+import "@styles/editorial-paper.css";
 
 
 interface Props {
@@ -67,15 +61,6 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 // defines global css variables
 // why doing this in BaseLayout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
 const configHue = siteConfig.themeColor.hue;
-
-// 获取导航栏透明模式配置
-const navbarTransparentMode =
-    siteConfig.wallpaper.banner?.navbar?.transparentMode || "semi";
-// 判断是否应该显示顶部高光效果（只在full和semifull模式下显示）
-const shouldShowTopHighlight =
-    navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
-
-const enableBanner = siteConfig.wallpaper.mode === "banner";
 
 let pageTitle: string;
 if (title) {
@@ -99,14 +84,6 @@ if (!lang) {
     lang = `${siteConfig.lang}`;
 }
 const siteLang = lang.replace("_", "-");
-
-const bannerOffsetByPosition = {
-    top: `${BANNER_HEIGHT_EXTEND}vh`,
-    center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
-    bottom: "0",
-};
-const bannerOffset =
-    bannerOffsetByPosition[siteConfig.wallpaper.position || "center"];
 
 const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 ---
@@ -214,23 +191,16 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
     </head>
 
-    <body class=" min-h-screen " class:list={[{"is-home": isHomePage, "enable-banner": enableBanner}]}
+    <body class="min-h-screen" class:list={[{"is-home": isHomePage}]}
     >
         <!-- 页面加载动画 -->
         <LoadingOverlay />
         <!-- 全局配置载体 -->
         <ConfigCarrier />
-        <LiquidGlassFilter />
-        <!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
-        {shouldShowTopHighlight && <div class="top-gradient-highlight"></div>}
         <!-- 页面内容 -->
         <slot />
         <!-- Analytics -->
         {analyticsEnabled && analyticsCode && <Fragment set:html={analyticsCode} />}
-        <!-- Music Player - 仅在启用时加载 -->
-        {musicPlayerConfig.enable && <MusicPlayer client:idle />}
-        <!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
-        <div id="page-height-extend" class="hidden h-[300vh]"></div>
     </body>
 </html>
 
@@ -241,7 +211,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
     'navbar-follow-distance': `${NAVBAR_FOLLOW_DISTANCE}rem`,
     'sidebar-top': `${SIDEBAR_TOP}rem`,
     'sidebar-spacing': `${SIDEBAR_SPACING}rem`,
-    bannerOffset,
     'banner-height-home': `${BANNER_HEIGHT_HOME}vh`,
     'banner-height': `${BANNER_HEIGHT}vh`,
     'main-panel-overlaps-banner-height': `${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem`,
@@ -270,46 +239,12 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         --sidebar-top: var(--sidebar-top);
         --sidebar-spacing: var(--sidebar-spacing);
     }
-    /* Banner mode overrides */
-    body.enable-banner {
-        --main-content-top: var(--main-panel-top-banner);
-        --top-row-height: calc(var(--main-content-top) - var(--navbar-gap));
-    }
-    html.banner-hiding body.enable-banner {
-        --main-content-top: var(--main-panel-top-default) !important;
-        --top-row-height: calc(var(--main-content-top) - var(--navbar-gap)) !important;
-    }
-    /* Home page with Banner mode overrides */
-    body.enable-banner.is-home {
-        --main-content-top: var(--main-panel-top-banner-home);
-        --top-row-height: calc(var(--main-content-top) - var(--navbar-gap));
-    }
-    html.banner-hiding body.enable-banner.is-home {
-        --main-content-top: var(--main-panel-top-default) !important;
-        --top-row-height: calc(var(--main-content-top) - var(--navbar-gap)) !important;
-    }
-
-    .enable-banner.is-home #banner-wrapper {
-        @apply h-(--banner-height-home) translate-y-(--banner-height-extend)
-    }
-    .enable-banner #banner-wrapper {
-        @apply h-(--banner-height-home)
-    }
-    .enable-banner.is-home #banner {
-        @apply h-(--banner-height-home) translate-y-0
-    }
-    .enable-banner #banner {
-        @apply h-(--banner-height-home) translate-y-(--bannerOffset)
-    }
+    /* All page modes share the same content origin; see editorial-paper.css. */
 }
 </style>
 
 
 <script>
-import {
-    BANNER_HEIGHT,
-    BANNER_HEIGHT_EXTEND,
-} from "@/constants/layout";
 import {
     BREAKPOINT_MD,
     BREAKPOINT_LG,
@@ -320,7 +255,6 @@ import {
 } from "@constants/transitions";
 import { widgetManager } from "@utils/widget";
 import { pathsEqual, url } from "@utils/url";
-import { initWallpaperMode } from "@utils/wallpaper";
 import { initTheme } from "@utils/theme";
 import { initHue } from "@utils/hue";
 import { initMarkdownActions } from "@/utils/markdown";
@@ -336,14 +270,21 @@ const syncNavbarCurrentPage = (pathname: string) => {
     const links = document.querySelectorAll<HTMLAnchorElement>(
         '#navbar .nav-link-item, #nav-menu-panel .mobile-menu-item > a',
     );
+    const basePath = import.meta.env.BASE_URL.replace(/\/+$/, "");
+    const normalizedPath = pathname.replace(/\/+$/, "") || "/";
+    const archivePath = `${basePath}/archive`;
 
     links.forEach((link) => {
         const href = link.getAttribute('href');
         const currentUrl = href ? new URL(href, window.location.href) : null;
         const isInternal = currentUrl?.origin === window.location.origin;
-        const isCurrentPage = isInternal && pathsEqual(pathname, currentUrl!.pathname);
+        const normalizedHref = currentUrl?.pathname.replace(/\/+$/, "") || "/";
+        const isCurrentPage = isInternal && pathsEqual(normalizedPath, normalizedHref);
+        const isArchiveForPost = isInternal
+            && normalizedPath.startsWith(`${basePath}/posts/`)
+            && normalizedHref === archivePath;
 
-        if (isCurrentPage) {
+        if (isCurrentPage || isArchiveForPost) {
             link.setAttribute('aria-current', 'page');
         } else {
             link.removeAttribute('aria-current');
@@ -356,27 +297,6 @@ const syncNavbarCurrentPage = (pathname: string) => {
 const setup = () => {
     let pausedElementIds = new Set();
     window.swup.hooks.on('content:replace', () => {
-        // Update main grid layout class name after page transition
-        const gridClassCarrier = document.getElementById("grid-class-carrier");
-        if (gridClassCarrier) {
-            const mainGrid = document.getElementById("main-grid");
-            const gridClass = gridClassCarrier.getAttribute("data-grid-class");
-            if (mainGrid && gridClass) {
-                const currentClasses = mainGrid.className.split(" ");
-                const newClasses = currentClasses.filter(c => !c.startsWith("lg:grid-cols-") && !c.startsWith("md:grid-cols-") && !c.startsWith("grid-cols-"));
-                const gridClasses = gridClass.split(" ");
-                mainGrid.className = [...newClasses, ...gridClasses].join(" ");
-            }
-        }
-        // Swup keeps the persistent grid element, so align its editorial classes with the destination page.
-        const mainGrid = document.getElementById("main-grid");
-        const topRow = document.getElementById("top-row");
-        const isHomePage = pathsEqual(window.location.pathname, url('/'));
-        const isEditorialHome = isHomePage && document.body.classList.contains('enable-banner');
-        mainGrid?.classList.toggle('editorial-grid', isEditorialHome);
-        topRow?.classList.toggle('editorial-top-row', document.body.classList.contains('enable-banner'));
-        const outerContent = mainGrid?.closest('.z-30');
-        outerContent?.classList.toggle('editorial-home', isEditorialHome);
         // Restore pause-swup-transition class to newly replaced persistent elements
         pausedElementIds.forEach(id => {
             const el = document.getElementById(id as string);
@@ -390,48 +310,15 @@ const setup = () => {
         if ((window as any).scrollProtectionManager && typeof (window as any).scrollProtectionManager.disable === 'function') {
             (window as any).scrollProtectionManager.disable();
         }
-        // Change banner height immediately when a link is clicked
+        // Keep the body home marker in sync without changing layout geometry.
         const bodyElement = document.querySelector('body')
         const isHomePage = pathsEqual(visit.to.url, url('/'))
         syncNavbarCurrentPage(new URL(visit.to.url, window.location.origin).pathname);
-        const mainGrid = document.getElementById('main-grid');
-        const topRow = document.getElementById('top-row');
-        const isEditorialHome = isHomePage && document.body.classList.contains('enable-banner');
-        mainGrid?.classList.toggle('editorial-grid', isEditorialHome);
-        topRow?.classList.toggle('editorial-top-row', document.body.classList.contains('enable-banner'));
-        const outerContent = mainGrid?.closest('.z-30');
-        outerContent?.classList.toggle('editorial-home', isEditorialHome);
+        window.scrollTo({ top: 0, behavior: 'instant' });
         if (isHomePage) {
             bodyElement!.classList.add('is-home');
         } else {
             bodyElement!.classList.remove('is-home');
-        }
-        // Control banner text visibility based on page
-        const bannerTextOverlay = document.querySelector('.banner-text-overlay')
-        if (bannerTextOverlay) {
-            if (isHomePage) {
-                bannerTextOverlay.classList.remove('hidden', 'fade-out')
-                // Trigger banner text fade-in animation
-                document.documentElement.classList.remove('show-banner-animation')
-                void (bannerTextOverlay as HTMLElement).offsetHeight
-                document.documentElement.classList.add('show-banner-animation')
-                setTimeout(() => {
-                    document.documentElement.classList.remove('show-banner-animation')
-                }, 1200)
-            } else {
-                bannerTextOverlay.classList.add('fade-out')
-                setTimeout(() => {
-                    if (!pathsEqual(window.location.pathname, url('/'))) {
-                        bannerTextOverlay.classList.remove('fade-out')
-                        bannerTextOverlay.classList.add('hidden')
-                    }
-                }, 300)
-            }
-        }
-        // Increase the page height during page transition to prevent the scrolling animation from jumping
-        const heightExtend = document.getElementById('page-height-extend')
-        if (heightExtend) {
-            heightExtend.classList.remove('hidden')
         }
         // Handle animation logic for persistent sidebar components
         const currentPath = window.location.pathname;
@@ -473,21 +360,9 @@ const setup = () => {
             });
         });
     });
-    window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
-        setTimeout(() => {
-            const heightExtend = document.getElementById('page-height-extend')
-            if (heightExtend) {
-                heightExtend.classList.add('hidden')
-            }
-        }, 300)
-    });
     window.swup.hooks.on('page:view', () => {
         syncNavbarCurrentPage(window.location.pathname);
-        // Scroll to top of the page after page transition
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        window.scrollTo({ top: 0, behavior: 'instant' });
         // Check if the current page is a post page, if so, trigger a custom event to initialize the comment system
         setTimeout(() => {
             if (document.querySelector('[data-comment-root]')) {
@@ -520,52 +395,11 @@ document.addEventListener('twilight:sync-navbar-current', () => {
     syncNavbarCurrentPage(window.location.pathname);
 });
 
-// 初始化返回顶部按钮元素，用于控制返回顶部按钮的显示与隐藏
-let backToTopBtn = document.getElementById('back-to-top-btn');
-// 节流函数
-function throttle(func: (...args: any[]) => void, limit: number) {
-    let inThrottle: boolean;
-    return function(this: any, ...args: any[]) {
-        if (!inThrottle) {
-            func.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    }
-}
-// 滚动事件处理函数，用于控制返回顶部按钮和banner隐藏
-function scrollFunction() {
-    const scrollTop = document.documentElement.scrollTop;
-    const bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
-    // 批量处理DOM操作
-    requestAnimationFrame(() => {
-        if (backToTopBtn) {
-            if (scrollTop > bannerHeight) {
-                backToTopBtn.classList.remove('hide')
-            } else {
-                backToTopBtn.classList.add('hide')
-            }
-        }
-    });
-}
-// 使用节流优化滚动性能
-window.onscroll = throttle(scrollFunction, 16); // 约60fps
-// 监听窗口 resize 事件，用于更新 banner 高度相关的 CSS 变量
-window.onresize = () => {
-    // calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
-    let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
-    offset = offset - offset % 4;
-    document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
-}
-
 // Initialize theme
 initTheme();
 
 // Initialize hue
 initHue();
-
-// Initialize wallpaper mode
-initWallpaperMode();
 
 // 初始化 Markdown 相关操作以防止因 Swup 无刷新跳转的机制限制而导致操作失效
 initMarkdownActions();
@@ -602,7 +436,6 @@ if (typeof window !== 'undefined') {
 
     const onReveal = async () => {
         const overlay = document.getElementById('loading-overlay');
-        const enableBanner = document.body.classList.contains('enable-banner');
 
         // 遮罩淡出（CSS transition）
         if (overlay) {
@@ -611,19 +444,12 @@ if (typeof window !== 'undefined') {
             overlay.style.display = 'none';
         }
 
-        if (enableBanner) {
-            // banner 高度从 0 恢复（CSS transition）
-            document.documentElement.classList.add('banner-restoring');
-            await whenTransitionEnds(document.getElementById('banner-wrapper'), 'height', TRANSITION_FALLBACK_MS);
-        }
-
-        // 摘除 is-loading：首屏可见，此时 banner 轮播才被允许启动（见 @utils/wallpaper）
+        // 摘除 is-loading：首屏可见
         document.documentElement.classList.remove('is-loading');
         // 触发各容器淡入动画
         document.documentElement.classList.add('show-initial-animation');
         setTimeout(() => {
             document.documentElement.classList.remove('show-initial-animation');
-            document.documentElement.classList.remove('banner-restoring');
         }, TRANSITION_DURATION_VERY_SLOW);
     };
 
@@ -658,8 +484,6 @@ if (typeof window !== 'undefined') {
         if (typeof img.checkVisibility === 'function' && !img.checkVisibility({ visibilityProperty: true })) {
             return false;
         }
-        // is-loading 期间 #banner-wrapper 高度被压到 0，图片矩形无意义，但揭开后必在首屏
-        if (img.closest('#banner-wrapper')) return true;
         const rect = img.getBoundingClientRect();
         return rect.width > 0 && rect.height > 0
             && rect.bottom > 0 && rect.right > 0

@@ -10,6 +10,7 @@ declare global {
         swup: any;
         semifullScrollHandler: (() => void) | null;
         liquidGlassNavbarHandler: (() => void) | null;
+        initSemifullScrollDetection?: () => void;
         closeAnnouncement: () => void;
         __iconifyLoader: {
             load: () => Promise<void>;
