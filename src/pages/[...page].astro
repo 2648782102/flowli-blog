@@ -2,11 +2,12 @@
 export const prerender = true;
 
 import type { GetStaticPaths } from "astro";
+import type { CollectionEntry } from "astro:content";
 
 import { PAGE_SIZE } from "@constants/pagination";
 import { getSortedPosts } from "@utils/post";
 import Pagination from "@components/pagination.astro";
-import PostPage from "@components/postPage.astro";
+import PostCard from "@components/post/postCard.astro";
 import GridLayout from "@layouts/grid.astro";
 import { pathsEqual, url } from "@utils/url";
 
@@ -20,6 +21,35 @@ const { page } = Astro.props;
 const len = page.data.length;
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 const totalPosts = page.total ?? len;
+
+// 按「年 / 月」分区：栏目名用强调藏青，为平铺列表做出节奏。
+// page.data 已是时间倒序，分区按首次出现顺序（同样是倒序）生成。
+const monthNames = ["一月", "二月", "三月", "四月", "五月", "六月",
+    "七月", "八月", "九月", "十月", "十一月", "十二月"];
+type Group = {
+    key: string;
+    label: string;
+    cn: string;
+    posts: CollectionEntry<"posts">[];
+};
+const groups: Group[] = [];
+for (const entry of page.data as CollectionEntry<"posts">[]) {
+    const d = new Date(entry.data.published ?? Date.now());
+    const y = d.getUTCFullYear();
+    const m = d.getUTCMonth() + 1;
+    const key = `${y}-${String(m).padStart(2, "0")}`;
+    let g = groups.find((x) => x.key === key);
+    if (!g) {
+        g = {
+            key,
+            label: `${y} / ${String(m).padStart(2, "0")}`,
+            cn: monthNames[m - 1],
+            posts: [],
+        };
+        groups.push(g);
+    }
+    g.posts.push(entry);
+}
 ---
 
 <GridLayout>
@@ -31,7 +61,26 @@ const totalPosts = page.total ?? len;
             <div class="ed-page-rule"></div>
         </header>
 
-        <PostPage page={page}></PostPage>
+        <div class="ed-groups">
+            {groups.map((g) => (
+                <section class="ed-group" aria-label={`${g.label} 文章`}>
+                    <div class="ed-group-head">
+                        <h2 class="ed-group-label">{g.label}<span class="ed-group-label-cn">{g.cn}</span></h2>
+                        <span class="ed-group-count">{g.posts.length} 篇 / POSTS</span>
+                    </div>
+                    <div class="ed-post-list">
+                        {g.posts.map((entry, i) => (
+                            <PostCard
+                                entry={entry}
+                                index={i}
+                                class="onload-animation-up"
+                                style={`animation-delay: ${i * 30}ms;`}
+                            ></PostCard>
+                        ))}
+                    </div>
+                </section>
+            ))}
+        </div>
 
         {page.lastPage > 1 && (
             <Pagination

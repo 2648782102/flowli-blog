@@ -5,10 +5,12 @@
    大稿 / :has() 筛选 / View Transitions / 三栏页脚）：
 
    · 一行站点标识 + 导航，下面是单栏阅读流（版心 ~720–820px）；
-   · 首页是按时间倒序的文章列表，每块给出 日期 / 标题 / 摘要 / 标签 / 阅读时长；
+   · 首页是按时间倒序的文章列表，按「年 / 月」分区，每块给出
+     放大号日期数字 / 日期 / 分类 / 标题 / 摘要 / 元信息 / 阅读全文；
    · 归档、文章、关于、时间线、技能、友链、作品等页面共用同一套页头 / 容器 / 分页；
    · 页脚收敛成一行：版权 + 少量订阅索引链接；
-   · 配色（暖纸 / 朱红 / 宋体）与阅读排版令牌沿用现有体系；
+   · 配色改为「冷白纸 + 藏青主色」的双主题体系（亮 / 暗），排版按
+     3–4 倍字阶、2px 藏青锚线、放大号日期数字、留白分组、分区栏目名增肌；
    · 功能层 DOM 锚点一律保留、仅视觉隐藏。
 
    main.css 只作为 Tailwind 框架 + 组件 utility 层存在（搜索面板 / 主题
@@ -20,25 +22,30 @@
    --------------------------------------------------------------------- */
 :root {
     color-scheme: light;
+    /* 固定根字号 16px：覆盖 base.astro 的 text-[14px]（移动端），
+       让统一字阶在六档宽度下都保持 12–46px 的真实跨度 */
+    font-size: 16px;
 
-    /* 纸与墨 */
-    --paper:        #f7f4ec;
-    --paper-2:      #fdfbf6;   /* 浮层 / 卡片 */
-    --paper-3:      #efe9dc;   /* 代码块 / 次级块 */
-    --ink:          #1c1a17;   /* 主文字 */
-    --ink-2:        #514c43;   /* 正文 / 次要 */
-    --ink-3:        #8b8477;   /* meta / 辅助 */
-    --rule:         #d9d2c3;   /* 发丝线 */
-    --rule-2:       #c2b9a5;   /* 较重的线 */
-    --accent:       #a8342a;   /* 朱红 / 印章 */
-    --accent-press: #7c2314;
-    --accent-soft:  #f1e0d9;
-    --accent-line:  #d7a091;
-    --codebar:      #e6dfd1;
-    --sel:          #ecd3c8;
-    --press-bg:     #e7cdc2;
+    /* 纸与墨 —— 藏青主色 / 冷白纸 */
+    --paper:        #f6f7f9;   /* 冷白纸背景 */
+    --paper-2:      #eceff4;   /* 次级面 / 浮层 / 按钮 */
+    --paper-3:      #e4eaf2;   /* 代码块 / 次级块 / 标签底 */
+    --ink:          #0b1f3a;   /* 标题 / 主文字：深藏青 */
+    --ink-2:        #14243c;   /* 正文 / 摘要：墨蓝 */
+    --ink-3:        #5c6d85;   /* meta / 辅助：次要文字（较建议值略深以保 4.5:1） */
+    --rule:         #d5dde8;   /* 发丝线 */
+    --rule-2:       #bcc8d8;   /* 较重的线 */
+    --accent:       #1c4a80;   /* 强调藏青：栏目名 / 链接 / 分类 */
+    --accent-press: #12305a;   /* 深藏青：标题链接 / hover 深一档 */
+    --accent-soft:  #dde7f2;   /* 浅蓝点缀 / soft 底 */
+    --accent-line:  #b7cde5;   /* 强调下划线 */
+    --navy:         #12305a;   /* 全站 2px 藏青锚线 */
+    --date-ink:     #4a72a8;   /* 放大号日期数字：藏青浅一档 */
+    --codebar:      #dde5ef;
+    --sel:          #c8dbef;
+    --press-bg:     #cbdcf0;
 
-    /* 字体 */
+    /* 字体：沿用现有字体栈，不引入任何外部字体或库 */
     --font-serif: "Newsreader", "Noto Serif SC", "Source Han Serif SC",
         "Songti SC", "SimSun", Georgia, "Times New Roman", serif;
     --font-sans: "Inter", "PingFang SC", "Noto Sans SC", "Microsoft YaHei",
@@ -46,15 +53,16 @@
     --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular,
         Menlo, Consolas, monospace;
 
-    /* 统一字阶 */
-    --step--1: 0.72rem;
-    --step-0:  0.94rem;
-    --step-1:  1.06rem;
-    --step-2:  1.4rem;
-    --step-3:  1.85rem;
-    --step-4:  2.5rem;
+    /* 统一字阶：跨度 ≈ 3.8×（h1 46px ↔ 元信息 12px） */
+    --step--1: 0.75rem;      /* 12px   元信息 / kicker / foot */
+    --step-0:  1rem;         /* 16px   摘要 */
+    --step-1:  1.0625rem;    /* 17px   引言 / 正文 */
+    --step-2:  1.375rem;     /* 22px   栏目名 / 条目标题 */
+    --step-3:  2.1rem;       /* 33.6px 移动端 h1 / 次级标题 */
+    --step-4:  clamp(2.55rem, 2rem + 1.4vw, 2.9rem); /* 41→46px h1 */
+    --step-day: 2.65rem;     /* 42.4px 放大号日期数字 */
 
-    /* 统一间距刻度 */
+    /* 统一间距刻度（4px 基线节奏） */
     --space-1: 0.25rem;
     --space-2: 0.5rem;
     --space-3: 0.75rem;
@@ -72,72 +80,77 @@
     --measure: 46rem;                 /* 单栏阅读版心 ≈736px */
     --tap: 44px;
 
-    /* ---- 兼容旧令牌：main.css 的 utility 与旧组件大量引用 ---- */
-    --primary: var(--accent);
-    --primary-hover: var(--accent-press);
-    --primary-light: var(--accent-soft);
-    --page-bg: var(--paper);
-    --card-bg: var(--paper-2);
-    --card-bg-transparent: var(--paper-2);
-    --btn-content: var(--ink);
-    --btn-regular-bg: var(--paper-3);
-    --btn-regular-bg-hover: var(--accent-soft);
-    --btn-regular-bg-active: var(--press-bg);
-    --btn-plain-bg-hover: var(--accent-soft);
-    --btn-plain-bg-active: var(--press-bg);
-    --btn-card-bg-hover: var(--accent-soft);
-    --btn-card-bg-active: var(--press-bg);
-    --enter-btn-bg: var(--paper-3);
-    --deep-text: var(--ink);
-    --title-active: var(--accent-press);
-    --line-divider: var(--rule);
-    --line-color: var(--rule);
-    --meta-divider: var(--rule-2);
-    --content-meta: var(--ink-2);
-    --inline-code-bg: var(--paper-3);
-    --inline-code-color: var(--accent-press);
-    --selection-bg: var(--sel);
-    --codeblock-selection: var(--sel);
-    --codeblock-bg: var(--paper-3);
-    --codeblock-topbar-bg: var(--codebar);
-    --link-underline: var(--accent-line);
-    --link-hover: var(--accent);
-    --link-active: var(--accent-press);
-    --float-panel-bg: var(--paper-2);
-    --toc-badge-bg: var(--paper-3);
-    --toc-btn-hover: var(--accent-soft);
-    --toc-btn-active: var(--press-bg);
-    --toc-item-active: var(--accent);
-    --radius-large: 2px;
-    --license-block-bg: var(--paper-3);
-    --color-selection-bar: var(--accent);
-    --toc-width: 15rem;
-    --admonitions-color-tip: var(--accent);
-    --admonitions-color-note: var(--ink-2);
-    --admonitions-color-important: var(--accent-press);
-    --admonitions-color-warning: #9a6a12;
-    --admonitions-color-caution: var(--accent);
+    /* ---- 兼容旧令牌：main.css 的 utility 与旧组件大量引用 ----
+       全部带 !important：variables.styl 的编译产物在本文件之后注入
+       同名旧暖纸/朱红令牌（--primary: #a8342a 等），必须强制压过它。
+       --display-* 不加，以免破坏主题图标的亮暗切换。 */
+    --primary: var(--accent) !important;
+    --primary-hover: var(--accent-press) !important;
+    --primary-light: var(--accent-soft) !important;
+    --page-bg: var(--paper) !important;
+    --card-bg: var(--paper-2) !important;
+    --card-bg-transparent: var(--paper-2) !important;
+    --btn-content: var(--ink) !important;
+    --btn-regular-bg: var(--paper-3) !important;
+    --btn-regular-bg-hover: var(--accent-soft) !important;
+    --btn-regular-bg-active: var(--press-bg) !important;
+    --btn-plain-bg-hover: var(--accent-soft) !important;
+    --btn-plain-bg-active: var(--press-bg) !important;
+    --btn-card-bg-hover: var(--accent-soft) !important;
+    --btn-card-bg-active: var(--press-bg) !important;
+    --enter-btn-bg: var(--paper-3) !important;
+    --deep-text: var(--ink) !important;
+    --title-active: var(--accent-press) !important;
+    --line-divider: var(--rule) !important;
+    --line-color: var(--rule) !important;
+    --meta-divider: var(--rule-2) !important;
+    --content-meta: var(--ink-2) !important;
+    --inline-code-bg: var(--paper-3) !important;
+    --inline-code-color: var(--accent-press) !important;
+    --selection-bg: var(--sel) !important;
+    --codeblock-selection: var(--sel) !important;
+    --codeblock-bg: var(--paper-3) !important;
+    --codeblock-topbar-bg: var(--codebar) !important;
+    --link-underline: var(--accent-line) !important;
+    --link-hover: var(--accent) !important;
+    --link-active: var(--accent-press) !important;
+    --float-panel-bg: var(--paper-2) !important;
+    --toc-badge-bg: var(--paper-3) !important;
+    --toc-btn-hover: var(--accent-soft) !important;
+    --toc-btn-active: var(--press-bg) !important;
+    --toc-item-active: var(--accent) !important;
+    --radius-large: 2px !important;
+    --license-block-bg: var(--paper-3) !important;
+    --color-selection-bar: var(--accent) !important;
+    --toc-width: 15rem !important;
+    --admonitions-color-tip: var(--accent) !important;
+    --admonitions-color-note: var(--ink-2) !important;
+    --admonitions-color-important: var(--accent-press) !important;
+    --admonitions-color-warning: var(--accent) !important;
+    --admonitions-color-caution: var(--accent) !important;
     --display-light-icon: 1;
     --display-dark-icon: 0;
 }
 
 :root.dark {
     color-scheme: dark;
-    --paper:        #16150f;
-    --paper-2:      #1e1c16;
-    --paper-3:      #27241c;
-    --ink:          #ece6d8;
-    --ink-2:        #bcb5a5;
-    --ink-3:        #8e8776;
-    --rule:         #363229;
-    --rule-2:       #4c4638;
-    --accent:       #e87e66;
-    --accent-press: #f19c87;
-    --accent-soft:  #3a2620;
-    --accent-line:  #7a4438;
-    --codebar:      #2e2a21;
-    --sel:          #4a2c24;
-    --press-bg:     #4a2c24;
+    --paper:        #0c1a2e;   /* 背景深藏青 */
+    --paper-2:      #12243c;   /* 次级面 */
+    --paper-3:      #182d49;   /* 代码块 / 次级块 */
+    --ink:          #eef4fb;   /* 标题：亮白 */
+    --ink-2:        #c3d2e6;   /* 正文 */
+    --ink-3:        #8ea4c0;   /* 次要文字 */
+    --rule:         #243b58;   /* 分隔 */
+    --rule-2:       #34507a;   /* 较重的线 */
+    --accent:       #7aa7dd;   /* 强调亮蓝 */
+    --accent-press: #a6c8ee;   /* 标题链接 / hover 更亮 */
+    --accent-soft:  #16294a;   /* soft 底 */
+    --accent-line:  #30507c;   /* 强调下划线 */
+    --navy:         #5b86bd;   /* 锚线（暗色下可见的藏青） */
+    --date-ink:     #5f8cc0;   /* 放大号日期数字 */
+    --codebar:      #1b3252;
+    --sel:          #24456e;
+    --press-bg:     #1c3556;
 }
 
 /* ---------------------------------------------------------------------
@@ -162,7 +175,7 @@ body {
     text-rendering: optimizeLegibility;
 }
 ::selection { background: var(--sel) !important; color: var(--ink) !important; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
 
 /* ---------------------------------------------------------------------
@@ -248,7 +261,7 @@ a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
 #navbar::before, #navbar > div::before { display: none !important; }
 
 /* ---------------------------------------------------------------------
-   4. 一行顶栏
+   4. 一行顶栏 + 2px 藏青锚线（全站视觉锚点）
    --------------------------------------------------------------------- */
 #top-row.ed-topbar { background: var(--paper); }
 #navbar {
@@ -256,8 +269,15 @@ a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
     z-index: 50;
     height: 4.5rem;
     background: var(--paper) !important;
-    border-bottom: var(--hairline) !important;
+    border-bottom: 2px solid var(--navy) !important;
     padding: 0 !important;
+}
+/* 2px 藏青锚线：子组件背景透明 + 伪元素盖到最上层，保证全站可见 */
+#navbar-wrapper, #navbar > div { background: transparent !important; }
+#navbar::after {
+    content: ""; position: absolute;
+    left: 0; right: 0; bottom: -2px; height: 2px;
+    background: var(--navy); z-index: 2; pointer-events: none;
 }
 #navbar-wrapper { width: 100%; }
 .ed-nav-inner {
@@ -361,7 +381,7 @@ a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
     color: var(--ink-2) !important; font-size: var(--step-1);
     margin: 0 0 var(--space-5); max-width: 60ch; text-wrap: pretty;
 }
-.ed-page-rule { height: 2px; background: var(--ink); }
+.ed-page-rule { height: 2px; background: var(--navy); }
 #swup-container h1 { font-family: var(--font-serif) !important; color: var(--ink) !important; }
 #swup-container header p { color: var(--ink-2) !important; }
 
@@ -378,39 +398,115 @@ a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
 }
 
 /* ---------------------------------------------------------------------
-   7. 首页：按时间倒序的可扫读文章列表
+   7. 首页：分区块 + 放大号日期数字 + 留白分组的可扫读文章列表
    --------------------------------------------------------------------- */
 .ed-feed { margin-top: var(--space-6); }
 .ed-feed > * { min-width: 0; }
-.ed-post-list { display: block; }
+.ed-groups { min-width: 0; }
 
-.ed-post {
-    display: block;
+/* 分区：仅在分区边界用发丝线；栏目名用强调藏青 + 等宽字距的仪式感 */
+.ed-group { min-width: 0; }
+.ed-group + .ed-group {
     border-top: var(--hairline);
-    padding: var(--space-5) 0 var(--space-6);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+}
+.ed-group-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: var(--space-3) var(--space-5); flex-wrap: wrap;
+    margin-bottom: var(--space-5);
+}
+.ed-group-label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--step-2);          /* 22px 栏目名 */
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-wrap: balance;
+    font-variant-numeric: tabular-nums;
+}
+.ed-group-label-cn {
+    font-family: var(--font-sans);
+    font-size: 0.8em; font-weight: 600; letter-spacing: 0.18em;
+    margin-left: 0.6em; color: var(--ink-3);
+}
+.ed-group-count {
+    font-family: var(--font-mono);
+    font-size: var(--step--1); letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-3);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+
+/* 条目：两列（放大号日期锚点 + 正文）；同组靠留白分组，逐条无发丝线 */
+.ed-post-list { display: block; }
+.ed-post {
+    display: grid;
+    grid-template-columns: 3.9rem minmax(0, 1fr);
+    column-gap: var(--space-5);
+    padding: 0;
     min-width: 0;
 }
-.ed-post:last-child { border-bottom: var(--hairline); }
+.ed-post + .ed-post { margin-top: var(--space-7); }
+
+/* 放大号日期数字：纯排版视觉锚点，衬线 + 等宽数字，无任何图形装置 */
+.ed-post-date {
+    grid-column: 1;
+    display: flex; flex-direction: column; align-items: flex-start;
+    padding-top: 0.1rem;
+    user-select: none;
+}
+.ed-post-day {
+    font-family: var(--font-serif);
+    font-size: var(--step-day);        /* 42.4px */
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--date-ink);
+    font-variant-numeric: lining-nums tabular-nums;
+    white-space: nowrap;
+}
+.ed-post-ym {
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem; letter-spacing: 0.14em;
+    color: var(--ink-3);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.ed-post-body { grid-column: 2; min-width: 0; }
+
 .ed-post-meta {
     display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
-    font-size: var(--step--1); letter-spacing: 0.12em; text-transform: uppercase;
+    font-size: var(--step--1); letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--ink-3); margin-bottom: var(--space-2);
+}
+.ed-post-meta time {
+    font-family: var(--font-mono); letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
 }
 .ed-post-cat { color: var(--accent); font-weight: 600; }
 .ed-post-pin { color: var(--accent); border: 1px solid var(--accent-line); padding: 0 0.35rem; font-size: 0.62rem; }
 .ed-dot { color: var(--rule-2); }
 .ed-post-title {
-    font-family: var(--font-serif); font-size: var(--step-3);
-    font-weight: 700; line-height: 1.3; letter-spacing: -0.01em;
+    font-family: var(--font-serif); font-size: var(--step-2);   /* 22px 条目标题 */
+    font-weight: 700; line-height: 1.35; letter-spacing: -0.01em;
     margin: 0 0 var(--space-3);
     text-wrap: balance;
 }
 .ed-post-title a {
-    color: var(--ink) !important; text-decoration: none !important;
+    color: var(--accent-press) !important;   /* 强调藏青 */
+    text-decoration: none !important;
     background: none !important; border: 0 !important;
+    display: inline-block;
     transition: color .16s ease !important;
 }
-.ed-post-title a:hover { color: var(--accent) !important; }
+.ed-post-title a:hover {
+    color: var(--accent) !important;         /* hover 只变色 / 下划线 */
+    text-decoration: underline !important;
+    text-decoration-color: var(--accent-line) !important;
+    text-underline-offset: 4px;
+}
 .ed-post-excerpt {
     color: var(--ink-2); font-size: var(--step-0); line-height: 1.8;
     margin: 0 0 var(--space-3);
@@ -419,6 +515,7 @@ a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .ed-post-foot {
     display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
     font-size: var(--step--1); letter-spacing: 0.06em; color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
 }
 .ed-post-tags { display: inline-flex; gap: 0.4rem; flex-wrap: wrap; }
 .ed-post-tags span { border: 1px solid var(--rule); padding: 0.05rem 0.45rem; font-size: 0.68rem; color: var(--ink-3); }
@@ -565,7 +662,7 @@ a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
    12. 页脚：一行（版权 + 少量订阅 / 索引链接）
    --------------------------------------------------------------------- */
 .ed-footer { margin: var(--space-9) 0 var(--space-6); }
-.ed-footer-rule { height: 2px; background: var(--ink); margin-bottom: var(--space-5); }
+.ed-footer-rule { height: 2px; background: var(--navy); margin-bottom: var(--space-5); }
 .ed-footer-line {
     display: flex; align-items: baseline; justify-content: space-between;
     gap: var(--space-3) var(--space-6); flex-wrap: wrap;
@@ -596,8 +693,8 @@ a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
     .ed-nav-inner { padding: 0 var(--gutter); }
     .ed-brand-sub { display: none; }
     .ed-content { padding-top: var(--space-5); }
-    .ed-page-title { font-size: var(--step-3) !important; }
-    #swup-container h1 { font-size: var(--step-3) !important; }
+    .ed-page-title { font-size: 2.5rem !important; }
+    #swup-container h1 { font-size: 2.5rem !important; }
     .ed-post-title { font-size: var(--step-2); }
     .ed-post-arrow { margin-left: 0; }
     .ed-footer-line { flex-direction: column; align-items: flex-start; }
@@ -608,6 +705,25 @@ a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
     .ed-brand-mark { font-size: 1.25rem; }
     #back-to-top-btn, #back-to-top-btn button,
     .toc-floating-btn, .toc-floating-btn-wrapper { min-width: var(--tap); min-height: var(--tap); }
+}
+
+/* ≤640：放大号日期数字转为行内小锚点，正文让出全宽；标题链接保持 ≥44px 点击区 */
+@media (max-width: 640px) {
+    .ed-post {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: var(--space-2);
+    }
+    .ed-post-date {
+        grid-column: 1;
+        flex-direction: row; align-items: baseline; gap: 0.6rem;
+        padding-top: 0;
+    }
+    .ed-post-day { font-size: 2rem; }
+    .ed-post-ym { margin-top: 0; }
+    .ed-post-body { grid-column: 1; }
+    .ed-post-title a { min-height: var(--tap); display: inline-flex; align-items: center; }
+    .ed-group-label { font-size: 1.25rem; }
+    .ed-group-head { gap: var(--space-2); }
 }
 
 /* ---------------------------------------------------------------------

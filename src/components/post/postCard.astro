@@ -25,25 +25,36 @@ const { remarkPluginFrontmatter } = await render(entry);
 const dateStr = published ? formatDateToYYYYMMDD(published) : "";
 const topTags = (tags || []).slice(0, 3);
 const catLabel = getCategoryPathLabel(category) ?? "";
+
+// 放大号日期数字（纯排版视觉锚点）：从 ISO 日期串拆出「日」与「年.月」
+const day = dateStr.slice(8, 10) || "—";
+const yearMonth = dateStr ? `${dateStr.slice(0, 4)}.${dateStr.slice(5, 7)}` : "";
 ---
 
 <article class:list={["ed-post", className]} style={style}>
-    <div class="ed-post-meta">
-        <time datetime={dateStr}>{dateStr}</time>
-        {catLabel && <><span class="ed-dot">·</span><span class="ed-post-cat">{catLabel}</span></>}
-        {pinned && <span class="ed-post-pin">置顶</span>}
+    <div class="ed-post-date" aria-hidden="true">
+        <span class="ed-post-day">{day}</span>
+        {yearMonth && <span class="ed-post-ym">{yearMonth}</span>}
     </div>
 
-    <h2 class="ed-post-title"><a href={postUrl}>{title}</a></h2>
+    <div class="ed-post-body">
+        <div class="ed-post-meta">
+            <time datetime={dateStr}>{dateStr}</time>
+            {catLabel && <><span class="ed-dot">·</span><span class="ed-post-cat">{catLabel}</span></>}
+            {pinned && <span class="ed-post-pin">置顶</span>}
+        </div>
 
-    <p class="ed-post-excerpt">{description || remarkPluginFrontmatter.excerpt}</p>
+        <h2 class="ed-post-title"><a href={postUrl}>{title}</a></h2>
 
-    <div class="ed-post-foot">
-        <span>{remarkPluginFrontmatter.minutes} {i18n(remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}</span>
-        <span>{remarkPluginFrontmatter.words} {i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}</span>
-        {topTags.length > 0 && (
-            <span class="ed-post-tags">{topTags.map((t) => <span>{t}</span>)}</span>
-        )}
-        <span class="ed-post-arrow" aria-hidden="true">阅读全文 ↗</span>
+        <p class="ed-post-excerpt">{description || remarkPluginFrontmatter.excerpt}</p>
+
+        <div class="ed-post-foot">
+            <span>{remarkPluginFrontmatter.minutes} {i18n(remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}</span>
+            <span>{remarkPluginFrontmatter.words} {i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}</span>
+            {topTags.length > 0 && (
+                <span class="ed-post-tags">{topTags.map((t) => <span>{t}</span>)}</span>
+            )}
+            <span class="ed-post-arrow" aria-hidden="true">阅读全文 ↗</span>
+        </div>
     </div>
 </article>
