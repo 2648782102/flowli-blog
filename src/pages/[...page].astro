@@ -9,8 +9,10 @@ import { getSortedPosts } from "@utils/post";
 import Pagination from "@components/pagination.astro";
 import PostPage from "@components/postPage.astro";
 import GridLayout from "@layouts/grid.astro";
-import { siteConfig } from "@/config";
 import { pathsEqual, url } from "@utils/url";
+import Cover from "@components/home/cover.astro";
+import FeaturedPost from "@components/home/featuredPost.astro";
+import DeskIndex from "@components/home/deskIndex.astro";
 export const getStaticPaths = (async ({ paginate }) => {
     const allBlogPosts = await getSortedPosts();
     return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
@@ -20,23 +22,34 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 
-const len = page.data.length;
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+const allPosts = await getSortedPosts();
+const firstPost = page.data[0];
+const remainingPosts = page.data.slice(1);
+const latestDate = allPosts[0]?.data.published
+    ? new Date(allPosts[0].data.published).toLocaleDateString("zh-CN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    })
+    : undefined;
 ---
 
 <GridLayout>
     {isHomePage && (
-        <section class="home-intro" aria-labelledby="home-intro-title">
-            <div class="home-intro-copy">
-                <p class="home-intro-kicker">flowli 的个人博客</p>
-                <h1 id="home-intro-title">把好奇心写下来。</h1>
-                <p class="home-intro-description">{siteConfig.subtitle}。这里是 flowli 的个人记录，关于前端、工具，也关于日常里值得留下的片刻。</p>
-            </div>
-            <a class="home-intro-link" href={url('/archive/')}>浏览全部文章 <span aria-hidden="true">↗</span></a>
-        </section>
+        <>
+            <Cover postCount={allPosts.length} latestDate={latestDate} />
+            {firstPost && <FeaturedPost entry={firstPost} />}
+            <DeskIndex entries={remainingPosts} />
+            <Pagination class="pagination-editorial" page={page}></Pagination>
+        </>
     )}
-    <div class="home-feed">
+    {!isHomePage && <div class="home-feed">
+        <div class="home-feed-label">
+            <strong>最新文章</strong>
+            <span>按发布时间排列</span>
+        </div>
         <PostPage page={page}></PostPage>
-        <Pagination class="mx-auto onload-animation-up" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
-    </div>
+        <Pagination class="pagination-editorial" page={page}></Pagination>
+    </div>}
 </GridLayout>

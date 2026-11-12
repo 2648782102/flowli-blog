@@ -14,7 +14,7 @@ export const LinkPresets: { [key in LinkPreset]: NavbarLink } = {
         name: i18n(I18nKey.archive),
         url: "/archive/",
         icon: "material-symbols:archive",
-        description: "A chronological list of all published posts.",
+        description: "按时间整理的全部文章。",
     },
     [LinkPreset.Projects]: {
         name: i18n(I18nKey.projects),

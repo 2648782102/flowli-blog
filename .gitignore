@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # local profile exports
 /github-profile-final-*.png
+
+# local visual QA tooling
+/design/tools/
+/design/screenshots/local*/

@@ -1,7 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
 
-import { BREAKPOINT_LG } from "@constants/breakpoints";
 import { SYSTEM_MODE, DARK_MODE, LIGHT_MODE } from "@constants/style";
 import {
     getStoredTheme,
@@ -48,23 +47,31 @@ function closePanel() {
 function handleClickOutside(event: MouseEvent) {
     if (!isOpen) return;
     onClickOutside(event, "light-dark-panel", "scheme-switch", () => {
-        isOpen = false;
+        closePanel();
     });
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "Escape" && isOpen) {
+        closePanel();
+    }
 }
 
 onMount(() => {
     mode = getStoredTheme();
     document.addEventListener("click", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
         document.removeEventListener("click", handleClickOutside);
+        document.removeEventListener("keydown", handleKeyDown);
     };
 });
 </script>
 
 
 <!-- z-50 make the panel higher than other float panels -->
-<div class="relative z-50" role="menu" tabindex="-1" onmouseleave={closePanel}>
-    <button aria-label="Light/Dark/System Mode" role="menuitem" class="relative btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center" id="scheme-switch" onmouseenter={openPanel} onclick={() => { if (window.innerWidth < BREAKPOINT_LG) { openPanel(); } else { toggleScheme(); } }}>
+<div class="relative z-50" role="menu" tabindex="-1">
+    <button aria-label="Light/Dark/System Mode" role="menuitem" class="relative btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center" id="scheme-switch" aria-expanded={isOpen} aria-controls="light-dark-panel" onclick={openPanel}>
         <div class="absolute inset-0 flex items-center justify-center" class:opacity-0={mode !== LIGHT_MODE}>
             <Icon icon="material-symbols:wb-sunny-outline-rounded" class="text-[1.25rem]"></Icon>
         </div>
@@ -75,7 +82,7 @@ onMount(() => {
             <Icon icon="material-symbols:radio-button-partial-outline" class="text-[1.25rem]"></Icon>
         </div>
     </button>
-    <div id="light-dark-panel" class="absolute transition top-11 -right-2 pt-5" class:float-panel-closed={!isOpen}>
+    <div id="light-dark-panel" class="absolute transition top-11 -right-2 pt-5" class:float-panel-closed={!isOpen} aria-hidden={!isOpen}>
         <DropdownPanel>
             <DropdownItem
                     isActive={mode === LIGHT_MODE}

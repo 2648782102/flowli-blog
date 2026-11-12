@@ -21,18 +21,30 @@ function togglePanel() {
     }
 }
 
+function closePanel() {
+    isOpen = false;
+}
+
 // 点击外部关闭面板
 function handleClickOutside(event: MouseEvent) {
     if (!isOpen) return;
     onClickOutside(event, "nav-menu-panel", "nav-menu-switch", () => {
-        isOpen = false;
+        closePanel();
     });
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "Escape" && isOpen) {
+        closePanel();
+    }
 }
 
 onMount(() => {
     document.addEventListener("click", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
         document.removeEventListener("click", handleClickOutside);
+        document.removeEventListener("keydown", handleKeyDown);
     };
 });
 </script>
@@ -40,6 +52,8 @@ onMount(() => {
 <div class="relative md:hidden">
     <button aria-label="Menu" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90" 
         id="nav-menu-switch"
+        aria-expanded={isOpen}
+        aria-controls="nav-menu-panel"
         onclick={togglePanel}
     >
         <Icon icon="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
@@ -47,6 +61,7 @@ onMount(() => {
     <div id="nav-menu-panel" 
         class="float-panel fixed transition-all right-4 px-2 py-2 max-h-[80vh] overflow-y-auto"
         class:float-panel-closed={!isOpen}
+        aria-hidden={!isOpen}
     >
         {#each links as link}
             <div class="mobile-menu-item">
