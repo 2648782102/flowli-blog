@@ -15,7 +15,6 @@ import {
     NAVBAR_GAP,
     NAVBAR_FOLLOW_DISTANCE,
     MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
-    SIDEBAR_TOP,
     SIDEBAR_SPACING,
 } from "@constants/layout";
 import {
@@ -50,9 +49,10 @@ interface Props {
     lang?: string;
     setOGTypeArticle?: boolean;
     postSlug?: string;
+    class?: string;
 }
 
-let { title, description, lang, setOGTypeArticle, postSlug } = Astro.props;
+let { title, description, lang, setOGTypeArticle, postSlug, class: className } = Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
@@ -190,7 +190,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
     </head>
 
-    <body class="min-h-screen" class:list={[{"is-home": isHomePage}]}
+    <body class="min-h-screen" class:list={[{"is-home": isHomePage}, className]}
     >
         <!-- 全局配置载体 -->
         <ConfigCarrier />
@@ -206,7 +206,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
     'navbar-height': `${NAVBAR_HEIGHT / 16}rem`,
     'navbar-gap': `${NAVBAR_GAP}rem`,
     'navbar-follow-distance': `${NAVBAR_FOLLOW_DISTANCE}rem`,
-    'sidebar-top': `${SIDEBAR_TOP}rem`,
     'sidebar-spacing': `${SIDEBAR_SPACING}rem`,
     'banner-height-home': `${BANNER_HEIGHT_HOME}vh`,
     'banner-height': `${BANNER_HEIGHT}vh`,

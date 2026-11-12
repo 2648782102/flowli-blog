@@ -29,6 +29,9 @@ const hasLeftSidebar = widgetManager.hasContentOnSide("left", headings, Astro.ur
 const hasRightSidebar = widgetManager.hasContentOnSide("right", headings, Astro.url.pathname);
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 const hasAnyComponents = !isHomePage && (hasLeftSidebar || hasRightSidebar);
+const bodyClass = hasAnyComponents ? "has-sidebar" : "";
+const postPathPrefix = url("/posts/");
+const isPostPage = Astro.url.pathname.startsWith(postPathPrefix) || !!(headings && headings.length > 0);
 ---
 
 <BaseLayout
@@ -37,6 +40,7 @@ const hasAnyComponents = !isHomePage && (hasLeftSidebar || hasRightSidebar);
     lang={lang}
     setOGTypeArticle={setOGTypeArticle}
     postSlug={postSlug}
+    class:list={[bodyClass, { "is-post-page": isPostPage }]}
 >
     <!-- Navbar -->
     <slot slot="head" name="head" />
@@ -66,16 +70,16 @@ const hasAnyComponents = !isHomePage && (hasLeftSidebar || hasRightSidebar);
                     </div>
                 </main>
 
-                {hasAnyComponents && (
-                    <aside id="editorial-sidebar-rail" class="editorial-sidebar-rail" aria-label="站点信息">
+                <aside id="editorial-sidebar-rail" class="editorial-sidebar-rail" aria-label="站点信息">
+                    {hasAnyComponents && (
                         <Sidebar
                             id="left-sidebar"
                             side="middle"
                             class="editorial-sidebar onload-animation-up"
                             headings={headings}
                         />
-                    </aside>
-                )}
+                    )}
+                </aside>
 
                 <div class="editorial-footer">
                     <Footer />
