@@ -231,3 +231,26 @@ Round 3 布局重构完成；预览继续保留在 `http://localhost:4321/flowli
 ### 状态
 
 Round 4 本地视觉重构完成；预览继续保留在 `http://localhost:4321/flowli-blog/`。本地改动仍未提交、未推送，等待用户人工确认。
+
+## Round 5 — 入住式精修与上线收尾
+
+### 范围
+
+- 统一导航、封面和页脚的品牌标记：使用同一枚玻璃质感 `f` 字标，导航副标题在移动端自动隐藏。
+- 主文章内容封面增加玻璃内衬和轻微色彩校准；无封面文章使用同材质「流」字占位。
+- 分页选中项改为胶囊态，保持居中且 hover 不改变几何。
+- 页脚从模板双行版权改为语义化 `footer.flowli-footer`：品牌、版权、RSS / Atom / Sitemap / Astro / GitHub Pages 一行组织，移动端自然换行。
+- 内页信息带保留原有阅读几何，只改视觉：作者资料卡回到藏蓝玻璃托底；目录、分类和标签统一发丝线、微型章节标签和冰蓝计数胶囊。
+
+### 验收
+
+- `pnpm check`：通过，0 error / 0 warning / 1 hint（`document.execCommand` deprecated，既有提示）。
+- `pnpm build`：通过；Pagefind 索引 4 页 / 287 词。
+- `design/check-layout.mjs`：通过，6 档视口 × 4 类页面的无横向滚动、主栏主导、主盒在网格内与 hover 几何稳定断言全部通过。
+- `design/check-interactions.mjs`：通过，Tab 选中态、导航高度、内容起点、滚动复位、浮层开合与移动菜单状态稳定。
+- `design/audit-preview.mjs`：通过，13 个生产预览视图无溢出；截图复核文章页信息带层级和材质与首页一致。
+- `git diff --check`：通过。
+
+### 状态
+
+Round 5 完成并准备正式推送上线；线上旧版已由 Round 4 的藏蓝液态玻璃版本替代，本轮将导航品牌、页脚与内页信息带一并同步到线上。

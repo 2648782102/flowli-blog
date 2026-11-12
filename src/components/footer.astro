@@ -6,16 +6,20 @@ import { url } from "@utils/url";
 const currentYear = new Date().getFullYear();
 ---
 
-<div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
-<div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
-    <div class="transition text-50 text-sm text-center leading-6">
-        &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved. /
-        <a class="transition link text-(--primary) font-medium" href={url('rss/')} onclick={`event.preventDefault(); navigateToPage('${url('rss/')}')`}>RSS</a> /
-        <a class="transition link text-(--primary) font-medium" href={url('atom/')} onclick={`event.preventDefault(); navigateToPage('${url('atom/')}')`}>Atom</a> /
-        <a class="transition link text-(--primary) font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a><br>
-        Powered by
-        <a class="transition link text-(--primary) font-medium" target="_blank" href="https://astro.build">Astro</a> &
-        <a class="transition link text-(--primary) font-medium" target="_blank" href="https://pages.github.com/">GitHub Pages</a><br>
-
+<footer class="flowli-footer">
+    <div class="flowli-footer-rule" aria-hidden="true"></div>
+    <div class="flowli-footer-inner">
+        <span class="flowli-footer-mark" aria-hidden="true">f</span>
+        <p class="flowli-footer-copy">
+            &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved.
+        </p>
+        <nav class="flowli-footer-links" aria-label="订阅与站点索引">
+            <a href={url('rss/')} onclick={`event.preventDefault(); navigateToPage('${url('rss/')}')`}>RSS</a>
+            <a href={url('atom/')} onclick={`event.preventDefault(); navigateToPage('${url('atom/')}')`}>Atom</a>
+            <a target="_blank" href={url('sitemap-index.xml')}>Sitemap</a>
+            <span aria-hidden="true">·</span>
+            <a target="_blank" href="https://astro.build">Astro</a>
+            <a target="_blank" href="https://pages.github.com/">GitHub Pages</a>
+        </nav>
     </div>
-</div>
+</footer>
