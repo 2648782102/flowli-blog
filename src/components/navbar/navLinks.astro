@@ -13,17 +13,10 @@ interface Props {
 const { link, class: className } = Astro.props;
 const linkUrl = link.external ? link.url : url(link.url);
 const normalizedPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
-const basePath = (import.meta.env.BASE_URL || "").replace(/\/+$/, "");
 const normalizedLink = linkUrl.replace(/\/+$/, "") || "/";
 const isCurrentPage = !link.external && normalizedPath === normalizedLink;
 const isSubPage = !link.external && linkUrl !== url("/") && normalizedPath.startsWith(`${normalizedLink}/`);
-const currentValue = !link.external && normalizedPath.startsWith(`${basePath}/posts/`) && link.url === "/archive/"
-    ? "location"
-    : isCurrentPage
-        ? "page"
-        : isSubPage
-            ? "location"
-            : undefined;
+const currentValue = isCurrentPage ? "page" : isSubPage ? "location" : undefined;
 ---
 
 <div class:list={["nav-link-container", className]}>
