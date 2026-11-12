@@ -366,8 +366,7 @@
             await loadECharts();
 
             // 检查是否处于初始加载动画阶段
-            const hasInitialAnimation = document.documentElement.classList.contains('show-initial-animation') ||
-                                       document.documentElement.classList.contains('is-loading');
+            const hasInitialAnimation = false;
 
             if (hasInitialAnimation) {
                 // 查找带有动画类的侧边栏容器
@@ -388,7 +387,7 @@
 
                 // 使用 MutationObserver 监听 html 的 class 变化，作为更可靠的保底机制
                 const htmlObserver = new MutationObserver(() => {
-                    const isStillLoading = document.documentElement.classList.contains('is-loading');
+                    const isStillLoading = false;
 
                     // 一旦 loading 结束（进入动画播放阶段），就开始绘制图表
                     if (!isStillLoading) {

@@ -39,7 +39,6 @@ import {
 } from "@constants/transitions";
 import { pathsEqual, url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
-import LoadingOverlay from "@components/loadingOverlay.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
 import "@styles/fancybox.css";
 import "@styles/editorial-paper.css";
@@ -89,7 +88,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 ---
 
 <!DOCTYPE html>
-<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px] is-loading"
+<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]"
 >
     <head>
         <meta charset="UTF-8" />
@@ -193,8 +192,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 
     <body class="min-h-screen" class:list={[{"is-home": isHomePage}]}
     >
-        <!-- 页面加载动画 -->
-        <LoadingOverlay />
         <!-- 全局配置载体 -->
         <ConfigCarrier />
         <!-- 页面内容 -->
@@ -249,10 +246,6 @@ import {
     BREAKPOINT_MD,
     BREAKPOINT_LG,
 } from "@constants/breakpoints";
-import {
-    TRANSITION_DURATION_SLOWER,
-    TRANSITION_DURATION_VERY_SLOW,
-} from "@constants/transitions";
 import { widgetManager } from "@utils/widget";
 import { pathsEqual, url } from "@utils/url";
 import { initTheme } from "@utils/theme";
@@ -262,9 +255,6 @@ import { initFancybox, cleanupFancybox } from "@utils/fancybox";
 import { loadAndInitTranslate } from "@utils/language";
 import { setupParticleEffects } from "@/utils/particle";
 
-
-// 揭开流程里等待 CSS 过渡的兜底超时
-const TRANSITION_FALLBACK_MS = TRANSITION_DURATION_SLOWER * 2;
 
 const syncNavbarCurrentPage = (pathname: string) => {
     const links = document.querySelectorAll<HTMLAnchorElement>(
@@ -405,38 +395,4 @@ loadAndInitTranslate();
 // Initialize particle effects
 setupParticleEffects();
 
-// Remove is-loading class and trigger initial-animation after page load
-if (typeof window !== 'undefined') {
-    const onReveal = async () => {
-        const overlay = document.getElementById('loading-overlay');
-
-        if (overlay) {
-            overlay.classList.add('fade-out');
-            window.setTimeout(() => {
-                overlay.style.display = 'none';
-            }, TRANSITION_FALLBACK_MS);
-        }
-
-        document.documentElement.classList.remove('is-loading');
-        document.documentElement.classList.add('show-initial-animation');
-        setTimeout(() => {
-            document.documentElement.classList.remove('show-initial-animation');
-        }, TRANSITION_DURATION_VERY_SLOW);
-    };
-
-    const configCarrier = document.getElementById('config-carrier');
-    const maxWait = Math.max(0, Number(configCarrier?.dataset.maxWait ?? 0) * 1000);
-
-    const domReady = document.readyState === 'loading'
-        ? new Promise<void>(resolve => document.addEventListener('DOMContentLoaded', () => resolve(), { once: true }))
-        : Promise.resolve();
-
-    domReady.then(() => {
-        if (maxWait > 0) {
-            window.setTimeout(onReveal, maxWait);
-        } else {
-            requestAnimationFrame(() => requestAnimationFrame(onReveal));
-        }
-    });
-}
 </script>
