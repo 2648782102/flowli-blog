@@ -1,6 +1,4 @@
 ---
-import { Icon } from "astro-icon/components";
-
 import { navbarConfig } from "@/config";
 import { LinkPresets } from "@constants/link-presets";
 import { LinkPreset, type NavbarLink } from "@/types/config";
@@ -31,11 +29,10 @@ let links: NavbarLink[] = navbarConfig.links.map(
     <div class:list={[
         className,
         "overflow-visible! max-w-(--page-width) h-18 mx-auto flex items-center justify-between md:px-4"]}>
-        <a href={url('/')} class="btn-plain scale-animation rounded-lg h-11 px-3 font-bold active:scale-95" aria-label="flowli 首页">
-            <div class="flex flex-row text-(--primary) items-center text-md">
-                <Icon name="material-symbols:home-pin-outline" class="text-[1.15rem] mr-2" />
-                <span>flowli</span>
-            </div>
+        <a href={url('/')} class="flowli-brand h-11 px-3" aria-label="flowli 首页">
+            <span class="flowli-brand-mark" aria-hidden="true">f</span>
+            <span class="flowli-brand-name">flowli</span>
+            <span class="flowli-brand-note">个人博客</span>
         </a>
         <div class="hidden md:flex items-center navbar-nav-links">
             {links.map((l) => {
