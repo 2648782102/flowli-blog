@@ -40,7 +40,7 @@ export default defineConfig({
         swup({
             theme: false,
             animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
-            containers: ["#swup-container"],
+            containers: ["#swup-container", "#editorial-sidebar-rail"],
             cache: true,
             preload: { hover: true, visible: true },
             accessibility: true,

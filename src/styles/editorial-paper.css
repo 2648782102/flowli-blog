@@ -4,33 +4,34 @@
  */
 
 @import "./markdown.css" layer(base);
-@import "./markdown-extend.styl" layer(base);
+@import "./markdown-extend.generated.css" layer(base);
 @import "./expressive-code.css" layer(base);
 
 :root {
     color-scheme: dark;
-    --paper: #0a1e3d;
-    --paper-deep: #06152c;
-    --surface: rgb(9 27 55 / 0.78);
-    --surface-muted: rgb(21 51 91 / 0.64);
-    --ink: #f3f7ff;
-    --ink-soft: #c6d8ec;
-    --ink-faint: #96b1cf;
-    --navy: #9fc4ec;
-    --navy-bright: #c6dcf2;
-    --mist: #a9c7e8;
-    --accent: #8fc2f2;
-    --hairline: rgb(220 233 247 / 0.15);
-    --hairline-strong: rgb(220 233 247 / 0.28);
-    --amber: #e8b86d;
-    --paper-shadow: 0 18px 52px rgb(3 12 28 / 0.16);
-    --glass-shadow: 0 24px 64px rgb(3 12 28 / 0.24), inset 0 1px 0 rgb(255 255 255 / 0.16), inset 0 -1px 0 rgb(255 255 255 / 0.05);
-    --glass-fill: rgb(9 27 55 / 0.74);
-    --glass-fill-hover: rgb(17 44 82 / 0.80);
-    --glass-fill-dark: rgb(7 21 43 / 0.80);
-    --glass-border: rgb(220 233 247 / 0.28);
-    --glass-border-strong: rgb(169 199 232 / 0.52);
-    --glass-border-dark: rgb(169 199 232 / 0.22);
+    --paper: #071222;
+    --paper-deep: #030912;
+    --surface: rgb(13 29 48 / 0.92);
+    --surface-muted: rgb(24 45 69 / 0.78);
+    --ink: #edf4ff;
+    --ink-soft: #c4d4e6;
+    --ink-faint: #93a9c3;
+    --navy: #a7ccff;
+    --navy-bright: #d8e9ff;
+    --mist: #a6c8e8;
+    --accent: #9ec9ff;
+    --accent-warm: #e2b57c;
+    --hairline: rgb(210 228 246 / 0.14);
+    --hairline-strong: rgb(210 228 246 / 0.26);
+    --amber: #e2b57c;
+    --paper-shadow: 0 18px 52px rgb(2 8 16 / 0.20);
+    --glass-shadow: 0 24px 64px rgb(2 8 16 / 0.32), inset 0 1px 0 rgb(255 255 255 / 0.10), inset 0 -1px 0 rgb(255 255 255 / 0.03);
+    --glass-fill: rgb(11 26 44 / 0.92);
+    --glass-fill-hover: rgb(15 34 56 / 0.92);
+    --glass-fill-dark: rgb(6 17 30 / 0.90);
+    --glass-border: rgb(205 226 247 / 0.20);
+    --glass-border-strong: rgb(166 205 247 / 0.42);
+    --glass-border-dark: rgb(166 205 247 / 0.18);
     --radius-paper: 0.5rem;
     --radius-glass: 1rem;
     --measure: 70ch;
@@ -80,26 +81,27 @@
 
 :root.dark {
     color-scheme: dark;
-    --paper: #051022;
-    --paper-deep: #030b19;
-    --surface: rgb(7 21 43 / 0.82);
-    --surface-muted: rgb(16 45 86 / 0.68);
-    --ink: #eef5fc;
-    --ink-soft: #adc3da;
-    --ink-faint: #7f9ab8;
-    --navy: #8fc2f2;
-    --navy-bright: #c6dcf2;
-    --mist: #5f8fc3;
-    --accent: #8fc2f2;
-    --hairline: rgb(220 233 247 / 0.12);
-    --hairline-strong: rgb(220 233 247 / 0.24);
-    --amber: #e8b86d;
-    --paper-shadow: 0 22px 64px rgb(0 0 0 / 0.32);
-    --glass-shadow: 0 28px 72px rgb(0 0 0 / 0.42), inset 0 1px 0 rgb(255 255 255 / 0.10), inset 0 -1px 0 rgb(255 255 255 / 0.04);
-    --glass-fill: rgb(7 21 43 / 0.80);
-    --glass-fill-hover: rgb(14 38 72 / 0.86);
-    --glass-border: rgb(169 199 232 / 0.20);
-    --glass-border-strong: rgb(169 199 232 / 0.44);
+    --paper: #040d19;
+    --paper-deep: #02070e;
+    --surface: rgb(10 24 40 / 0.94);
+    --surface-muted: rgb(20 41 63 / 0.82);
+    --ink: #e9f2ff;
+    --ink-soft: #bdcfdf;
+    --ink-faint: #8ba2bc;
+    --navy: #9ec9ff;
+    --navy-bright: #d6e9ff;
+    --mist: #7fa6cc;
+    --accent: #9ec9ff;
+    --accent-warm: #e2b57c;
+    --hairline: rgb(205 226 247 / 0.12);
+    --hairline-strong: rgb(205 226 247 / 0.23);
+    --amber: #e2b57c;
+    --paper-shadow: 0 22px 64px rgb(0 0 0 / 0.40);
+    --glass-shadow: 0 28px 72px rgb(0 0 0 / 0.48), inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 -1px 0 rgb(255 255 255 / 0.03);
+    --glass-fill: rgb(8 21 36 / 0.94);
+    --glass-fill-hover: rgb(12 29 48 / 0.94);
+    --glass-border: rgb(166 205 247 / 0.16);
+    --glass-border-strong: rgb(166 205 247 / 0.38);
 
     --primary: var(--navy);
     --page-bg: var(--paper);
@@ -154,8 +156,8 @@ html {
 
 body {
     background-image:
-        radial-gradient(circle at 18% 0%, rgb(91 145 199 / 0.34), transparent 32%),
-        radial-gradient(circle at 86% 18%, rgb(23 58 109 / 0.32), transparent 34%),
+        radial-gradient(circle at 18% 0%, rgb(76 121 170 / 0.24), transparent 32%),
+        radial-gradient(circle at 86% 18%, rgb(25 58 88 / 0.30), transparent 34%),
         linear-gradient(160deg, var(--paper) 0%, var(--paper-deep) 100%);
     background-attachment: fixed;
     transition: none;
@@ -168,14 +170,14 @@ body::before {
     z-index: -1;
     pointer-events: none;
     background:
-        radial-gradient(ellipse at 52% -10%, rgb(143 194 242 / 0.20), transparent 45%),
-        radial-gradient(ellipse at 90% 80%, rgb(91 145 199 / 0.16), transparent 38%);
+        radial-gradient(ellipse at 52% -10%, rgb(158 201 255 / 0.12), transparent 45%),
+        radial-gradient(ellipse at 90% 80%, rgb(76 121 170 / 0.12), transparent 38%);
 }
 
 :root.dark body::before {
     background:
-        radial-gradient(ellipse at 52% -10%, rgb(91 145 199 / 0.18), transparent 45%),
-        radial-gradient(ellipse at 90% 80%, rgb(23 58 109 / 0.28), transparent 38%);
+        radial-gradient(ellipse at 52% -10%, rgb(158 201 255 / 0.10), transparent 45%),
+        radial-gradient(ellipse at 90% 80%, rgb(25 58 88 / 0.28), transparent 38%);
 }
 
 body::after {
@@ -301,7 +303,7 @@ button:focus-visible {
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
     column-gap: var(--rail-gap);
-    row-gap: 3rem;
+    row-gap: 0;
     width: 100%;
     position: relative;
 }
@@ -322,8 +324,6 @@ button:focus-visible {
     gap: 1.5rem;
     width: 100%;
     min-width: 0;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--hairline);
 }
 
 .editorial-sidebar-rail > .editorial-sidebar {
@@ -365,13 +365,12 @@ button:focus-visible {
 }
 
 #content-wrapper > :is(.home-intro, .home-feed, .card-base, .post-index, .pagination-editorial, .footer, .night-cover, .featured-post, .desk-index) {
-    width: 100%;
     max-width: var(--reading-max);
     margin-inline: 0;
 }
 
 #content-wrapper > :is(.night-cover, .featured-post, .desk-index, .home-feed) {
-    max-width: none;
+    max-width: var(--reading-max);
 }
 
 #content-wrapper > .flex,
@@ -502,7 +501,7 @@ html.is-changing #editorial-sidebar-rail {
     z-index: 0;
     pointer-events: none;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgb(255 255 255 / 0.12), transparent 34%, rgb(143 194 242 / 0.06));
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.08), transparent 38%, rgb(158 201 255 / 0.04));
 }
 
 .card-base > *,
@@ -655,6 +654,16 @@ html.is-changing #editorial-sidebar-rail {
 }
 
 widget-layout.toc-wrapper {
+    display: none !important;
+}
+
+body:not(.is-post-page) #editorial-sidebar-rail widget-layout.toc-wrapper,
+body:not(.is-post-page) #editorial-sidebar-rail table-of-contents,
+body:not(.is-post-page) #editorial-sidebar-rail .toc-wrapper {
+    display: none !important;
+}
+
+body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
     display: none !important;
 }
 
@@ -1026,6 +1035,17 @@ widget-layout.toc-wrapper {
     visibility: hidden;
     pointer-events: none;
     translate: 0 -0.25rem;
+}
+
+#light-dark-panel.float-panel-closed {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    translate: 0 -0.25rem;
+}
+
+#light-dark-panel {
+    transition: opacity 160ms ease, translate 160ms ease, visibility 160ms ease;
 }
 
 #display-setting-wrapper,
@@ -1444,7 +1464,7 @@ body.is-home .editorial-shell {
 
 /* Long-form reading surface. */
 #post-container {
-    padding: clamp(1.5rem, 3.4vw, 2.75rem) !important;
+    padding: clamp(1.5rem, 3.2vw, 2.5rem) !important;
 }
 
 #post-container > div:first-child {
@@ -1596,7 +1616,7 @@ body.is-home .editorial-shell {
 /* Generic content pages: one paper sheet, no dashboard cards. */
 #content-wrapper > .flex > .card-base,
 #content-wrapper > .onload-animation-up > .card-base {
-    padding: clamp(1.5rem, 3.4vw, 2.75rem) !important;
+    padding: clamp(1.5rem, 3.2vw, 2.5rem) !important;
 }
 
 #content-wrapper > .flex > .card-base > header,
@@ -1751,6 +1771,12 @@ body.is-home .editorial-shell {
     animation: none !important;
 }
 
+.orb-player,
+.back-to-top-wrapper,
+.toc-floating-container {
+    display: none !important;
+}
+
 /* Footer and miscellaneous template chrome. */
 .footer .border-dashed {
     border-style: solid !important;
@@ -1759,7 +1785,7 @@ body.is-home .editorial-shell {
 
 .flowli-footer {
     width: min(100%, var(--reading-max));
-    margin: 2.25rem auto 1.75rem;
+    margin: 1.5rem auto 1.25rem;
 }
 
 .flowli-footer-rule {
@@ -1945,7 +1971,7 @@ body.enable-banner.is-home {
 @media (min-width: 1440px) {
     :root {
         --shell-max: 78rem;
-        --reading-max: 55rem;
+        --reading-max: 58rem;
         --rail-width: 15rem;
         --rail-gap: 2.25rem;
     }
