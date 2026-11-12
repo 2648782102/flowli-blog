@@ -1818,30 +1818,6 @@ body.is-home .editorial-shell {
     color: var(--accent) !important;
 }
 
-#loading-overlay {
-    background: var(--paper-deep) !important;
-}
-
-#loading-overlay .loading-spinner,
-#loading-overlay .loading-title {
-    box-shadow: none !important;
-    text-shadow: none !important;
-    animation: none !important;
-    border-top-color: var(--accent) !important;
-    color: var(--accent) !important;
-}
-
-#loading-overlay .loading-spinner {
-    width: 2rem;
-    height: 2rem;
-    border-width: 2px;
-    animation: editorial-spin 1s linear infinite !important;
-}
-
-@keyframes editorial-spin {
-    to { rotate: 360deg; }
-}
-
 [style*="linear-gradient(145deg, #dce9f7"] {
     background: var(--surface-muted) !important;
     border: 1px solid var(--glass-border) !important;

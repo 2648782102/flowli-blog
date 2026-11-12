@@ -47,6 +47,7 @@ export default defineConfig({
             updateHead: true,
             updateBodyClass: false,
             globalInstance: true,
+            loadOnIdle: false,
             // Scroll related configuration optimization
             smoothScrolling: false, // Disable smooth scrolling to improve performance and avoid conflicts with anchor navigation
             resolveUrl: (url) => url,
