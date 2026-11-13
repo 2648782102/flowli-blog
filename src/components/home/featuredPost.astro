@@ -23,186 +23,32 @@ const publishedDate = new Date(published!).toLocaleDateString("zh-CN", {
 const imageBaseDir = getFileDirFromPath(entry.filePath || "");
 ---
 
-<article class="featured-post">
-    <a class="featured-post-link" href={postUrl} aria-label={`阅读 ${title}`}>
-        <div class="featured-post-copy">
-            <div class="featured-post-meta">
-                <span>最新一篇</span>
+<section class="flowli-section" aria-labelledby="flowli-featured-title">
+    <div class="flowli-section-label">
+        <span>01 / 最近一篇</span>
+        <h2 id="flowli-featured-title">从这篇开始</h2>
+        <p>不必按顺序读，挑一个顺眼的标题就好。</p>
+    </div>
+
+    <a class="flowli-feature" href={postUrl} aria-label={`阅读 ${title}`}>
+        <div class="flowli-feature-copy">
+            <div class="flowli-feature-meta">
+                <span>最新</span>
                 <time datetime={new Date(published!).toISOString()}>{publishedDate}</time>
             </div>
-            <h2>{title}</h2>
+            <h3>{title}</h3>
             {excerpt && <p>{excerpt}</p>}
-            <div class="featured-post-foot">
+            <div class="flowli-feature-foot">
                 <span>{remarkPluginFrontmatter.minutes} 分钟阅读</span>
-                <span class="featured-post-cta">继续阅读 <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></span>
+                <span class="flowli-feature-cta">继续阅读 <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></span>
             </div>
         </div>
-        <div class="featured-post-visual" aria-hidden="true">
+        <div class="flowli-feature-visual">
             {cover ? (
-                <>
-                    <ImageWrapper src={cover} basePath={imageBaseDir} alt="" loading="lazy" />
-                    <span class="featured-post-glass" aria-hidden="true"></span>
-                </>
+                <ImageWrapper src={cover} basePath={imageBaseDir} alt="" loading="lazy" />
             ) : (
-                <>
-                    <div class="featured-post-monogram">流</div>
-                    <span class="featured-post-glass" aria-hidden="true"></span>
-                </>
+                <div class="flowli-feature-monogram">流</div>
             )}
         </div>
     </a>
-</article>
-
-<style>
-    .featured-post {
-        position: relative;
-        overflow: hidden;
-        border: 1px solid var(--glass-border);
-        border-radius: 1.5rem;
-        background: var(--glass-fill);
-        box-shadow: var(--glass-shadow);
-        -webkit-backdrop-filter: blur(22px) saturate(145%);
-        backdrop-filter: blur(22px) saturate(145%);
-    }
-
-    .featured-post::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(120deg, rgb(255 255 255 / 0.07), transparent 38%, rgb(158 201 255 / 0.05));
-    }
-
-    .featured-post-link {
-        position: relative;
-        z-index: 1;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 16rem;
-        gap: clamp(1.5rem, 3vw, 2.5rem);
-        min-height: 19rem;
-        padding: clamp(1.5rem, 3vw, 2.5rem);
-        color: inherit;
-        text-decoration: none;
-    }
-
-    .featured-post-copy {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-    }
-
-    .featured-post-meta {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        color: var(--ink-faint);
-        font-family: var(--editorial-mono);
-        font-size: 0.72rem;
-    }
-
-    .featured-post-meta span {
-        color: var(--accent);
-    }
-
-    .featured-post h2 {
-        margin: 1.35rem 0 0;
-        font-size: clamp(1.9rem, 3.4vw, 2.9rem);
-        font-weight: 620;
-        letter-spacing: -0.04em;
-        line-height: 1.18;
-    }
-
-    .featured-post p {
-        max-width: 44ch;
-        margin: 0.85rem 0 0;
-        font-size: 0.95rem;
-        line-height: 1.78;
-    }
-
-    .featured-post-foot {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        margin-top: auto;
-        padding-top: 1.25rem;
-        color: var(--ink-faint);
-        font-family: var(--editorial-mono);
-        font-size: 0.72rem;
-    }
-
-    .featured-post-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.45rem;
-        color: var(--accent);
-        font-family: var(--editorial-sans);
-        font-weight: 650;
-    }
-
-    .featured-post-cta :global(svg) {
-        width: 1rem;
-        height: 1rem;
-    }
-
-    .featured-post-visual {
-        position: relative;
-        min-height: 14rem;
-        overflow: hidden;
-        border: 1px solid rgb(220 233 247 / 0.14);
-        border-radius: 1rem;
-        background: linear-gradient(155deg, rgb(76 121 170 / 0.24), rgb(4 11 20 / 0.60));
-    }
-
-    .featured-post-visual :global(img) {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        filter: saturate(0.88) contrast(1.04);
-    }
-
-    .featured-post-glass {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        border-radius: inherit;
-        background:
-            linear-gradient(145deg, rgb(255 255 255 / 0.10), transparent 38%, rgb(4 11 20 / 0.18)),
-            radial-gradient(circle at 78% 18%, rgb(158 201 255 / 0.14), transparent 42%);
-        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), inset 0 -1px 0 rgb(255 255 255 / 0.04);
-    }
-
-    .featured-post-monogram {
-        display: grid;
-        width: 100%;
-        height: 100%;
-        place-items: center;
-        color: rgb(220 233 247 / 0.42);
-        font-family: var(--editorial-serif);
-        font-size: 5rem;
-    }
-
-    .featured-post:hover {
-        border-color: var(--glass-border-strong);
-        background: var(--glass-fill-hover);
-    }
-
-    .featured-post:hover h2 {
-        color: var(--accent);
-    }
-
-    @media (max-width: 700px) {
-        .featured-post-link {
-            grid-template-columns: 1fr;
-            min-height: 0;
-        }
-
-        .featured-post-visual {
-            min-height: 11rem;
-        }
-
-        .featured-post h2 {
-            font-size: clamp(1.75rem, 8vw, 2.35rem);
-        }
-    }
-</style>
+</section>

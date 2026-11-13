@@ -36,11 +36,12 @@ export default defineConfig({
     site: siteConfig.siteURL,
     base: "/flowli-blog",
     trailingSlash: "always",
+    devToolbar: { enabled: false },
     integrations: [
         swup({
             theme: false,
             animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
-            containers: ["#swup-container", "#editorial-sidebar-rail"],
+            containers: ["#swup-container"],
             cache: true,
             preload: { hover: true, visible: true },
             accessibility: true,
