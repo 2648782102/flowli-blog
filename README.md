@@ -32,13 +32,13 @@ pnpm dev
 
 - `src/pages`：静态页面与 RSS/Atom/Sitemap 等端点。
 - `src/components`：导航、卡片、侧栏与交互组件。
-- `src/styles`：冷白纸本视觉系统与各模块样式。
+- `src/styles`：液态玻璃系统、藏蓝调色板与各模块样式。
 - `src/content`：文章、作品、技能、时间线和页面正文。
 - `public/favicon`：站点图标、浏览器标签图标与 PWA manifest。
 
 ## 视觉风格
 
-全站使用冷白纸本、靛青墨与单一光学透镜作为视觉核心。样式集中在 `src/styles/flowli-home.css`，页面切换由 Swup 处理。
+全站使用藏蓝主色、冰蓝文字和克制的玻璃表面。样式集中在 `src/styles/editorial-paper.css`，页面切换由 Swup 处理。
 
 ## 模板来源
 

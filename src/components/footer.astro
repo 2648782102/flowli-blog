@@ -14,8 +14,8 @@ const currentYear = new Date().getFullYear();
             &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved.
         </p>
         <nav class="flowli-footer-links" aria-label="订阅与站点索引">
-            <a href={url('rss/')}>RSS</a>
-            <a href={url('atom/')}>Atom</a>
+            <a href={url('rss/')} onclick={`event.preventDefault(); navigateToPage('${url('rss/')}')`}>RSS</a>
+            <a href={url('atom/')} onclick={`event.preventDefault(); navigateToPage('${url('atom/')}')`}>Atom</a>
             <a target="_blank" href={url('sitemap-index.xml')}>Sitemap</a>
             <span aria-hidden="true">·</span>
             <a target="_blank" href="https://astro.build">Astro</a>

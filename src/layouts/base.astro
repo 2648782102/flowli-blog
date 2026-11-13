@@ -5,8 +5,10 @@ import { siteConfig, profileConfig } from "@/config";
 import { getAnalyticsConfig } from "@utils/analytics";
 import type { Favicon } from "@/types/config";
 import { defaultFavicons } from "@constants/icon";
+import { LIGHT_MODE, DARK_MODE, SYSTEM_MODE } from "@constants/style";
 import {
     BANNER_HEIGHT,
+    BANNER_HEIGHT_EXTEND,
     BANNER_HEIGHT_HOME,
     PAGE_WIDTH,
     NAVBAR_HEIGHT,
@@ -37,9 +39,8 @@ import {
 import { pathsEqual, url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
-import Navbar from "@components/navbar.astro";
 import "@styles/fancybox.css";
-import "@styles/flowli-home.css";
+import "@styles/editorial-paper.css";
 
 
 interface Props {
@@ -55,6 +56,10 @@ let { title, description, lang, setOGTypeArticle, postSlug, class: className } =
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+
+// defines global css variables
+// why doing this in BaseLayout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
+const configHue = siteConfig.themeColor.hue;
 
 let pageTitle: string;
 if (title) {
@@ -137,14 +142,46 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <link rel="apple-touch-icon" href={url("/favicon/apple-touch-icon-light.png")} sizes="180x180" media="(prefers-color-scheme: light)" />
         <link rel="apple-touch-icon" href={url("/favicon/apple-touch-icon-dark.png")} sizes="180x180" media="(prefers-color-scheme: dark)" />
         <link rel="manifest" href={url("/favicon/site.webmanifest")} />
-        <meta name="theme-color" content="#EEF1EC" />
-        <script is:inline>
-            document.documentElement.classList.remove("dark");
-            document.documentElement.setAttribute("data-theme", "github-light");
-            document.documentElement.style.setProperty("--hue", "220");
+        <meta name="theme-color" content="#173A6D" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#07152B" media="(prefers-color-scheme: dark)" />
+        <!-- Set the theme before the page is rendered to avoid a flash -->
+        <script is:inline define:vars={{LIGHT_MODE, DARK_MODE, SYSTEM_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, NAVBAR_HEIGHT, configHue, defaultTheme: siteConfig.defaultTheme}}>
+            // Load the theme from local storage
+            const theme = localStorage.getItem('theme') || defaultTheme;
+            // Apply the theme to the document
+            let isDark = false;
+            switch (theme) {
+                case LIGHT_MODE:
+                    document.documentElement.classList.remove('dark');
+                    isDark = false;
+                    break
+                case DARK_MODE:
+                    document.documentElement.classList.add('dark');
+                    isDark = true;
+                    break
+                case SYSTEM_MODE:
+                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        document.documentElement.classList.add('dark');
+                        isDark = true;
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        isDark = false;
+                    }
+            }
+            const expressiveTheme = isDark ? "github-dark" : "github-light";
+            document.documentElement.setAttribute("data-theme", expressiveTheme);
+            // Load the hue from local storage
+            const hue = localStorage.getItem('hue-v2') || configHue;
+            // Apply the hue to the document
+            document.documentElement.style.setProperty('--hue', hue);
+            // calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
+            let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
+            offset = offset - offset % 4;
+            document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
         </script>
         <!-- defines global css variables. This will be applied to <html> <body> and some other elements idk why -->
         <style define:vars={{
+            configHue,
             'page-width': `${PAGE_WIDTH}rem`,
         }}></style>
         <!-- custom head -->
@@ -158,11 +195,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <!-- 全局配置载体 -->
         <ConfigCarrier />
         <!-- 页面内容 -->
-        <div id="top-row" class="relative z-100 mx-auto h-(--top-row-height) max-w-(--page-width) px-0 md:px-4">
-            <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 z-100 transition-all">
-                <Navbar />
-            </div>
-        </div>
         <slot />
         <!-- Analytics -->
         {analyticsEnabled && analyticsCode && <Fragment set:html={analyticsCode} />}
@@ -198,8 +230,9 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 @layer components {
     /* Base CSS variables for main content top and top-row height */
     :root {
-        --main-content-top: calc(var(--navbar-height) + var(--navbar-gap));
+        --main-content-top: var(--main-panel-top-default);
         --top-row-height: calc(var(--main-content-top) - var(--navbar-gap));
+        --sidebar-top: var(--sidebar-top);
         --sidebar-spacing: var(--sidebar-spacing);
     }
     /* All page modes share the same content origin; see editorial-paper.css. */
@@ -208,9 +241,18 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 
 
 <script>
+import {
+    BREAKPOINT_MD,
+    BREAKPOINT_LG,
+} from "@constants/breakpoints";
+import { widgetManager } from "@utils/widget";
 import { pathsEqual, url } from "@utils/url";
+import { initTheme } from "@utils/theme";
+import { initHue } from "@utils/hue";
 import { initMarkdownActions } from "@/utils/markdown";
 import { initFancybox, cleanupFancybox } from "@utils/fancybox";
+import { loadAndInitTranslate } from "@utils/language";
+import { setupParticleEffects } from "@/utils/particle";
 
 
 const syncNavbarCurrentPage = (pathname: string) => {
@@ -237,6 +279,16 @@ const syncNavbarCurrentPage = (pathname: string) => {
 
 // 初始化Swup
 const setup = () => {
+    let pausedElementIds = new Set();
+    window.swup.hooks.on('content:replace', () => {
+        // Restore pause-swup-transition class to newly replaced persistent elements
+        pausedElementIds.forEach(id => {
+            const el = document.getElementById(id as string);
+            if (el && el.hasAttribute('data-swup-persist')) {
+                el.classList.add('pause-swup-transition');
+            }
+        });
+    })
     window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
         // Disable scroll protection when a link is clicked to prevent interference with page jump scrolling to top
         if ((window as any).scrollProtectionManager && typeof (window as any).scrollProtectionManager.disable === 'function') {
@@ -252,6 +304,45 @@ const setup = () => {
         } else {
             bodyElement!.classList.remove('is-home');
         }
+        // Handle animation logic for persistent sidebar components
+        const currentPath = window.location.pathname;
+        const nextPath = visit.to.url;
+        pausedElementIds.clear();
+        const width = window.innerWidth;
+        const deviceType = width >= BREAKPOINT_LG ? 'desktop' : (width >= BREAKPOINT_MD ? 'tablet' : 'mobile');
+        const configCarrier = widgetManager.getConfig();
+        const sideComponents = {
+            left: configCarrier.components.left || [],
+            right: configCarrier.components.right || []
+        };
+        ['left', 'right', 'middle'].forEach(side => {
+            const allComponents = [
+                ...widgetManager.getComponentsBySideAndPosition(side as any, "top"),
+                ...widgetManager.getComponentsBySideAndPosition(side as any, "sticky")
+            ];
+            let layoutShifted = false;
+            allComponents.forEach(config => {
+                if (deviceType === 'desktop') {
+                    if (side === 'left' && !sideComponents.left.includes(config)) return;
+                    if (side === 'right' && !sideComponents.right.includes(config)) return;
+                }
+                const isVisibleNow = widgetManager.isVisible(config, currentPath, deviceType);
+                const isVisibleNext = widgetManager.isVisible(config, nextPath, deviceType);
+                const elementId = config.type === "toc" ? `toc-wrapper-${side}` : `${config.type}-${side}`;
+                const el = document.getElementById(elementId);
+                if (el && el.hasAttribute('data-swup-persist')) {
+                    if (config.type !== "toc" && isVisibleNow && isVisibleNext && !layoutShifted) { // TOC 特殊处理：由于内容总是变化，不建议暂停动画
+                        el.classList.add('pause-swup-transition');
+                        pausedElementIds.add(el.id);
+                    } else {
+                        el.classList.remove('pause-swup-transition');
+                    }
+                }
+                if (isVisibleNow !== isVisibleNext) {
+                    layoutShifted = true;
+                }
+            });
+        });
     });
     window.swup.hooks.on('page:view', () => {
         syncNavbarCurrentPage(window.location.pathname);
@@ -288,7 +379,19 @@ document.addEventListener('twilight:sync-navbar-current', () => {
     syncNavbarCurrentPage(window.location.pathname);
 });
 
+// Initialize theme
+initTheme();
+
+// Initialize hue
+initHue();
+
 // 初始化 Markdown 相关操作以防止因 Swup 无刷新跳转的机制限制而导致操作失效
 initMarkdownActions();
+
+// Initialize translate.js
+loadAndInitTranslate();
+
+// Initialize particle effects
+setupParticleEffects();
 
 </script>
