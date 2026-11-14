@@ -32,63 +32,32 @@ const latestDate = allPosts[0]?.data.published
 <GridLayout>
     {isHomePage && (
         <div class="home-composition">
-            <section class="home-opening" aria-labelledby="home-opening-title">
-                <p class="home-opening-kicker">独立写作 / 前端工程 / 工具观察</p>
-                <h1 id="home-opening-title">把好奇心<br />写下来<span>。</span></h1>
-                <p class="home-opening-lede">记录技术、工具与日常。这里保存那些不急着得到结论的片段：一次调试、一件工具、一个突然值得记下的日常。</p>
-                <div class="home-opening-actions">
-                    <a class="home-action home-action-primary" href="#writing-desk">
-                        开始阅读
-                        <Icon name="material-symbols:south-rounded" aria-hidden="true" />
-                    </a>
-                    <a class="home-action" href={url("/archive/")}>
-                        全部文章
-                        <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" />
-                    </a>
-                </div>
-                <dl class="home-facts">
-                    <div><dt>已写下</dt><dd>{allPosts.length.toString().padStart(2, "0")} 篇</dd></div>
-                    <div><dt>最近更新</dt><dd>{latestDate || "持续记录"}</dd></div>
-                </dl>
+            <header class="intro-block">
+                <p class="intro-kicker">独立写作 / 前端工程 / 工具观察</p>
+                <h1 id="home-opening-title">把好奇心写下来<span>。</span></h1>
+                <p class="intro-lede">记录技术、工具与日常。这里保存那些不急着得到结论的片段：一次调试、一件工具、一个突然值得记下的日常。</p>
+                <nav class="intro-links" aria-label="站点快捷入口">
+                    <a href={url("/archive/")}>全部文章</a>
+                    <a href={url("/projects/")}>作品</a>
+                    <a href={url("/about/")}>关于</a>
+                    <a href={url("/rss/")}>RSS</a>
+                </nav>
+            </header>
+
+            <section id="writing-desk" aria-labelledby="home-desk-title">
+                <h2 id="home-desk-title" class="home-section-title">最近写下的</h2>
+                <ul class="post-list">
+                    {page.data.map((entry) => (
+                        <li class="post-item">
+                            <a href={getPostUrl(entry)} class="post-item-title">{entry.data.title}</a>
+                            <time class="post-item-date" datetime={new Date(entry.data.published!).toISOString()}>
+                                {new Date(entry.data.published!).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" })}
+                            </time>
+                            {entry.data.description && <p class="post-item-desc">{entry.data.description}</p>}
+                        </li>
+                    ))}
+                </ul>
             </section>
-
-            <div class="home-editorial-grid">
-                <section class="home-feature" aria-labelledby="home-feature-title">
-                    {featuredPost && (
-                        <a class="home-feature-link" href={getPostUrl(featuredPost)}>
-                            <div class="home-feature-label">
-                                <span>最新</span>
-                                <time datetime={new Date(featuredPost.data.published!).toISOString()}>{latestDate}</time>
-                            </div>
-                            <h2 id="home-feature-title">{featuredPost.data.title}</h2>
-                            <p>{featuredPost.data.description || "打开一篇最近写下的片段。"}</p>
-                            <span class="home-feature-cta">继续阅读 <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></span>
-                        </a>
-                    )}
-                </section>
-
-                <section class="home-desk" id="writing-desk" aria-labelledby="home-desk-title">
-                    <header class="home-desk-header">
-                        <h2 id="home-desk-title">最近写下的</h2>
-                        <a href={url("/archive/")}>全部 <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></a>
-                    </header>
-                    <div class="home-desk-list">
-                        {archiveRows.slice(0, 5).map((entry) => (
-                            <a class="home-desk-row" href={getPostUrl(entry)}>
-                                <time datetime={new Date(entry.data.published!).toISOString()}>
-                                    {new Date(entry.data.published!).toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" })}
-                                </time>
-                                <span class="home-desk-title">{entry.data.title}</span>
-                                <span class="home-desk-topic">
-                                    {Array.isArray(entry.data.category)
-                                        ? entry.data.category.join(" / ")
-                                        : entry.data.category || entry.data.tags?.[0] || "未分类"}
-                                </span>
-                            </a>
-                        ))}
-                    </div>
-                </section>
-            </div>
         </div>
     )}
 
