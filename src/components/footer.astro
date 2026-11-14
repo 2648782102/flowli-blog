@@ -11,7 +11,7 @@ const currentYear = new Date().getFullYear();
     <div class="flowli-footer-inner">
         <span class="flowli-footer-mark" aria-hidden="true">f</span>
         <p class="flowli-footer-copy">
-            &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved.
+            &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name} 保留所有权利。
         </p>
         <nav class="flowli-footer-links" aria-label="订阅与站点索引">
             <a href={url('rss/')} onclick={`event.preventDefault(); navigateToPage('${url('rss/')}')`}>RSS</a>

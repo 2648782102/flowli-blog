@@ -50,7 +50,7 @@ onMount(() => {
 </script>
 
 <div class="relative">
-    <button aria-label="Menu" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90" 
+    <button aria-label="菜单" name="导航菜单" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90" 
         id="nav-menu-switch"
         aria-expanded={isOpen}
         aria-controls="nav-menu-panel"

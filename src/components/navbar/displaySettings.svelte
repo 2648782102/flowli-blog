@@ -56,7 +56,7 @@ $effect(() => {
 </script>
 
 <div class="relative z-50">
-    <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center" 
+    <button aria-label="显示设置" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center" 
         id="display-settings-switch"
         aria-expanded={isOpen}
         aria-controls="display-setting-wrapper"
@@ -72,7 +72,7 @@ $effect(() => {
                     before:absolute before:-left-3 before:top-[0.33rem]"
                 >
                     {i18n(I18nKey.themeColor)}
-                    <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md active:scale-90 flex items-center justify-center"
+                    <button aria-label="恢复默认" class="btn-regular w-7 h-7 rounded-md active:scale-90 flex items-center justify-center"
                             class:opacity-0={hue === defaultHue} class:pointer-events-none={hue === defaultHue} onclick={resetHue}>
                         <div class="text-(--btn-content) flex items-center justify-center">
                             <Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.875rem]"></Icon>

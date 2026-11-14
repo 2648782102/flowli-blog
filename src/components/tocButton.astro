@@ -16,7 +16,7 @@ const { class: className, style } = Astro.props;
 <table-of-contents data-is-floating="true" data-navbar-height={NAVBAR_HEIGHT} class={className} style={style}>
     <div class="toc-floating-container">
         <div class="toc-floating-btn-wrapper rounded-2xl overflow-hidden transition">
-            <button class="toc-floating-btn btn-card rounded-2xl p-0 flex items-center justify-center" aria-label="Table of Contents">
+            <button class="toc-floating-btn btn-card rounded-2xl p-0 flex items-center justify-center" aria-label={i18n(I18nKey.tableOfContents)}>
                 <Icon name="material-symbols:format-list-bulleted-rounded" size={24} />
             </button>
         </div>
