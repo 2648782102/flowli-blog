@@ -39,12 +39,12 @@ import {
 import { url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
-import CreationField from "@components/creationField.astro";
 import Navbar from "@components/navbar.astro";
 import Footer from "@components/footer.astro";
 import "@styles/fancybox.css";
 import "@styles/editorial-paper.css";
 import "../styles/theme.css";
+import "../styles/skeuo.css";
 
 
 interface Props {
@@ -194,7 +194,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
     >
         <!-- 全局配置载体 -->
         <ConfigCarrier />
-        <CreationField />
         <div id="top-row" class="relative z-50 mx-auto h-(--top-row-height) max-w-none px-0 md:px-4">
             <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
                 <Navbar />
@@ -261,7 +260,6 @@ import { initHue } from "@utils/hue";
 import { initMarkdownActions } from "@/utils/markdown";
 import { initFancybox, cleanupFancybox } from "@utils/fancybox";
 import { loadAndInitTranslate } from "@utils/language";
-import { setupParticleEffects } from "@/utils/particle";
 
 
 const syncNavbarCurrentPage = (pathname: string) => {
@@ -355,8 +353,5 @@ initMarkdownActions();
 
 // Initialize translate.js
 loadAndInitTranslate();
-
-// Initialize particle effects
-setupParticleEffects();
 
 </script>

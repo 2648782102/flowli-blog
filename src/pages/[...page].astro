@@ -17,16 +17,6 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
-const allPosts = await getSortedPosts();
-const featuredPost = page.data[0];
-const archiveRows = page.data.slice(1);
-const latestDate = allPosts[0]?.data.published
-    ? new Date(allPosts[0].data.published).toLocaleDateString("zh-CN", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-    })
-    : undefined;
 ---
 
 <GridLayout>
