@@ -48,18 +48,17 @@ let links: NavbarLink[] = navbarConfig.links.map(
 </div>
 
 <script>
-import { initNavbarLiquidWebGL } from "@utils/navbarLiquidWebGL";
-
-const startNavbarLiquidWebGL = (): void => {
-    initNavbarLiquidWebGL();
+const startNavbarLiquid3D = async (): Promise<void> => {
+    const { initNavbarLiquid3D } = await import("@utils/navbarLiquid3D");
+    initNavbarLiquid3D();
 };
 
-window.initSemifullScrollDetection = startNavbarLiquidWebGL;
+window.initSemifullScrollDetection = startNavbarLiquid3D;
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startNavbarLiquidWebGL);
+    document.addEventListener("DOMContentLoaded", startNavbarLiquid3D);
 } else {
-    startNavbarLiquidWebGL();
+    startNavbarLiquid3D();
 }
 </script>
 
