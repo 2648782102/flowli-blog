@@ -1393,6 +1393,10 @@ body.is-home #creation-field {
     z-index: 40;
 }
 
+#top-row {
+    z-index: 60 !important;
+}
+
 #swup-container {
     width: 100%;
 }
