@@ -36,11 +36,11 @@ let links: NavbarLink[] = navbarConfig.links.map(
             {links.map((link) => <NavLinks link={link} />)}
         </nav>
         <div class="flex items-center navbar-buttons" id="navbar-buttons">
-            <Search client:idle></Search>
-            <Translator client:idle></Translator>
-            <DisplaySettings client:idle></DisplaySettings>
-            <LightDarkSwitch client:idle></LightDarkSwitch>
-            <NavMenu client:idle links={links}></NavMenu>
+            <div class="navbar-control navbar-search-control"><Search client:idle></Search></div>
+            <div class="navbar-control navbar-control--utility"><Translator client:idle></Translator></div>
+            <div class="navbar-control navbar-control--utility"><DisplaySettings client:idle></DisplaySettings></div>
+            <div class="navbar-control navbar-control--utility"><LightDarkSwitch client:idle></LightDarkSwitch></div>
+            <div class="navbar-control navbar-menu-control"><NavMenu client:idle links={links}></NavMenu></div>
         </div>
     </div>
 </div>
