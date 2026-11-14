@@ -43,7 +43,7 @@ const { enabled: analyticsEnabled, baseUrl, apiKey, websiteId } = getAnalyticsCo
 <div class:list={["flex flex-wrap text-neutral-500 dark:text-neutral-400 items-center gap-x-4 gap-y-2", className]}>
     <!-- publish date -->
     <div class="flex items-center">
-        <div class="meta-icon">
+        <div class="meta-icon shrink-0 w-5 min-w-5 mr-2">
             <Icon name="material-symbols:calendar-today-outline-rounded" class="text-xl"></Icon>
         </div>
         <span class="text-50 text-sm font-medium">{formatDateToYYYYMMDD(published)}</span>
@@ -59,7 +59,7 @@ const { enabled: analyticsEnabled, baseUrl, apiKey, websiteId } = getAnalyticsCo
     )}
     <!-- categories -->
     <div class="flex items-center">
-        <div class="meta-icon">
+        <div class="meta-icon shrink-0 w-5 min-w-5 mr-2">
             <Icon name="material-symbols:book-2-outline-rounded" class="text-xl"></Icon>
         </div>
         <div class="flex flex-row flex-nowrap items-center">
@@ -90,7 +90,7 @@ const { enabled: analyticsEnabled, baseUrl, apiKey, websiteId } = getAnalyticsCo
     </div>
     <!-- tags -->
     <div class:list={["items-center", {"flex": !hideTagsForMobile, "hidden md:flex": hideTagsForMobile}]}>
-        <div class="meta-icon">
+        <div class="meta-icon shrink-0 w-5 min-w-5 mr-2">
             <Icon name="material-symbols:tag-rounded" class="text-xl"></Icon>
         </div>
         <div class="flex flex-row flex-nowrap items-center">
@@ -116,7 +116,7 @@ const { enabled: analyticsEnabled, baseUrl, apiKey, websiteId } = getAnalyticsCo
             data-i18n-visitors={i18n(I18nKey.visitors)}
             data-i18n-error={i18n(I18nKey.statsError)}
         >
-            <div class="meta-icon">
+        <div class="meta-icon shrink-0 w-5 min-w-5 mr-2">
                 <Icon name="material-symbols:visibility-outline-rounded" class="text-xl"></Icon>
             </div>
             <span class="text-50 text-sm font-medium page-views-display">{i18n(I18nKey.statsLoading)}</span>

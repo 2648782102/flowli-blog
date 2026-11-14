@@ -350,6 +350,8 @@ body::after {
     border-bottom-color: var(--archive-line) !important;
 }
 
+/* Post meta and license are fixed in their components; no extra layout overrides. */
+
 .post-row-title {
     font-size: 1.35rem;
     font-weight: 580;
@@ -565,7 +567,7 @@ body::after {
     .home-opening::before {
         content: "";
         position: absolute;
-        inset: -1rem -1rem -0.5rem;
+        inset: -1rem 0 -0.5rem;
         z-index: -1;
         border-radius: 0.5rem;
         background: linear-gradient(180deg, rgb(2 7 13 / 0.42), rgb(2 7 13 / 0.08));

@@ -35,7 +35,7 @@ const postUrl = sourceLink || propPostUrl || getPostUrlBySlug(id);
     <a href={postUrl} class="link text-(--primary)">
         {postUrl}
     </a>
-    <div class="flex gap-6 mt-2">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mt-2">
         <div>
             <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
             <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{author || profileConf.name}</div>
@@ -49,5 +49,5 @@ const postUrl = sourceLink || propPostUrl || getPostUrlBySlug(id);
             <a href={licenseName ? (licenseUrl || undefined) : licenseConf.url} target="_blank" class="link text-(--primary) line-clamp-2">{licenseName || licenseConf.name}</a>
         </div>
     </div>
-    <Icon name="fa6-brands:creative-commons" class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
+    <Icon name="fa6-brands:creative-commons" class="transition text-[8rem] sm:text-[12rem] absolute pointer-events-none right-4 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
 </div>
