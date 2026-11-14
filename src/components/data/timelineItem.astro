@@ -169,7 +169,7 @@ const itemColor = item.color || "#3B82F6";
 {layout === 'timeline' ? (
     <div class="relative flex items-start gap-6">
         {showTimeline && (
-            <div class={`relative z-10 rounded-full flex items-center justify-center shrink-0 ${sizeClasses.node}`} style={`background-color: ${itemColor}`}>
+            <div class={`timeline-node relative z-10 rounded-full flex items-center justify-center shrink-0 ${sizeClasses.node}`} style={`background-color: color-mix(in srgb, ${itemColor} 55%, var(--surface, #0b1d38)); border: 1px solid color-mix(in srgb, ${itemColor} 70%, transparent)`}>
                 <Icon
                     icon={item.icon || getTypeIcon(item.type)}
                     class={`text-white ${sizeClasses.nodeIcon}`}
@@ -241,13 +241,13 @@ const itemColor = item.color || "#3B82F6";
                     </div>
                 )}
                 {item.links && item.links.length > 0 && (
-                    <div class="flex gap-4">
+                    <div class="flex flex-wrap gap-2">
                         {item.links.map((link) => (
                             <a
                                 href={link.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class={`inline-flex items-center px-3 py-1.5 rounded-md border border-(--primary) text-(--primary) bg-[color-mix(in_oklch,var(--primary)_8%,transparent)] hover:bg-[color-mix(in_oklch,var(--primary)_14%,transparent)] active:bg-[color-mix(in_oklch,var(--primary)_20%,transparent)] text-sm font-medium transition-colors gap-1 ${sizeClasses.meta}`}
+                                class={`inline-flex items-center whitespace-nowrap px-3 py-1.5 rounded-md border border-(--primary) text-(--primary) bg-[color-mix(in_oklch,var(--primary)_8%,transparent)] hover:bg-[color-mix(in_oklch,var(--primary)_14%,transparent)] active:bg-[color-mix(in_oklch,var(--primary)_20%,transparent)] text-sm font-medium transition-colors gap-1 ${sizeClasses.meta}`}
                             >
                                 {getLinkIcon(link.type)}
                                 {link.name}
@@ -336,13 +336,13 @@ const itemColor = item.color || "#3B82F6";
                     </div>
                 )}
                 {item.links && item.links.length > 0 && (
-                    <div class="flex gap-3">
+                    <div class="flex flex-wrap gap-2">
                         {item.links.slice(0, 2).map((link) => (
                             <a
                                 href={link.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class={`inline-flex items-center px-3 py-1.5 rounded-md border border-(--primary) text-(--primary) bg-[color-mix(in_oklch,var(--primary)_8%,transparent)] hover:bg-[color-mix(in_oklch,var(--primary)_14%,transparent)] active:bg-[color-mix(in_oklch,var(--primary)_20%,transparent)] text-sm font-medium transition-colors ${sizeClasses.meta}`}
+                                class={`inline-flex items-center whitespace-nowrap px-3 py-1.5 rounded-md border border-(--primary) text-(--primary) bg-[color-mix(in_oklch,var(--primary)_8%,transparent)] hover:bg-[color-mix(in_oklch,var(--primary)_14%,transparent)] active:bg-[color-mix(in_oklch,var(--primary)_20%,transparent)] text-sm font-medium transition-colors ${sizeClasses.meta}`}
                             >
                                 {getLinkIcon(link.type)} {link.name}
                             </a>

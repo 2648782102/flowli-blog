@@ -50,7 +50,10 @@ const getCategoryText = (category: string) => {
         case "client":
             return i18n(I18nKey.skillsClient);
         case "web":
+        case "frontend":
             return i18n(I18nKey.skillsFrontend);
+        case "backend":
+            return i18n(I18nKey.skillsBackend);
         case "database":
             return i18n(I18nKey.skillsDatabase);
         case "engines":
