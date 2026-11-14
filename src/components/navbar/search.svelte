@@ -218,9 +218,9 @@ onDestroy(() => {
 <!-- search bar for desktop view (collapsed by default) -->
 <div
     id="search-bar"
+    class:is-expanded={isDesktopSearchExpanded}
     class="transition-all items-center h-11 rounded-lg
-        {isDesktopSearchExpanded ? 'bg-black/4 hover:bg-black/6 focus-within:bg-black/6 dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10' : 'btn-plain scale-animation active:scale-90'}
-        {isDesktopSearchExpanded ? 'w-48' : 'w-11'}"
+        {isDesktopSearchExpanded ? 'bg-black/4 hover:bg-black/6 focus-within:bg-black/6 dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10' : 'btn-plain scale-animation active:scale-90'}"
     role="button"
     tabindex="0"
     aria-label="Search"
@@ -231,8 +231,7 @@ onDestroy(() => {
     <input id="search-input-desktop" placeholder="{i18n(I18nKey.search)}" bind:value={keywordDesktop}
         onfocus={() => {if (!isDesktopSearchExpanded) toggleDesktopSearch(); search(keywordDesktop, true)}}
         onblur={handleBlur}
-        class="transition-all pl-10 text-sm bg-transparent outline-0
-            h-full {isDesktopSearchExpanded ? 'w-36' : 'w-0'} text-black/50 dark:text-white/50"
+        class="transition-all pl-10 text-sm bg-transparent outline-0 h-full text-black/50 dark:text-white/50"
     >
 </div>
 
