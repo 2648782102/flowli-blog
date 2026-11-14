@@ -36,10 +36,12 @@ import {
     EASE_PAGE_IN,
     EASE_PAGE_OUT,
 } from "@constants/transitions";
-import { pathsEqual, url } from "@utils/url";
+import { url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
 import CreationField from "@components/creationField.astro";
+import Navbar from "@components/navbar.astro";
+import Footer from "@components/footer.astro";
 import "@styles/fancybox.css";
 import "@styles/editorial-paper.css";
 
@@ -50,13 +52,9 @@ interface Props {
     lang?: string;
     setOGTypeArticle?: boolean;
     postSlug?: string;
-    class?: string;
 }
 
-let { title, description, lang, setOGTypeArticle, postSlug, class: className } = Astro.props;
-
-// apply a class to the body element to decide the height of the banner, only used for initial page load
-const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+let { title, description, lang, setOGTypeArticle, postSlug } = Astro.props;
 
 // defines global css variables
 // why doing this in BaseLayout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
@@ -191,13 +189,26 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
     </head>
 
-    <body class="min-h-screen" class:list={[{"is-home": isHomePage}, className]}
+    <body class="min-h-screen"
     >
         <!-- 全局配置载体 -->
         <ConfigCarrier />
         <CreationField />
-        <!-- 页面内容 -->
-        <slot />
+        <div id="top-row" class="relative z-50 mx-auto h-(--top-row-height) max-w-none px-0 md:px-4">
+            <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+                <Navbar />
+            </div>
+        </div>
+        <div id="main-content" class="relative z-30 w-full min-h-[calc(100vh-var(--main-content-top))]">
+            <div class="editorial-shell relative mx-auto">
+                <div id="main-grid" class="editorial-main-grid">
+                    <slot />
+                </div>
+                <div class="editorial-footer">
+                    <Footer />
+                </div>
+            </div>
+        </div>
         <!-- Analytics -->
         {analyticsEnabled && analyticsCode && <Fragment set:html={analyticsCode} />}
     </body>
@@ -243,12 +254,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 
 
 <script>
-import {
-    BREAKPOINT_MD,
-    BREAKPOINT_LG,
-} from "@constants/breakpoints";
-import { widgetManager } from "@utils/widget";
-import { pathsEqual, url } from "@utils/url";
+import { pathsEqual } from "@utils/url";
 import { initTheme } from "@utils/theme";
 import { initHue } from "@utils/hue";
 import { initMarkdownActions } from "@/utils/markdown";
@@ -278,28 +284,11 @@ const syncNavbarCurrentPage = (pathname: string) => {
     });
 };
 
-const hasSidebarForPath = (pathname: string): boolean => {
-    const homePath = url('/');
-    const normalizedPath = pathname.replace(/\/+$/, '') || '/';
-    const normalizedHomePath = homePath.replace(/\/+$/, '') || '/';
-    if (pathsEqual(normalizedPath, normalizedHomePath)) return false;
-    return widgetManager.hasContentOnSide('left', [], pathname) ||
-        widgetManager.hasContentOnSide('right', [], pathname);
-};
-
-const syncLayoutState = (pathname: string): void => {
-    const bodyElement = document.querySelector('body');
-    if (!bodyElement) return;
-    bodyElement.classList.toggle('is-home', pathsEqual(pathname, url('/')));
-    bodyElement.classList.toggle('has-sidebar', hasSidebarForPath(pathname));
-};
-
-
 // 初始化Swup
 const setup = () => {
     let pausedElementIds = new Set();
     window.swup.hooks.on('content:replace', () => {
-        syncLayoutState(window.location.pathname);
+        document.body.classList.toggle('is-home', document.querySelector('#swup-container')?.getAttribute('data-layout') === 'home');
         // Restore pause-swup-transition class to newly replaced persistent elements
         pausedElementIds.forEach(id => {
             const el = document.getElementById(id as string);
@@ -315,48 +304,10 @@ const setup = () => {
         }
         syncNavbarCurrentPage(new URL(visit.to.url, window.location.origin).pathname);
         window.scrollTo({ top: 0, behavior: 'instant' });
-        // Handle animation logic for persistent sidebar components
-        const currentPath = window.location.pathname;
-        const nextPath = visit.to.url;
         pausedElementIds.clear();
-        const width = window.innerWidth;
-        const deviceType = width >= BREAKPOINT_LG ? 'desktop' : (width >= BREAKPOINT_MD ? 'tablet' : 'mobile');
-        const configCarrier = widgetManager.getConfig();
-        const sideComponents = {
-            left: configCarrier.components.left || [],
-            right: configCarrier.components.right || []
-        };
-        ['left', 'right', 'middle'].forEach(side => {
-            const allComponents = [
-                ...widgetManager.getComponentsBySideAndPosition(side as any, "top"),
-                ...widgetManager.getComponentsBySideAndPosition(side as any, "sticky")
-            ];
-            let layoutShifted = false;
-            allComponents.forEach(config => {
-                if (deviceType === 'desktop') {
-                    if (side === 'left' && !sideComponents.left.includes(config)) return;
-                    if (side === 'right' && !sideComponents.right.includes(config)) return;
-                }
-                const isVisibleNow = widgetManager.isVisible(config, currentPath, deviceType);
-                const isVisibleNext = widgetManager.isVisible(config, nextPath, deviceType);
-                const elementId = config.type === "toc" ? `toc-wrapper-${side}` : `${config.type}-${side}`;
-                const el = document.getElementById(elementId);
-                if (el && el.hasAttribute('data-swup-persist')) {
-                    if (config.type !== "toc" && isVisibleNow && isVisibleNext && !layoutShifted) { // TOC 特殊处理：由于内容总是变化，不建议暂停动画
-                        el.classList.add('pause-swup-transition');
-                        pausedElementIds.add(el.id);
-                    } else {
-                        el.classList.remove('pause-swup-transition');
-                    }
-                }
-                if (isVisibleNow !== isVisibleNext) {
-                    layoutShifted = true;
-                }
-            });
-        });
     });
     window.swup.hooks.on('page:view', () => {
-        syncLayoutState(window.location.pathname);
+        document.body.classList.toggle('is-home', document.querySelector('#swup-container')?.getAttribute('data-layout') === 'home');
         syncNavbarCurrentPage(window.location.pathname);
         window.scrollTo({ top: 0, behavior: 'instant' });
         // Check if the current page is a post page, if so, trigger a custom event to initialize the comment system
@@ -387,6 +338,7 @@ if (window?.swup?.hooks) {
     document.addEventListener('swup:enable', setup)
 }
 syncNavbarCurrentPage(window.location.pathname);
+document.body.classList.toggle('is-home', document.querySelector('#swup-container')?.getAttribute('data-layout') === 'home');
 document.addEventListener('twilight:sync-navbar-current', () => {
     syncNavbarCurrentPage(window.location.pathname);
 });
