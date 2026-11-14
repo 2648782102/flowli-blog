@@ -1,0 +1,147 @@
+/*
+ * Homepage: an engraved nameplate plus a raised featured card.
+ */
+
+.featured-plate {
+    position: relative;
+    border-radius: 0.7rem;
+    background:
+        repeating-linear-gradient(0deg, rgb(0 0 0 / 0.010) 0 1px, transparent 1px 3px),
+        var(--mat-surface-raised);
+    box-shadow: var(--shadow-float);
+    overflow: hidden;
+}
+
+.featured-plate::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
+}
+
+.featured-plate-inner {
+    padding: clamp(1.4rem, 3vw, 2rem);
+}
+
+.featured-eyebrow {
+    margin: 0 0 0.6rem;
+    font-family: var(--editorial-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    text-transform: none;
+}
+
+.featured-plate h2 {
+    margin: 0;
+    font-size: clamp(1.45rem, 3vw, 1.95rem);
+    font-weight: 620;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+}
+
+.featured-plate h2 a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.featured-plate h2 a:hover {
+    color: var(--accent);
+}
+
+.featured-desc {
+    margin: 0.7rem 0 0;
+    max-width: 52ch;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--ink-soft);
+}
+
+.featured-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1.1rem;
+    padding: 0.42rem 0.8rem;
+    border-radius: 0.4rem;
+    background: linear-gradient(180deg, var(--mat-surface), var(--mat-surface-sunken));
+    box-shadow: var(--shadow-raised);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink) !important;
+    text-decoration: none;
+    transition: box-shadow 130ms ease, transform 130ms ease;
+}
+
+.featured-cta:hover {
+    box-shadow: var(--shadow-float);
+    color: var(--accent) !important;
+}
+
+.featured-cta:active {
+    box-shadow: var(--shadow-inset);
+    transform: translateY(1px);
+}
+
+.featured-cta svg {
+    width: 0.9rem;
+    height: 0.9rem;
+}
+
+/* Intro block gets an engraved divider. */
+.intro-block {
+    position: relative;
+    padding-bottom: 1.75rem;
+    border-bottom: 0;
+    box-shadow: 0 1px 0 var(--skeuo-groove), 0 2px 0 var(--skeuo-edge);
+}
+
+/* Section headings read as embossed labels. */
+.home-section-title {
+    display: inline-block;
+    margin-bottom: 0.9rem;
+    padding: 0.28rem 0.6rem;
+    border-radius: 0.3rem;
+    background: linear-gradient(180deg, var(--mat-surface-sunken), var(--mat-surface));
+    box-shadow: var(--shadow-inset);
+    font-family: var(--editorial-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+}
+
+/* Post list items become stacked slips. */
+.post-item {
+    padding: 1.1rem 0.9rem;
+    margin: 0.4rem 0;
+    border-bottom: 0;
+    border-radius: 0.45rem;
+    transition: box-shadow 130ms ease, background-color 130ms ease;
+}
+
+.post-item:hover {
+    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface));
+    box-shadow: var(--shadow-raised);
+}
+
+.post-item + .post-item::before {
+    content: "";
+    display: block;
+    height: 1px;
+    margin: -1.1rem 0 1.1rem;
+    background: var(--skeuo-groove);
+    box-shadow: 0 1px 0 var(--skeuo-edge);
+}
+
+.post-item:hover::before,
+.post-item:hover + .post-item::before {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .featured-cta,
+    .post-item {
+        transition: none;
+    }
+}

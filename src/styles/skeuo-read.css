@@ -1,0 +1,146 @@
+/*
+ * Reading experience: engraved title plate, inset meta strip, tactile code.
+ */
+
+#post-container {
+    padding: clamp(1.5rem, 3.4vw, 2.6rem) !important;
+}
+
+/* Title block as an engraved plate. */
+#post-container > div[data-pagefind-body][data-pagefind-meta="title"] {
+    position: relative;
+    padding-bottom: 0.75rem !important;
+}
+
+/* Meta strip sits in a shallow well. */
+#post-container > .onload-animation-up .meta-icon {
+    border-radius: 0.3rem;
+    background: linear-gradient(180deg, var(--mat-surface-sunken), var(--mat-surface));
+    box-shadow: var(--shadow-inset);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem;
+    color: var(--ink-soft);
+}
+
+/* Body copy: slightly wider measure, comfortable rhythm. */
+#post-container :is(.custom-md, .markdown-body) {
+    max-width: 66ch;
+    font-size: 1.02rem;
+    line-height: 1.95;
+}
+
+#post-container :is(.custom-md, .markdown-body) p {
+    margin-block: 1.05em;
+}
+
+/* First paragraph gets a small lead-in emphasis. */
+#post-container :is(.custom-md, .markdown-body) > p:first-of-type {
+    color: var(--ink) !important;
+    font-size: 1.06rem;
+}
+
+#post-container :is(.custom-md, .markdown-body) h2 {
+    position: relative;
+    margin-top: 2.4em;
+    padding-bottom: 0.35em;
+    box-shadow: 0 1px 0 var(--skeuo-groove), 0 2px 0 var(--skeuo-edge);
+}
+
+#post-container :is(.custom-md, .markdown-body) h3 {
+    margin-top: 1.9em;
+}
+
+/* Inline code as a tiny inset chip. */
+#post-container :is(.custom-md, .markdown-body) :not(pre) > code {
+    padding: 0.12em 0.38em;
+    border-radius: 0.28rem;
+    background: var(--mat-surface-sunken) !important;
+    box-shadow: var(--shadow-inset);
+    font-size: 0.88em;
+    color: var(--ink) !important;
+}
+
+/* Code blocks: recessed panel with a metal top bar. */
+#post-container .expressive-code {
+    margin-block: 1.6rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-float);
+    overflow: hidden;
+}
+
+#post-container .expressive-code .frame {
+    background: var(--mat-surface-sunken) !important;
+}
+
+#post-container .expressive-code pre {
+    background: transparent !important;
+}
+
+/* Tables: ruled ledger. */
+#post-container :is(.custom-md, .markdown-body) table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0.4rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-raised);
+}
+
+#post-container :is(.custom-md, .markdown-body) th {
+    background: linear-gradient(180deg, var(--mat-metal-a), var(--mat-metal-b)) !important;
+    color: var(--ink) !important;
+    font-weight: 600;
+}
+
+#post-container :is(.custom-md, .markdown-body) :is(td, th) {
+    padding: 0.55rem 0.8rem !important;
+    box-shadow: 0 1px 0 var(--skeuo-groove);
+}
+
+/* Images: framed like a print. */
+#post-container :is(.custom-md, .markdown-body) img {
+    border-radius: 0.35rem;
+    box-shadow: var(--shadow-float);
+    background: var(--mat-surface);
+    padding: 0.35rem;
+}
+
+/* License block: engraved plaque. */
+#post-container .license-container {
+    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
+    box-shadow: var(--shadow-raised) !important;
+    border-radius: 0.5rem !important;
+}
+
+/* Post navigation cards. */
+#content-wrapper > div:has(> a[href*="/posts/"] > .btn-card) > a > .btn-card {
+    box-shadow: var(--shadow-raised) !important;
+    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
+}
+
+#content-wrapper > div:has(> a[href*="/posts/"] > .btn-card) > a > .btn-card:hover {
+    box-shadow: var(--shadow-float) !important;
+}
+
+/* Table of contents as a service panel. */
+#editorial-sidebar-rail table-of-contents a {
+    border-radius: 0.3rem;
+    transition: background-color 130ms ease, box-shadow 130ms ease;
+}
+
+#editorial-sidebar-rail table-of-contents a:hover {
+    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface));
+    box-shadow: var(--shadow-raised);
+}
+
+@media (max-width: 640px) {
+    #post-container {
+        padding: 1.1rem !important;
+    }
+
+    #post-container :is(.custom-md, .markdown-body) {
+        font-size: 0.98rem;
+        line-height: 1.9;
+    }
+}

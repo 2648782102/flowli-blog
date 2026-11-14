@@ -209,6 +209,16 @@ export function initTranslateService(): void {
 // 加载并初始化翻译功能
 export async function loadAndInitTranslate(): Promise<void> {
     if (typeof window === "undefined" || !siteConfig.translate?.enable) return;
+
+    // 当前语言与站点语言一致时不加载翻译脚本。
+    // translate.js 在同语种下仍会重写 DOM 文本，会把 UTF-8 中文错误解码成乱码。
+    const siteLang = getDefaultLanguage();
+    const siteTranslateLang = getTranslateLanguageFromConfig(siteLang);
+    const stored = getStoredLanguage();
+
+    // 未选择语言，或选择的正是站点语言（含翻译服务语言码）时，不加载脚本。
+    if (!stored || stored === siteLang || stored === siteTranslateLang) return;
+
     try {
         // 检查是否已经加载
         if (!(window as any).translate) {
