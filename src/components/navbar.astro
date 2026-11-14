@@ -10,10 +10,8 @@ import Translator from "@components/navbar/translator.svelte";
 import DisplaySettings from "@components/navbar/displaySettings.svelte";
 import LightDarkSwitch from "@components/navbar/lightDarkSwitch.svelte";
 
-
 const className = Astro.props.class;
 
-// 获取导航栏透明模式配置 - 根据当前壁纸模式读取正确的配置
 let links: NavbarLink[] = navbarConfig.links.map(
     (item: NavbarLink | LinkPreset): NavbarLink => {
         if (typeof item === "number") {
@@ -25,38 +23,19 @@ let links: NavbarLink[] = navbarConfig.links.map(
 ---
 
 <div id="navbar" class="z-50 px-3 sm:px-6 md:px-0">
-    <div class="absolute h-8 left-0 right-0 -top-8 bg-(--card-bg) transition"></div> <!-- used for onload animation -->
-    <svg class="navbar-liquid-defs" aria-hidden="true" width="0" height="0" focusable="false">
-        <defs>
-            <filter id="flowli-nav-water" x="-12%" y="-35%" width="124%" height="170%" color-interpolation-filters="sRGB">
-                <feTurbulence type="fractalNoise" baseFrequency="0.009 0.038" numOctaves="2" seed="7" result="waterNoise">
-                    <animate attributeName="baseFrequency" dur="14s" values="0.009 0.038;0.014 0.026;0.009 0.038" repeatCount="indefinite" />
-                </feTurbulence>
-                <feDisplacementMap in="SourceGraphic" in2="waterNoise" scale="8" xChannelSelector="R" yChannelSelector="B" />
-            </filter>
-        </defs>
-    </svg>
+    <div class="absolute h-8 left-0 right-0 -top-8 bg-(--card-bg) transition"></div>
     <div class:list={[
         className,
         "overflow-visible! max-w-(--page-width) h-18 mx-auto flex items-center justify-between md:px-4"]}>
-        <div class="navbar-liquid-shell" aria-hidden="true">
-            <div class="navbar-liquid-depth"></div>
-            <div class="navbar-liquid-wave"></div>
-            <div class="navbar-liquid-caustic"></div>
-            <div class="navbar-liquid-node-glow"></div>
-            <div class="navbar-liquid-ripple"></div>
-            <div class="navbar-liquid-gloss"></div>
-            <div class="navbar-liquid-edge"></div>
-        </div>
+        <canvas id="navbar-liquid-canvas" aria-hidden="true"></canvas>
+        <div class="navbar-glass-rim" aria-hidden="true"></div>
         <a href={url('/')} class="flowli-brand h-11 px-3" aria-label="flowli 首页">
             <span class="flowli-brand-mark" aria-hidden="true">f</span>
             <span class="flowli-brand-name">flowli</span>
             <span class="flowli-brand-note">个人博客</span>
         </a>
         <div class="hidden md:flex items-center navbar-nav-links">
-            {links.map((l) => {
-                return <NavLinks link={l} />;
-            })}
+            {links.map((link) => <NavLinks link={link} />)}
         </div>
         <div class="flex items-center navbar-buttons" id="navbar-buttons">
             <Search client:idle></Search>
@@ -69,126 +48,18 @@ let links: NavbarLink[] = navbarConfig.links.map(
 </div>
 
 <script>
-function initLiquidGlassNavbar() {
-    const navbar = document.getElementById('navbar') as HTMLElement | null;
-    if (!navbar) return;
-    const navbarElement = navbar;
-    const setNavbarVariable = (name: string, value: string): void => {
-        navbarElement.style.setProperty(name, value);
-    };
-    const capsule = navbar.querySelector(':scope > div:last-child') as HTMLElement | null;
-    const nodeSelector = '.nav-link-item, .flowli-brand, #navbar-buttons button:not(.float-panel *)';
-    let rippleTimer = 0;
+import { initNavbarLiquidWebGL } from "@utils/navbarLiquidWebGL";
 
-    if (window.liquidGlassNavbarHandler) {
-        window.removeEventListener('scroll', window.liquidGlassNavbarHandler);
-    }
+const startNavbarLiquidWebGL = (): void => {
+    initNavbarLiquidWebGL();
+};
 
-    let ticking = false;
+window.initSemifullScrollDetection = startNavbarLiquidWebGL;
 
-    function updateNavbarState() {
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const threshold = 32;
-
-        if (scrollTop > threshold) {
-            navbar?.classList.add('scrolled');
-        } else {
-            navbar?.classList.remove('scrolled');
-        }
-
-        ticking = false;
-    }
-
-    function requestTick() {
-        if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(updateNavbarState);
-        }
-    }
-
-    function updatePointer(event: PointerEvent, node?: HTMLElement | null) {
-        if (!capsule || event.pointerType === 'touch') return;
-        const rect = capsule.getBoundingClientRect();
-        const horizontalRatio = (event.clientX - rect.left) / rect.width - 0.5;
-        const verticalRatio = (event.clientY - rect.top) / rect.height - 0.5;
-        setNavbarVariable('--lg-pointer-x', `${event.clientX - rect.left}px`);
-        setNavbarVariable('--lg-pointer-y', `${event.clientY - rect.top}px`);
-        setNavbarVariable('--lg-node-x', `${event.clientX - rect.left}px`);
-        setNavbarVariable('--lg-node-y', `${event.clientY - rect.top}px`);
-        setNavbarVariable('--lg-shift-x', `${horizontalRatio * 7}px`);
-        setNavbarVariable('--lg-shift-y', `${verticalRatio * 5}px`);
-        setNavbarVariable('--lg-tilt-x', `${verticalRatio * -1.5}deg`);
-        setNavbarVariable('--lg-tilt-y', `${horizontalRatio * 2}deg`);
-
-        if (node) {
-            const nodeRect = node.getBoundingClientRect();
-            node.style.setProperty('--node-pointer-x', `${event.clientX - nodeRect.left}px`);
-            node.style.setProperty('--node-pointer-y', `${event.clientY - nodeRect.top}px`);
-        }
-    }
-
-    function resetPointer() {
-        setNavbarVariable('--lg-pointer-x', '50%');
-        setNavbarVariable('--lg-pointer-y', '50%');
-        setNavbarVariable('--lg-node-x', '50%');
-        setNavbarVariable('--lg-node-y', '50%');
-        setNavbarVariable('--lg-shift-x', '0px');
-        setNavbarVariable('--lg-shift-y', '0px');
-        setNavbarVariable('--lg-tilt-x', '0deg');
-        setNavbarVariable('--lg-tilt-y', '0deg');
-        capsule?.classList.remove('has-liquid-node');
-        navbarElement.querySelectorAll('.is-liquid-active').forEach((element) => {
-            element.classList.remove('is-liquid-active');
-        });
-    }
-
-    function triggerRipple(event: PointerEvent) {
-        if (!capsule || event.pointerType === 'touch') return;
-        const rect = capsule.getBoundingClientRect();
-        setNavbarVariable('--lg-ripple-x', `${event.clientX - rect.left}px`);
-        setNavbarVariable('--lg-ripple-y', `${event.clientY - rect.top}px`);
-        capsule.classList.remove('is-rippling');
-        void capsule.offsetWidth;
-        capsule.classList.add('is-rippling');
-        window.clearTimeout(rippleTimer);
-        rippleTimer = window.setTimeout(() => capsule?.classList.remove('is-rippling'), 720);
-    }
-
-    window.liquidGlassNavbarHandler = requestTick;
-    window.addEventListener('scroll', requestTick, { passive: true });
-    navbar.addEventListener('pointermove', (event) => {
-        const target = event.target as Element | null;
-        const node = target?.closest(nodeSelector) as HTMLElement | null;
-        updatePointer(event, capsule?.contains(node) ? node : null);
-    }, { passive: true });
-    navbar.addEventListener('pointerover', (event) => {
-        const target = event.target as Element | null;
-        const node = target?.closest(nodeSelector) as HTMLElement | null;
-        if (!node || !capsule?.contains(node) || event.pointerType === 'touch') return;
-        capsule.classList.add('has-liquid-node');
-        node.classList.add('is-liquid-active');
-        triggerRipple(event);
-    }, { passive: true });
-    navbar.addEventListener('pointerout', (event) => {
-        const target = event.target as Element | null;
-        const node = target?.closest(nodeSelector) as HTMLElement | null;
-        if (!node) return;
-        const nextTarget = event.relatedTarget as Node | null;
-        if (!nextTarget || !node.contains(nextTarget)) {
-            node.classList.remove('is-liquid-active');
-        }
-    }, { passive: true });
-    navbar.addEventListener('pointerleave', resetPointer, { passive: true });
-
-    updateNavbarState();
-}
-
-window.initSemifullScrollDetection = initLiquidGlassNavbar;
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initLiquidGlassNavbar);
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startNavbarLiquidWebGL);
 } else {
-    initLiquidGlassNavbar();
+    startNavbarLiquidWebGL();
 }
 </script>
 
@@ -201,15 +72,9 @@ async function loadPagefind() {
         }
 
         const pagefind = await import(scriptUrl);
-
-        await pagefind.options({
-            excerptLength: 20
-        });
-
+        await pagefind.options({ excerptLength: 20 });
         window.pagefind = pagefind;
-
         document.dispatchEvent(new CustomEvent('pagefindready'));
-        console.log('Pagefind loaded and initialized successfully, event dispatched.');
     } catch (error) {
         console.error('Failed to load Pagefind:', error);
         window.pagefind = {
@@ -217,7 +82,6 @@ async function loadPagefind() {
             options: () => Promise.resolve(),
         };
         document.dispatchEvent(new CustomEvent('pagefindloaderror'));
-        console.log('Pagefind load error, event dispatched.');
     }
 }
 
