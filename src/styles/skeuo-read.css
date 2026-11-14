@@ -144,3 +144,25 @@
         line-height: 1.9;
     }
 }
+
+/* Post title must be fully opaque: legacy utility classes produced ~1.5:1 contrast. */
+#post-container [data-pagefind-meta="title"] {
+    color: var(--ink) !important;
+    opacity: 1 !important;
+    font-family: var(--editorial-serif);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.28;
+}
+
+/* Sidebar / footer text needs a higher floor on dark metal. */
+.flowli-footer-inner,
+.flowli-footer-copy {
+    color: var(--ink-soft) !important;
+}
+
+/* Post title as h1 keeps display sizing. */
+#post-container h1[data-pagefind-meta="title"] {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.85rem, 3.2vw, 2.35rem);
+}
