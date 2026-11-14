@@ -23,6 +23,7 @@ uniform float u_aspect;
 uniform float u_time;
 uniform float u_motion;
 uniform float u_energy;
+uniform vec2 u_velocity;
 varying vec2 v_uv;
 
 float heightAt(vec2 textureUv) {
@@ -37,23 +38,26 @@ void main() {
     float rightHeight = heightAt(v_uv + vec2(u_texel.x, 0.0));
     float lowerHeight = heightAt(v_uv - vec2(0.0, u_texel.y));
     float upperHeight = heightAt(v_uv + vec2(0.0, u_texel.y));
-    float laplacian = (leftHeight + rightHeight + lowerHeight + upperHeight - 4.0 * height) * 0.32;
-    velocity = (velocity + laplacian) * 0.991;
-    height = (height + velocity) * 0.996;
+    float laplacian = (leftHeight + rightHeight + lowerHeight + upperHeight - 4.0 * height) * 0.42;
+    velocity = (velocity + laplacian) * 0.994;
+    height = (height + velocity) * 0.998;
 
     vec2 impulseDelta = (v_uv - u_impulse) * vec2(u_aspect, 1.0);
-    float impulse = exp(-dot(impulseDelta, impulseDelta) * 42.0) * u_impulseStrength;
-    velocity += impulse * 0.18;
-    height += impulse * 0.055;
+    float impulse = exp(-dot(impulseDelta, impulseDelta) * 24.0) * u_impulseStrength;
+    float directedImpulse = dot(normalize(impulseDelta + vec2(0.0001)), normalize(u_velocity + vec2(0.0001)));
+    velocity += impulse * (0.30 + 0.16 * directedImpulse);
+    height += impulse * 0.12;
 
-    float ambient = (sin(u_time * 0.72 + v_uv.x * 17.0) + sin(u_time * 0.43 - v_uv.x * 29.0) * 0.6) * 0.0035 * u_motion;
-    velocity += ambient * (0.35 + 0.65 * u_energy);
+    float slowWave = sin(u_time * 0.92 + v_uv.x * 8.0) * 0.52 + sin(u_time * 0.48 - v_uv.x * 17.0) * 0.28;
+    float travelingWave = sin(u_time * 1.55 + v_uv.x * 24.0 - v_uv.y * 5.0);
+    float ambient = (slowWave * 0.016 + travelingWave * 0.007) * u_motion;
+    velocity += ambient * (0.55 + 0.45 * u_energy);
 
     float horizontalEdge = smoothstep(0.0, 0.05, v_uv.x) * (1.0 - smoothstep(0.95, 1.0, v_uv.x));
     float verticalEdge = smoothstep(0.0, 0.08, v_uv.y) * (1.0 - smoothstep(0.92, 1.0, v_uv.y));
     float edgeDamping = horizontalEdge * verticalEdge;
-    velocity *= mix(0.90, 1.0, edgeDamping);
-    height *= mix(0.96, 1.0, edgeDamping);
+    velocity *= mix(0.94, 1.0, edgeDamping);
+    height *= mix(0.985, 1.0, edgeDamping);
 
     height = clamp(height, -0.92, 0.92);
     velocity = clamp(velocity, -0.92, 0.92);
@@ -79,6 +83,7 @@ uniform float u_aspect;
 uniform float u_time;
 uniform float u_energy;
 uniform float u_nodeStrength;
+uniform float u_motion;
 varying vec2 v_uv;
 
 float roundedBoxDistance(vec2 point, vec2 halfSize, float radius) {
@@ -116,45 +121,47 @@ void main() {
     float rightHeight = heightAt(v_uv + vec2(u_texel.x, 0.0));
     float lowerHeight = heightAt(v_uv - vec2(0.0, u_texel.y));
     float upperHeight = heightAt(v_uv + vec2(0.0, u_texel.y));
-    vec2 heightGradient = vec2(rightHeight - leftHeight, upperHeight - lowerHeight) * 3.4;
-    vec3 waterNormal = normalize(vec3(heightGradient, 1.0));
-    vec2 refractedUv = clamp(v_uv + waterNormal.xy * 0.032 + vec2(centerHeight * 0.008, 0.0), 0.0, 1.0);
+    vec2 heightGradient = vec2(rightHeight - leftHeight, upperHeight - lowerHeight) * 7.0;
+    vec3 waterNormal = normalize(vec3(heightGradient, 0.82));
+    vec2 refractedUv = clamp(v_uv + waterNormal.xy * 0.055 + vec2(centerHeight * 0.014, 0.0), 0.0, 1.0);
 
     float environmentNoise = smoothNoise(refractedUv * vec2(9.0, 3.0) + vec2(u_time * 0.025, 0.0));
-    vec3 upperWater = mix(vec3(0.025, 0.065, 0.120), vec3(0.085, 0.160, 0.270), refractedUv.y) + environmentNoise * 0.018;
-    vec3 lowerWater = mix(vec3(0.014, 0.075, 0.145), vec3(0.075, 0.235, 0.365), refractedUv.y) + environmentNoise * 0.028;
+    vec3 upperWater = mix(vec3(0.020, 0.050, 0.100), vec3(0.090, 0.175, 0.290), refractedUv.y) + environmentNoise * 0.020;
+    vec3 lowerWater = mix(vec3(0.010, 0.080, 0.160), vec3(0.095, 0.300, 0.460), refractedUv.y) + environmentNoise * 0.035;
 
     float distanceFromTop = 1.0 - v_uv.y;
-    float waterSurface = 0.34 + sin(u_time * 0.55 + refractedUv.x * 8.0) * 0.014 + centerHeight * 0.026;
-    float waterBody = smoothstep(waterSurface - 0.018, waterSurface + 0.045, distanceFromTop);
-    float surfaceDelta = (distanceFromTop - waterSurface) * 96.0;
-    float surfaceLine = exp(-surfaceDelta * surfaceDelta) * 0.72;
+    float slowSurfaceWave = sin(u_time * 0.72 * u_motion + refractedUv.x * 9.0) * 0.034;
+    float fastSurfaceWave = sin(u_time * 1.30 * u_motion + refractedUv.x * 27.0 - refractedUv.y * 6.0) * 0.014;
+    float waterSurface = 0.43 + slowSurfaceWave + fastSurfaceWave + centerHeight * 0.12;
+    float waterBody = smoothstep(waterSurface - 0.020, waterSurface + 0.052, distanceFromTop);
+    float surfaceDelta = (distanceFromTop - waterSurface) * 74.0;
+    float surfaceLine = exp(-surfaceDelta * surfaceDelta) * 1.18;
 
     vec3 color = mix(upperWater, lowerWater, waterBody);
     float curvature = abs(leftHeight + rightHeight + lowerHeight + upperHeight - 4.0 * centerHeight);
-    float caustic = pow(clamp(curvature * 7.0, 0.0, 1.0), 1.35) * (0.35 + 0.65 * waterBody);
-    float causticBand = sin((refractedUv.x + waterNormal.x * 0.7) * 62.0 + u_time * 0.82 + sin(refractedUv.y * 22.0 + u_time * 0.35) * 1.4);
-    causticBand = pow(max(causticBand, 0.0), 22.0) * waterBody;
-    color += vec3(0.62, 0.82, 1.0) * (caustic * 0.24 + causticBand * 0.22);
-    color += vec3(0.88, 0.94, 1.0) * surfaceLine * 0.32;
+    float caustic = pow(clamp(curvature * 12.0, 0.0, 1.0), 1.15) * (0.42 + 0.58 * waterBody);
+    float causticBand = sin((refractedUv.x + waterNormal.x * 1.1) * 48.0 + u_time * 0.92 * u_motion + sin(refractedUv.y * 18.0 + u_time * 0.40 * u_motion) * 1.8);
+    causticBand = pow(max(causticBand, 0.0), 11.0) * waterBody;
+    color += vec3(0.62, 0.86, 1.0) * (caustic * 0.46 + causticBand * 0.34);
+    color += vec3(0.90, 0.97, 1.0) * surfaceLine * 0.52;
 
     vec3 lightDirection = normalize(vec3(-0.38, 0.55, 0.74));
-    float specular = pow(max(dot(waterNormal, lightDirection), 0.0), 30.0) * (0.22 + 0.42 * waterBody);
-    float fresnel = pow(1.0 - max(waterNormal.z, 0.0), 2.0) * 0.30;
+    float specular = pow(max(dot(waterNormal, lightDirection), 0.0), 22.0) * (0.30 + 0.55 * waterBody);
+    float fresnel = pow(1.0 - max(waterNormal.z, 0.0), 1.6) * 0.46;
     vec2 pointerDelta = (v_uv - u_pointer) * vec2(u_aspect, 1.0);
-    float pointerGlow = exp(-dot(pointerDelta, pointerDelta) * 38.0) * (0.06 + 0.24 * u_energy);
+    float pointerGlow = exp(-dot(pointerDelta, pointerDelta) * 24.0) * (0.10 + 0.35 * u_energy);
     vec2 nodeDelta = (v_uv - u_nodeCenter) / max(u_nodeSize, vec2(0.035, 0.20));
     float nodeGlow = exp(-dot(nodeDelta, nodeDelta) * 1.7) * u_nodeStrength;
 
     color += vec3(0.72, 0.86, 1.0) * (specular + fresnel + pointerGlow);
     color += vec3(0.92, 0.72, 0.48) * nodeGlow * 0.18;
 
-    float topHighlight = 1.0 - smoothstep(0.0, 6.0, distanceFromTop * u_resolution.y);
-    float innerRim = 1.0 - smoothstep(0.0, 20.0, abs(edgeDistance));
-    color += vec3(0.90, 0.96, 1.0) * topHighlight * 0.20;
-    color += vec3(0.62, 0.79, 1.0) * innerRim * 0.18;
+    float topHighlight = 1.0 - smoothstep(0.0, 8.0, distanceFromTop * u_resolution.y);
+    float innerRim = 1.0 - smoothstep(0.0, 22.0, abs(edgeDistance));
+    color += vec3(0.90, 0.96, 1.0) * topHighlight * 0.28;
+    color += vec3(0.62, 0.79, 1.0) * innerRim * 0.22;
 
-    float alpha = clamp(0.42 + waterBody * 0.18 + u_energy * 0.08 + u_nodeStrength * 0.08 + innerRim * 0.12, 0.0, 0.86);
+    float alpha = clamp(0.48 + waterBody * 0.20 + u_energy * 0.10 + u_nodeStrength * 0.08 + innerRim * 0.12, 0.0, 0.92);
     gl_FragColor = vec4(color, alpha * capsuleMask);
 }
 `;
@@ -244,11 +251,11 @@ export function initNavbarLiquidWebGL(): () => void {
     };
 
     const simulationUniforms = createUniformMap(simulationProgram, [
-        "u_previous", "u_texel", "u_impulse", "u_impulseStrength", "u_aspect", "u_time", "u_motion", "u_energy",
+        "u_previous", "u_texel", "u_impulse", "u_impulseStrength", "u_velocity", "u_aspect", "u_time", "u_motion", "u_energy",
     ]);
     const renderUniforms = createUniformMap(renderProgram, [
         "u_height", "u_resolution", "u_texel", "u_pointer", "u_nodeCenter", "u_nodeSize", "u_radius",
-        "u_aspect", "u_time", "u_energy", "u_nodeStrength",
+        "u_aspect", "u_time", "u_energy", "u_nodeStrength", "u_motion",
     ]);
 
     const useProgramWithQuad = (program: WebGLProgram): void => {
@@ -325,6 +332,7 @@ export function initNavbarLiquidWebGL(): () => void {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const pointer = { horizontal: 0.5, vertical: 0.5 };
     const impulse = { horizontal: 0.5, vertical: 0.5, strength: 0 };
+    const pointerVelocity = { horizontal: 0, vertical: 0 };
     const node = { horizontal: 0.5, vertical: 0.5, width: 0.10, height: 0.55, strength: 0, targetStrength: 0 };
     let energy = 0;
     let targetEnergy = 0;
@@ -357,12 +365,15 @@ export function initNavbarLiquidWebGL(): () => void {
     const onPointerMove = (event: PointerEvent): void => {
         if (event.pointerType === "touch") return;
         const position = normalizedPointer(event);
+        pointerVelocity.horizontal = position.horizontal - pointer.horizontal;
+        pointerVelocity.vertical = position.vertical - pointer.vertical;
         pointer.horizontal = position.horizontal;
         pointer.vertical = position.vertical;
         targetEnergy = 1;
         impulse.horizontal = position.horizontal;
         impulse.vertical = position.vertical;
-        impulse.strength = Math.max(impulse.strength, 0.055);
+        const pointerSpeed = Math.hypot(pointerVelocity.horizontal, pointerVelocity.vertical);
+        impulse.strength = Math.max(impulse.strength, 0.12 + Math.min(pointerSpeed * 3.2, 0.48));
 
         const target = event.target as Element | null;
         const nodeElement = target?.closest(nodeSelector) as HTMLElement | null;
@@ -391,6 +402,8 @@ export function initNavbarLiquidWebGL(): () => void {
         const nodeElement = target?.closest(nodeSelector) as HTMLElement | null;
         if (!nodeElement || !capsule.contains(nodeElement)) return;
         const position = normalizedPointer(event);
+        pointerVelocity.horizontal = position.horizontal - pointer.horizontal;
+        pointerVelocity.vertical = position.vertical - pointer.vertical;
         pointer.horizontal = position.horizontal;
         pointer.vertical = position.vertical;
         node.horizontal = position.horizontal;
@@ -402,7 +415,7 @@ export function initNavbarLiquidWebGL(): () => void {
         nodeElement.style.setProperty("--node-pointer-y", `${event.clientY - nodeBounds.top}px`);
         impulse.horizontal = position.horizontal;
         impulse.vertical = position.vertical;
-        impulse.strength = Math.max(impulse.strength, 0.42);
+        impulse.strength = Math.max(impulse.strength, 0.62);
         targetEnergy = 1;
         nodeElement.classList.add("is-liquid-active");
         capsule.classList.add("has-liquid-node");
@@ -464,16 +477,19 @@ export function initNavbarLiquidWebGL(): () => void {
         gl.uniform2f(simulationUniforms.u_texel, 1 / simulationWidth, 1 / simulationHeight);
         gl.uniform2f(simulationUniforms.u_impulse, impulse.horizontal, impulse.vertical);
         gl.uniform1f(simulationUniforms.u_impulseStrength, impulse.strength);
+        gl.uniform2f(simulationUniforms.u_velocity, pointerVelocity.horizontal, pointerVelocity.vertical);
         gl.uniform1f(simulationUniforms.u_aspect, simulationAspect);
         gl.uniform1f(simulationUniforms.u_time, elapsedSeconds);
         gl.uniform1f(simulationUniforms.u_motion, prefersReducedMotion ? 0 : 1);
         gl.uniform1f(simulationUniforms.u_energy, energy);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        pointerVelocity.horizontal *= 0.72;
+        pointerVelocity.vertical *= 0.72;
 
         const previousTarget = readTarget;
         readTarget = writeTarget;
         writeTarget = previousTarget;
-        impulse.strength *= 0.88;
+        impulse.strength *= 0.92;
         if (impulse.strength < 0.001) impulse.strength = 0;
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -494,6 +510,7 @@ export function initNavbarLiquidWebGL(): () => void {
         gl.uniform1f(renderUniforms.u_time, elapsedSeconds);
         gl.uniform1f(renderUniforms.u_energy, energy);
         gl.uniform1f(renderUniforms.u_nodeStrength, node.strength);
+        gl.uniform1f(renderUniforms.u_motion, prefersReducedMotion ? 0 : 1);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
 
