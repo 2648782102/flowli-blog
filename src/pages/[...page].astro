@@ -1,31 +1,25 @@
 ---
 export const prerender = true;
 
-
 import type { GetStaticPaths } from "astro";
 
 import { PAGE_SIZE } from "@constants/pagination";
 import { getSortedPosts } from "@utils/post";
-import Pagination from "@components/pagination.astro";
-import PostPage from "@components/postPage.astro";
+import { getPostUrl } from "@utils/url";
 import GridLayout from "@layouts/grid.astro";
 import { pathsEqual, url } from "@utils/url";
-import Cover from "@components/home/cover.astro";
-import FeaturedPost from "@components/home/featuredPost.astro";
-import DeskIndex from "@components/home/deskIndex.astro";
+import { Icon } from "astro-icon/components";
+
 export const getStaticPaths = (async ({ paginate }) => {
     const allBlogPosts = await getSortedPosts();
     return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
 }) satisfies GetStaticPaths;
-// https://github.com/withastro/astro/issues/6507#issuecomment-1489916992
-
 
 const { page } = Astro.props;
-
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 const allPosts = await getSortedPosts();
-const firstPost = page.data[0];
-const remainingPosts = page.data.slice(1);
+const featuredPost = page.data[0];
+const archiveRows = page.data.slice(1);
 const latestDate = allPosts[0]?.data.published
     ? new Date(allPosts[0].data.published).toLocaleDateString("zh-CN", {
         year: "numeric",
@@ -37,19 +31,106 @@ const latestDate = allPosts[0]?.data.published
 
 <GridLayout>
     {isHomePage && (
-        <>
-            <Cover postCount={allPosts.length} latestDate={latestDate} />
-            {firstPost && <FeaturedPost entry={firstPost} />}
-            <DeskIndex entries={remainingPosts} />
-            <Pagination class="pagination-editorial" page={page}></Pagination>
-        </>
-    )}
-    {!isHomePage && <div class="home-feed">
-        <div class="home-feed-label">
-            <strong>最新文章</strong>
-            <span>按发布时间排列</span>
+        <div class="home-composition">
+            <section class="home-opening" aria-labelledby="home-opening-title">
+                <div class="home-opening-kicker">
+                    <span class="home-opening-line" aria-hidden="true"></span>
+                    <span>独立写作 / 前端工程 / 工具观察</span>
+                </div>
+                <h1 id="home-opening-title">把好奇心<br />写下来<span>。</span></h1>
+                <p class="home-opening-lede">记录技术、工具与日常。这里保存那些不急着得到结论的片段：一次调试、一件工具、一个突然值得记下的日常。</p>
+                <div class="home-opening-actions">
+                    <a class="home-action home-action-primary" href="#writing-desk">
+                        开始阅读
+                        <Icon name="material-symbols:south-rounded" aria-hidden="true" />
+                    </a>
+                    <a class="home-action" href={url("/archive/")}>
+                        全部文章
+                        <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" />
+                    </a>
+                </div>
+                <dl class="home-facts">
+                    <div><dt>已写下</dt><dd>{allPosts.length.toString().padStart(2, "0")} 篇</dd></div>
+                    <div><dt>最近更新</dt><dd>{latestDate || "持续记录"}</dd></div>
+                    <div><dt>写作地点</dt><dd>深圳</dd></div>
+                </dl>
+            </section>
+
+            <div class="home-editorial-grid">
+                <section class="home-feature" aria-labelledby="home-feature-title">
+                    {featuredPost && (
+                        <a class="home-feature-link" href={getPostUrl(featuredPost)}>
+                            <div class="home-feature-label">
+                                <span>最近一篇</span>
+                                <time datetime={new Date(featuredPost.data.published!).toISOString()}>{latestDate}</time>
+                            </div>
+                            <h2 id="home-feature-title">{featuredPost.data.title}</h2>
+                            <p>{featuredPost.data.description || "打开一篇最近写下的片段。"}</p>
+                            <span class="home-feature-cta">继续阅读 <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></span>
+                        </a>
+                    )}
+                </section>
+
+                <aside class="home-margin" aria-label="站点动态">
+                    <div class="home-margin-block">
+                        <span>改变 / 创造</span>
+                        <p>粒子在背景里不断聚散；文字则留在纸上，等待下一次被改写。</p>
+                    </div>
+                    <div class="home-margin-block">
+                        <span>当前主题</span>
+                        <p>记录技术、工具与日常，不急着把每件事写成结论。</p>
+                    </div>
+                </aside>
+            </div>
+
+            <section class="home-desk" id="writing-desk" aria-labelledby="home-desk-title">
+                <header class="home-desk-header">
+                    <div>
+                        <span>写作台</span>
+                        <h2 id="home-desk-title">最近写下的</h2>
+                    </div>
+                    <a href={url("/archive/")}>查看全部 <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" /></a>
+                </header>
+                <div class="home-desk-list">
+                    {archiveRows.map((entry, index) => (
+                        <a class="home-desk-row" href={getPostUrl(entry)}>
+                            <span class="home-desk-index">{String(index + 1).padStart(2, "0")}</span>
+                            <span class="home-desk-title">{entry.data.title}</span>
+                            <span class="home-desk-topic">
+                                {Array.isArray(entry.data.category)
+                                    ? entry.data.category.join(" / ")
+                                    : entry.data.category || entry.data.tags?.[0] || "未分类"}
+                            </span>
+                            <time datetime={new Date(entry.data.published!).toISOString()}>
+                                {new Date(entry.data.published!).toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" })}
+                            </time>
+                            <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" />
+                        </a>
+                    ))}
+                </div>
+            </section>
         </div>
-        <PostPage page={page}></PostPage>
-        <Pagination class="pagination-editorial" page={page}></Pagination>
-    </div>}
+    )}
+
+    {!isHomePage && (
+        <div class="home-feed">
+            <div class="home-feed-label"><strong>最新文章</strong><span>按发布时间排列</span></div>
+            <div class="home-feed-list">
+                {page.data.map((entry) => (
+                    <a class="home-feed-row" href={getPostUrl(entry)}>
+                        <time datetime={new Date(entry.data.published!).toISOString()}>
+                            {new Date(entry.data.published!).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" })}
+                        </time>
+                        <span>{entry.data.title}</span>
+                        <span class="home-feed-topic">
+                            {Array.isArray(entry.data.category)
+                                ? entry.data.category.join(" / ")
+                                : entry.data.category || entry.data.tags?.[0] || "未分类"}
+                        </span>
+                        <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" />
+                    </a>
+                ))}
+            </div>
+        </div>
+    )}
 </GridLayout>
