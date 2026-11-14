@@ -39,6 +39,7 @@ import {
 import { pathsEqual, url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
+import CreationField from "@components/creationField.astro";
 import "@styles/fancybox.css";
 import "@styles/editorial-paper.css";
 
@@ -194,6 +195,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
     >
         <!-- 全局配置载体 -->
         <ConfigCarrier />
+        <CreationField />
         <!-- 页面内容 -->
         <slot />
         <!-- Analytics -->
@@ -276,6 +278,15 @@ const syncNavbarCurrentPage = (pathname: string) => {
     });
 };
 
+const hasSidebarForPath = (pathname: string): boolean => {
+    const homePath = url('/');
+    const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+    const normalizedHomePath = homePath.replace(/\/+$/, '') || '/';
+    if (pathsEqual(normalizedPath, normalizedHomePath)) return false;
+    return widgetManager.hasContentOnSide('left', [], pathname) ||
+        widgetManager.hasContentOnSide('right', [], pathname);
+};
+
 
 // 初始化Swup
 const setup = () => {
@@ -304,6 +315,7 @@ const setup = () => {
         } else {
             bodyElement!.classList.remove('is-home');
         }
+        bodyElement!.classList.toggle('has-sidebar', hasSidebarForPath(new URL(visit.to.url, window.location.origin).pathname));
         // Handle animation logic for persistent sidebar components
         const currentPath = window.location.pathname;
         const nextPath = visit.to.url;
