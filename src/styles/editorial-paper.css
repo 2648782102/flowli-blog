@@ -762,10 +762,9 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
     position: relative;
 }
 
-/* Navigation: WebGL water inside a shallow glass vessel. */
+/* Navigation: a quiet, precise glass bar. */
 #navbar {
-    --lg-energy: 0;
-    perspective: 1000px;
+    --nav-inline-gap: clamp(1rem, 2vw, 1.8rem);
 }
 
 #navbar > div:first-child {
@@ -776,145 +775,74 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
 #navbar[data-transparent-mode] > div:last-child,
 #navbar[data-transparent-mode].scrolled > div:last-child {
     position: relative;
-    isolation: isolate;
+    display: grid !important;
+    grid-template-columns: minmax(11rem, 1fr) auto minmax(11rem, 1fr);
+    align-items: center;
     width: calc(100% - 1.5rem);
     max-width: calc(var(--page-width) - 2rem);
-    height: 3.75rem !important;
-    min-height: 3.75rem !important;
+    height: 3.5rem !important;
+    min-height: 3.5rem !important;
     margin: 0.75rem auto 0 !important;
-    padding-inline: 1rem !important;
-    overflow: hidden !important;
+    padding-inline: 0.9rem !important;
     color: var(--ink) !important;
-    background: rgb(6 17 30 / 0.12) !important;
-    border: 1px solid rgb(220 235 255 / 0.34) !important;
-    border-radius: 1.15rem !important;
+    background: rgb(8 20 35 / 0.72) !important;
+    border: 1px solid rgb(205 226 247 / 0.18) !important;
+    border-radius: 0.9rem !important;
     box-shadow:
-        0 28px 72px rgb(2 8 16 / 0.52),
-        0 3px 0 rgb(255 255 255 / 0.10),
-        0 0 0 1px rgb(158 201 255 / 0.08),
-        inset 0 1px 0 rgb(255 255 255 / 0.42),
-        inset 0 -2px 0 rgb(158 201 255 / 0.12),
-        inset 0 -10px 22px rgb(2 8 16 / 0.28) !important;
-    -webkit-backdrop-filter: blur(18px) saturate(145%) contrast(108%) !important;
-    backdrop-filter: blur(18px) saturate(145%) contrast(108%) !important;
-    transform: translateZ(0);
-    transition: box-shadow 220ms ease, border-color 220ms ease !important;
+        0 16px 44px rgb(2 8 16 / 0.34),
+        inset 0 1px 0 rgb(255 255 255 / 0.16) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+    backdrop-filter: blur(18px) saturate(135%) !important;
+    overflow: visible !important;
 }
 
-#navbar > div:last-child:hover {
-    border-color: rgb(225 240 255 / 0.60) !important;
-    box-shadow:
-        0 32px 84px rgb(2 8 16 / 0.58),
-        0 3px 0 rgb(255 255 255 / 0.14),
-        0 0 0 1px rgb(158 201 255 / 0.12),
-        inset 0 1px 0 rgb(255 255 255 / 0.52),
-        inset 0 -2px 0 rgb(158 201 255 / 0.20),
-        inset 0 -12px 26px rgb(2 8 16 / 0.30) !important;
-}
-
-#navbar-liquid-canvas,
-.navbar-glass-rim {
-    position: absolute !important;
-    inset: 0;
-    width: 100% !important;
-    height: 100% !important;
-    pointer-events: none;
-}
-
-#navbar-liquid-canvas {
-    z-index: 0 !important;
-    display: block;
-    border-radius: inherit;
-    opacity: 1;
-}
-
-.navbar-glass-rim {
-    z-index: 1 !important;
-    border: 1px solid rgb(255 255 255 / 0.24);
-    border-radius: inherit;
-    box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 0.42),
-        inset 0 -1px 0 rgb(255 255 255 / 0.10),
-        inset 12px 0 26px rgb(255 255 255 / 0.04),
-        inset -12px 0 26px rgb(158 201 255 / 0.06),
-        0 1px 0 rgb(255 255 255 / 0.10);
-    background:
-        linear-gradient(to bottom, rgb(255 255 255 / 0.12), transparent 16%, transparent 74%, rgb(2 8 16 / 0.10)),
-        linear-gradient(100deg, rgb(255 255 255 / 0.06), transparent 20%, transparent 80%, rgb(158 201 255 / 0.05));
-}
-
-.navbar-glass-rim::after {
+#navbar > div:last-child::before {
     content: "";
     position: absolute;
-    inset: 2px;
-    border: 1px solid rgb(255 255 255 / 0.12);
+    inset: 1px;
+    z-index: 0;
     border-radius: inherit;
     pointer-events: none;
-}
-
-#navbar > div:last-child[data-webgl="unavailable"] #navbar-liquid-canvas {
-    opacity: 0;
-}
-
-#navbar > div:last-child[data-webgl="unavailable"] .navbar-glass-rim {
-    background:
-        radial-gradient(22rem 5rem at 25% 0%, rgb(158 201 255 / 0.24), transparent 72%),
-        linear-gradient(145deg, rgb(255 255 255 / 0.14), transparent 48%, rgb(158 201 255 / 0.08));
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0.08), transparent 46%, rgb(2 8 16 / 0.10));
 }
 
 #navbar > div:last-child > * {
     position: relative;
-    z-index: 2;
+    z-index: 1;
+    min-width: 0;
 }
 
-#navbar > div:last-child > #navbar-liquid-canvas,
-#navbar > div:last-child > .navbar-glass-rim {
-    z-index: 0 !important;
+#navbar > div:last-child > style,
+#navbar .navbar-buttons > style,
+#navbar .navbar-buttons astro-island > style {
+    display: none !important;
 }
 
-#navbar > div:last-child > .navbar-glass-rim {
-    z-index: 1 !important;
-}
-
-#navbar > div:last-child > a:first-child,
-#navbar > div:last-child > a:first-child > span,
-#navbar .nav-link-item,
-#navbar .nav-link-item * {
-    color: var(--ink) !important;
-}
-
-#navbar > div:last-child > a:first-child {
-    flex: 0 0 auto;
-    max-width: 14rem;
-    white-space: nowrap;
-    height: 2.75rem !important;
-    padding-inline: 0.65rem !important;
+.flowli-brand {
+    grid-column: 1;
+    justify-self: start;
     display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.55rem !important;
-    border-radius: 0.85rem !important;
+    align-items: center;
+    gap: 0.65rem;
+    height: 2.6rem !important;
+    padding-inline: 0.45rem !important;
+    color: var(--ink) !important;
     text-decoration: none !important;
-    overflow: hidden;
-    transition: background-color 160ms ease, box-shadow 160ms ease !important;
-}
-
-#navbar > div:last-child > a:first-child:hover {
-    background: rgb(255 255 255 / 0.07) !important;
+    white-space: nowrap;
 }
 
 .flowli-brand-mark {
     display: grid;
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.7rem;
+    height: 1.7rem;
     flex: 0 0 auto;
     place-items: center;
-    border: 1px solid rgb(169 199 232 / 0.52);
-    border-radius: 0.6rem;
-    background: linear-gradient(145deg, rgb(255 255 255 / 0.20), rgb(143 194 242 / 0.08));
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.24);
     color: var(--accent) !important;
+    border: 1px solid rgb(169 199 232 / 0.42);
+    border-radius: 0.45rem;
+    background: rgb(158 201 255 / 0.08);
     font-family: var(--editorial-serif) !important;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 700;
     line-height: 1;
 }
@@ -927,134 +855,125 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
 }
 
 .flowli-brand-note {
-    padding-left: 0.55rem;
+    padding-left: 0.65rem;
     border-left: 1px solid var(--hairline);
     color: var(--ink-faint) !important;
     font-size: 0.68rem;
-    font-weight: 500;
     letter-spacing: 0.04em;
 }
 
-@media (max-width: 767px) {
-    .flowli-brand-note {
-        display: none;
-    }
+#navbar .navbar-nav-links {
+    grid-column: 2;
+    justify-self: center;
+    display: flex !important;
+    align-items: center;
+    gap: 0.15rem;
 }
 
 #navbar .nav-link-item {
     position: relative;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
     height: 2.5rem !important;
     min-height: 2.5rem !important;
+    padding-inline: 0.8rem !important;
+    color: var(--ink-soft) !important;
     border: 0 !important;
-    border-radius: 0.75rem !important;
+    border-radius: 0.5rem !important;
     background: transparent !important;
     box-shadow: none !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
+    font-size: 0.84rem;
     font-weight: 600 !important;
-    overflow: hidden;
-    transition: color 160ms ease, transform 160ms ease, box-shadow 160ms ease !important;
+    white-space: nowrap;
+    transition: color 160ms ease, background-color 160ms ease !important;
 }
 
 #navbar .nav-link-item::before,
+#navbar .nav-link-item::after,
 #navbar .flowli-brand::before,
 #navbar-buttons button:not(.float-panel *)::before {
-    content: "";
-    position: absolute;
-    left: var(--node-pointer-x, 50%);
-    top: var(--node-pointer-y, 50%);
-    width: 7rem;
-    height: 7rem;
-    translate: -50% -50%;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgb(255 255 255 / 0.22), rgb(158 201 255 / 0.08) 42%, transparent 70%);
-    opacity: 0;
-    transform: scale(0.62);
-    transition: opacity 180ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
-    pointer-events: none;
+    display: none !important;
 }
 
-#navbar .nav-link-item.is-liquid-active::before,
-#navbar .flowli-brand.is-liquid-active::before,
-#navbar-buttons button.is-liquid-active::before {
-    opacity: 1;
-    transform: scale(1);
-}
-
-#navbar .nav-link-item.is-liquid-active,
-#navbar .flowli-brand.is-liquid-active,
-#navbar-buttons button.is-liquid-active {
-    color: var(--navy-bright) !important;
-    transform: translateY(-1px);
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16), 0 5px 18px rgb(158 201 255 / 0.10) !important;
-}
-
-#navbar .nav-link-item > *,
-#navbar .flowli-brand > *,
-#navbar-buttons button:not(.float-panel *) > * {
-    position: relative;
-    z-index: 1;
-}
-
-#navbar .nav-link-item::after {
-    content: "";
-    position: absolute;
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: 0.28rem;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--accent);
-    opacity: 0;
-    transform: scaleX(0.5);
-    transition: opacity 160ms ease, transform 160ms ease;
+#navbar .nav-link-item .nav-link-icon {
+    width: 1rem;
+    height: 1rem;
+    color: currentColor;
 }
 
 #navbar .nav-link-item:hover {
-    background: rgb(255 255 255 / 0.05) !important;
+    color: var(--ink) !important;
+    background: rgb(255 255 255 / 0.07) !important;
 }
 
 #navbar .nav-link-item[aria-current="page"],
-#navbar .nav-link-item[aria-current="location"],
-#nav-menu-panel .mobile-menu-item > a[aria-current="page"],
-#nav-menu-panel .mobile-menu-item > a[aria-current="location"] {
-    color: var(--accent) !important;
-    font-weight: 750 !important;
-    background: rgb(255 255 255 / 0.06) !important;
-    box-shadow: none !important;
-}
-
-#navbar .nav-link-item[aria-current="page"]::after {
-    opacity: 1;
-    transform: scaleX(1);
-}
-
-#navbar-buttons button:not(.float-panel *) {
-    position: relative;
-    overflow: hidden;
+#navbar .nav-link-item[aria-current="location"] {
     color: var(--ink) !important;
-    border-color: transparent !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-    transition: color 160ms ease, transform 160ms ease, box-shadow 160ms ease !important;
+    background: rgb(255 255 255 / 0.10) !important;
+}
+
+#navbar .nav-link-item[aria-current="page"] .nav-link-icon,
+#navbar .nav-link-item[aria-current="location"] .nav-link-icon {
+    color: var(--accent) !important;
 }
 
 #navbar .navbar-buttons {
-    flex: 0 0 auto;
-    max-width: 13rem;
-    min-width: 0;
-    gap: 0.05rem !important;
+    grid-column: 3;
+    justify-self: end;
+    display: flex !important;
+    align-items: center;
+    gap: 0.2rem;
+    max-width: 10rem;
 }
 
-#navbar .navbar-nav-links {
-    flex: 0 1 auto;
-    min-width: 0;
+#navbar-buttons > :is(astro-island, div) {
+    display: none !important;
+}
+
+#navbar-buttons > style {
+    display: none !important;
+}
+
+#navbar-buttons > astro-island[component-url*="search"] {
+    display: block !important;
+}
+
+#navbar-buttons > astro-island[component-url*="navMenu"] {
+    display: none !important;
+}
+
+#navbar-buttons button:not(.float-panel *) {
+    width: 2.35rem !important;
+    height: 2.35rem !important;
+    min-height: 2.35rem !important;
+    padding: 0 !important;
+    color: var(--ink-soft) !important;
+    border-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0.5rem !important;
+    transition: color 160ms ease, background-color 160ms ease !important;
 }
 
 #navbar-buttons button:not(.float-panel *):hover {
-    background: rgb(255 255 255 / 0.05) !important;
+    color: var(--ink) !important;
+    background: rgb(255 255 255 / 0.07) !important;
+}
+
+@media (max-width: 1100px) {
+    .flowli-brand-note {
+        display: none;
+    }
+
+    #navbar .nav-link-item {
+        padding-inline: 0.62rem !important;
+    }
+
+    #navbar .nav-link-item .nav-link-text {
+        display: none;
+    }
 }
 
 #nav-menu-panel {
@@ -2431,12 +2350,8 @@ body.enable-banner.is-home {
         backdrop-filter: none !important;
     }
 
-    #navbar-liquid-canvas {
-        display: none;
-    }
-
-    .navbar-glass-rim {
-        background: var(--glass-fill) !important;
+    #navbar > div:last-child {
+        background: #0b1d38 !important;
         -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
     }
@@ -2554,27 +2469,25 @@ body.enable-banner.is-home {
 @media (max-width: 767px) {
     #navbar > div:last-child {
         width: calc(100% - 0.5rem) !important;
-        height: 3.35rem !important;
-        min-height: 3.35rem !important;
+        height: 3.1rem !important;
+        min-height: 3.1rem !important;
         margin: 0.25rem auto 0 !important;
-        padding-inline: 0.55rem !important;
-        border-radius: 1rem !important;
+        padding-inline: 0.45rem !important;
+        border-radius: 0.8rem !important;
         display: flex !important;
         align-items: center;
         justify-content: space-between;
         gap: 0.25rem;
     }
 
-    #navbar > div:last-child > #navbar-liquid-canvas {
-        display: none;
-    }
-
     #navbar-buttons {
         gap: 0 !important;
+        max-width: 5rem !important;
     }
 
-    #navbar-buttons > astro-island {
-        display: contents;
+    #navbar-buttons > astro-island[component-url*="search"],
+    #navbar-buttons > astro-island[component-url*="navMenu"] {
+        display: block !important;
     }
 
     #navbar .navbar-nav-links {

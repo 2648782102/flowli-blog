@@ -195,7 +195,6 @@ export default defineConfig({
             cssCodeSplit: true,
             cssMinify: "esbuild",
             minify: "esbuild",
-            chunkSizeWarningLimit: 700,
             esbuildOptions: {
                 drop: process.env.NODE_ENV === "production" ? ["console", "debugger"] : [],
             },

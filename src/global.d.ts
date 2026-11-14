@@ -9,8 +9,6 @@ declare global {
         // Define swup type directly since @swup/astro doesn't export AstroIntegration
         swup: any;
         semifullScrollHandler: (() => void) | null;
-        flowliNavbarWebGL?: () => void;
-        initSemifullScrollDetection?: () => void;
         closeAnnouncement: () => void;
         __iconifyLoader: {
             load: () => Promise<void>;
