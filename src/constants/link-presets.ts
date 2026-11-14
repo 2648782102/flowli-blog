@@ -50,7 +50,7 @@ export const LinkPresets: { [key in LinkPreset]: NavbarLink } = {
         name: i18n(I18nKey.friends),
         url: "/friends/",
         icon: "material-symbols:group",
-        description: "A curated list of friend sites.",
+        description: "收录常去的小站与朋友链接。",
     },
     [LinkPreset.About]: {
         name: i18n(I18nKey.about),

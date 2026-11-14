@@ -407,6 +407,30 @@ body::after {
 }
 
 /* Sidebar widgets */
+#content-wrapper .bg-linear-to-br {
+    border: 1px solid var(--archive-line) !important;
+    border-radius: 0.35rem !important;
+    background: var(--archive-panel) !important;
+}
+
+#content-wrapper .bg-linear-to-br > div:first-child {
+    color: var(--archive-ink) !important;
+}
+
+#content-wrapper .bg-linear-to-br > div:last-child {
+    color: var(--archive-muted) !important;
+}
+
+.timeline-node {
+    box-shadow: 0 0 0 4px rgb(9 20 34 / 0.55);
+}
+
+.skill-category {
+    border: 1px solid var(--archive-line) !important;
+    background: rgb(143 194 242 / 0.07) !important;
+    color: var(--archive-muted) !important;
+}
+
 #editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child,
 #editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child.card-base {
     border-color: var(--archive-line) !important;
