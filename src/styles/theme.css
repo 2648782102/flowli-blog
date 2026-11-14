@@ -952,6 +952,15 @@ h4 {
 }
 
 .flowli-footer-mark {
+    display: grid;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: 0 0 auto;
+    place-items: center;
+    font-family: var(--editorial-serif);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
     border: 1px solid var(--hairline-strong) !important;
     border-radius: var(--radius-paper) !important;
     color: var(--ink-faint) !important;
@@ -1096,4 +1105,205 @@ h4 {
 #content-wrapper > div > .card-base > header {
     padding-inline: 0 !important;
     border-bottom: 1px solid var(--hairline) !important;
+}
+
+/* Navigation scaffolding (visual styling lives above). */
+#navbar > div:last-child,
+#navbar[data-transparent-mode] > div:last-child {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: var(--nav-gap, 1rem);
+    width: 100% !important;
+    min-width: 0;
+}
+
+#navbar {
+    --nav-control-size: 2.35rem;
+    --nav-search-width: 12rem;
+    --nav-search-compact-width: 8.5rem;
+    --nav-gap: 1rem;
+}
+
+#navbar .flowli-brand {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+#navbar .navbar-nav-links {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    gap: 0.15rem;
+}
+
+#navbar .navbar-buttons {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+#navbar-buttons > .navbar-control {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--nav-control-size);
+    min-width: var(--nav-control-size);
+    height: var(--nav-control-size);
+}
+
+#navbar-buttons > .navbar-search-control {
+    width: var(--nav-control-size);
+    min-width: var(--nav-control-size);
+    max-width: var(--nav-search-width);
+    transition: width 180ms ease;
+}
+
+#navbar-buttons > .navbar-search-control:focus-within,
+#navbar-buttons > .navbar-search-control:has(#search-bar.is-expanded) {
+    width: var(--nav-search-width);
+    min-width: var(--nav-search-width);
+}
+
+#navbar-buttons > .navbar-control > astro-island {
+    display: contents;
+}
+
+#navbar-buttons > .navbar-menu-control {
+    display: none;
+}
+
+#navbar #search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: var(--nav-control-size);
+    min-width: 0;
+    overflow: hidden;
+}
+
+#navbar #search-input-desktop {
+    width: 0;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 140ms ease, padding 180ms ease;
+}
+
+#navbar #search-bar:focus-within #search-input-desktop,
+#navbar #search-bar.is-expanded #search-input-desktop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    padding: 0 0.6rem 0 var(--nav-control-size);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#navbar #search-bar > .search-bar-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 1.25rem;
+    min-width: 1.25rem;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+#navbar #search-bar:focus-within > .search-bar-icon,
+#navbar #search-bar.is-expanded > .search-bar-icon {
+    left: calc(var(--nav-control-size) / 2);
+}
+
+#navbar #search-switch {
+    display: none;
+}
+
+#navbar-buttons button:not(.float-panel *) {
+    width: var(--nav-control-size);
+    height: var(--nav-control-size);
+    min-width: var(--nav-control-size);
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 1279px) {
+    #navbar {
+        --nav-control-size: 2.15rem;
+        --nav-search-width: var(--nav-search-compact-width);
+        --nav-gap: 0.5rem;
+    }
+
+    #navbar .flowli-brand-note {
+        display: none;
+    }
+
+    #navbar .nav-link-item .nav-link-text {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    #navbar .navbar-nav-links {
+        display: none;
+    }
+
+    #navbar-buttons > .navbar-control--utility {
+        display: none;
+    }
+
+    #navbar-buttons > .navbar-menu-control {
+        display: flex;
+    }
+
+    #navbar #search-bar {
+        display: none;
+    }
+
+    #navbar #search-switch {
+        display: inline-flex;
+    }
+
+    #navbar .flowli-brand-note {
+        display: none;
+    }
+}
+
+/* Footer layout */
+.flowli-footer-inner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-top: 1rem;
+}
+
+.flowli-footer-copy {
+    margin: 0;
+}
+
+.flowli-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+    margin-left: auto;
 }
