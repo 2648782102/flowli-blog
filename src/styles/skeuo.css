@@ -18,7 +18,7 @@ html:root {
     --mat-metal-a: #e8ecf1;
     --mat-metal-b: #cfd6df;
     --mat-paper: #fbf9f4;
-    --mat-leather: #e6ddd2;
+    --mat-leather: #e9e5de;
     --mat-rubber: #dfe3e9;
 
     --skeuo-edge: rgb(255 255 255 / 0.9);
@@ -49,7 +49,7 @@ html:root.dark {
     --mat-metal-a: #313a45;
     --mat-metal-b: #1e242c;
     --mat-paper: #262d36;
-    --mat-leather: #2a2620;
+    --mat-leather: #24282e;
     --mat-rubber: #272e37;
 
     --skeuo-edge: rgb(255 255 255 / 0.14);

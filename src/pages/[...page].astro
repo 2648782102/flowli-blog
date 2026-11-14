@@ -17,6 +17,10 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+const latestPost = page.data[0];
+const remainingPosts = page.data.slice(1);
+const formatDate = (value: Date | string) =>
+    new Date(value).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
 ---
 
 <GridLayout>
@@ -34,10 +38,28 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
                 </nav>
             </header>
 
+            {latestPost && (
+                <section class="featured-plate" aria-labelledby="featured-title">
+                    <div class="featured-plate-inner">
+                        <p class="featured-eyebrow">最新 · {formatDate(latestPost.data.published!)}</p>
+                        <h2 id="featured-title">
+                            <a href={getPostUrl(latestPost)}>{latestPost.data.title}</a>
+                        </h2>
+                        {latestPost.data.description && (
+                            <p class="featured-desc">{latestPost.data.description}</p>
+                        )}
+                        <a class="featured-cta" href={getPostUrl(latestPost)}>
+                            阅读全文
+                            <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" />
+                        </a>
+                    </div>
+                </section>
+            )}
+
             <section id="writing-desk" aria-labelledby="home-desk-title">
                 <h2 id="home-desk-title" class="home-section-title">最近写下的</h2>
                 <ul class="post-list">
-                    {page.data.map((entry) => (
+                    {remainingPosts.map((entry) => (
                         <li class="post-item">
                             <a href={getPostUrl(entry)} class="post-item-title">{entry.data.title}</a>
                             <time class="post-item-date" datetime={new Date(entry.data.published!).toISOString()}>

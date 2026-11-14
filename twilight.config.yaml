@@ -16,8 +16,8 @@ site:
         service: "client.edge"
         # 显示语言选择下拉框
         showSelectTag: false
-        # 自动检测用户语言
-        autoDiscriminate: true
+        # 自动检测用户语言（关闭：避免中文站点被误翻译）
+        autoDiscriminate: false
         # 翻译时忽略的 CSS 类名
         ignoreClasses:
             - "ignore"

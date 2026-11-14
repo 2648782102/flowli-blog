@@ -1,0 +1,92 @@
+/*
+ * Archive index as a physical card catalogue.
+ */
+
+#archive-index .archive-year {
+    position: relative;
+    padding: 1.6rem 0 0.7rem;
+    border-bottom: 0;
+    box-shadow: 0 1px 0 var(--skeuo-groove), 0 2px 0 var(--skeuo-edge);
+}
+
+#archive-index .archive-year h2 {
+    font-family: var(--editorial-mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+#archive-index .archive-year h2::before {
+    content: "";
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-right: 0.55rem;
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 55%, black));
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.35), 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+    vertical-align: middle;
+}
+
+/* Each row is a drawer label. */
+#archive-index .archive-row {
+    position: relative;
+    grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+    gap: 1.25rem;
+    align-items: baseline;
+    margin: 0.35rem 0;
+    padding: 0.7rem 0.9rem !important;
+    border: 0 !important;
+    border-radius: 0.4rem !important;
+    background: transparent !important;
+    box-shadow: none;
+    transition: box-shadow 130ms ease, background-color 130ms ease;
+}
+
+#archive-index .archive-row:hover {
+    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
+    box-shadow: var(--shadow-raised) !important;
+}
+
+#archive-index .archive-row time {
+    font-family: var(--editorial-mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+}
+
+#archive-index .archive-row-title {
+    font-size: 0.97rem;
+    font-weight: 500;
+}
+
+#archive-index .archive-row:hover .archive-row-title {
+    color: var(--accent) !important;
+}
+
+/* Category / tag chips become embossed pills. */
+#archive-index .archive-row-tags,
+#editorial-sidebar-rail :is(.badge, .min-w-8) {
+    font-family: var(--editorial-mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+}
+
+#editorial-sidebar-rail #categories-middle button,
+#editorial-sidebar-rail #tags-middle a {
+    border-radius: 0.35rem !important;
+    transition: box-shadow 130ms ease, background-color 130ms ease;
+}
+
+#editorial-sidebar-rail #categories-middle button:hover,
+#editorial-sidebar-rail #tags-middle a:hover {
+    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
+    box-shadow: var(--shadow-raised) !important;
+}
+
+@media (max-width: 640px) {
+    #archive-index .archive-row {
+        grid-template-columns: 3.75rem minmax(0, 1fr);
+        gap: 0.85rem;
+        padding-inline: 0.6rem !important;
+    }
+}
