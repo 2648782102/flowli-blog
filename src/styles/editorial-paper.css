@@ -1012,6 +1012,7 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
     width: 0 !important;
     min-width: 0 !important;
     height: 100% !important;
+    padding: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     opacity: 0 !important;
@@ -1020,17 +1021,30 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
 }
 
 #navbar #search-bar:focus-within #search-input-desktop {
-    flex: 1 1 auto;
-    width: auto !important;
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    flex: none !important;
+    width: 100% !important;
     min-width: 0 !important;
-    padding-left: var(--nav-control-size) !important;
-    padding-right: 0.6rem !important;
+    padding: 0 0.6rem 0 var(--nav-control-size) !important;
     opacity: 1 !important;
     pointer-events: auto !important;
 }
 
-#navbar #search-bar > svg,
-#navbar #search-bar > span {
+#navbar #search-bar.is-expanded:not(:focus-within) #search-input-desktop {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 0.6rem 0 var(--nav-control-size) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+#navbar #search-bar > .search-bar-icon {
     position: absolute !important;
     left: 50% !important;
     top: 50% !important;
@@ -1042,10 +1056,9 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
     pointer-events: none !important;
 }
 
-#navbar #search-bar:focus-within > svg,
-#navbar #search-bar:focus-within > span {
+#navbar #search-bar:focus-within > .search-bar-icon,
+#navbar #search-bar.is-expanded > .search-bar-icon {
     left: calc(var(--nav-control-size) / 2) !important;
-    transform: translate(-50%, -50%) !important;
 }
 
 #navbar #search-switch {
