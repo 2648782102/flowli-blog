@@ -1175,6 +1175,58 @@ body.is-home .editorial-shell {
     width: min(100%, calc(var(--shell-max) + var(--shell-gutter) * 2));
 }
 
+#creation-field {
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 600ms ease;
+    mix-blend-mode: screen;
+}
+
+body.is-home #creation-field {
+    opacity: 0.96;
+}
+
+body.is-home #top-row,
+body.is-home #main-content,
+body.is-home .editorial-footer {
+    position: relative;
+    z-index: 40;
+}
+
+body.is-home .editorial-shell {
+    width: min(100%, calc(var(--reading-max) + var(--shell-gutter) * 2));
+}
+
+body.is-home .editorial-main-grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+body.is-home .editorial-content-column,
+body.is-home .editorial-footer {
+    grid-column: 1;
+}
+
+body.is-home #content-wrapper > :is(.night-cover, .featured-post, .desk-index, .home-feed),
+body.is-home #content-wrapper > .pagination-editorial {
+    width: 100%;
+    max-width: var(--reading-max);
+    margin-inline: auto;
+}
+
+body.is-home #top-row {
+    width: 100%;
+    max-width: none;
+}
+
+body.is-home #navbar > div:last-child {
+    width: min(calc(100% - 1.5rem), calc(var(--shell-max) + 2rem));
+}
+
 #content-wrapper > :is(.night-cover, .featured-post, .desk-index, .home-feed) {
     width: 100% !important;
     max-width: none !important;
@@ -1982,6 +2034,19 @@ body.enable-banner.is-home {
         row-gap: 0;
     }
 
+    body.is-home .editorial-main-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.is-home .editorial-sidebar-rail {
+        display: none;
+    }
+
+    body.is-home .editorial-content-column,
+    body.is-home .editorial-footer {
+        grid-column: 1;
+    }
+
     #content-wrapper > :is(.home-intro, .home-feed, .card-base, .post-index, .pagination-editorial, .footer, .night-cover, .featured-post, .desk-index),
     #content-wrapper > .flex,
     #content-wrapper > .onload-animation-up {
@@ -2021,6 +2086,11 @@ body.enable-banner.is-home {
     .editorial-footer {
         margin-top: 3rem;
         max-width: var(--reading-max);
+    }
+
+    body.is-home .editorial-footer {
+        max-width: var(--reading-max);
+        margin-inline: auto;
     }
 }
 

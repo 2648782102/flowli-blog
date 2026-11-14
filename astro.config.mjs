@@ -36,6 +36,7 @@ export default defineConfig({
     site: siteConfig.siteURL,
     base: "/flowli-blog",
     trailingSlash: "always",
+    devToolbar: { enabled: false },
     integrations: [
         swup({
             theme: false,
