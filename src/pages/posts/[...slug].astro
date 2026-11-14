@@ -171,7 +171,7 @@ const jsonLd = {
             </div>
             <!-- title -->
             <div class="relative onload-animation-up">
-                <div
+                <h1
                     data-pagefind-body
                     data-pagefind-weight="10"
                     data-pagefind-meta="title"
@@ -182,7 +182,7 @@ const jsonLd = {
                     before:absolute before:top-3 before:-left-4.5"
                 >
                     {entry.data.title}
-                </div>
+                </h1>
             </div>
             <!-- metadata -->
             <div class="onload-animation-up">
@@ -342,6 +342,9 @@ const jsonLd = {
                 "w-full font-bold overflow-hidden active:scale-95",
                 { "pointer-events-none": !entry.data.nextSlug },
             ]}
+            aria-label={entry.data.nextSlug ? `上一篇：${entry.data.nextTitle}` : undefined}
+            aria-hidden={entry.data.nextSlug ? undefined : "true"}
+            tabindex={entry.data.nextSlug ? undefined : -1}
         >
             {
                 entry.data.nextSlug && (
@@ -365,6 +368,9 @@ const jsonLd = {
                 "w-full font-bold overflow-hidden active:scale-95",
                 { "pointer-events-none": !entry.data.prevSlug },
             ]}
+            aria-label={entry.data.prevSlug ? `下一篇：${entry.data.prevTitle}` : undefined}
+            aria-hidden={entry.data.prevSlug ? undefined : "true"}
+            tabindex={entry.data.prevSlug ? undefined : -1}
         >
             {
                 entry.data.prevSlug && (
