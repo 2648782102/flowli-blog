@@ -368,6 +368,7 @@ body::after {
 
 #archive-index .archive-year {
     border-bottom-color: var(--archive-line-strong);
+    padding-inline: 1rem;
 }
 
 #archive-index .archive-year h2 {
@@ -378,7 +379,9 @@ body::after {
 }
 
 #archive-index .archive-row {
-    border-bottom-color: var(--archive-line);
+    padding: 0.85rem 1rem !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--archive-line) !important;
     align-items: center;
 }
 
@@ -389,6 +392,18 @@ body::after {
 
 #archive-index .archive-row-title {
     font-weight: 560;
+}
+
+@media (max-width: 600px) {
+    #archive-index .archive-year {
+        padding-inline: 0.75rem;
+    }
+
+    #archive-index .archive-row {
+        grid-template-columns: 4rem minmax(0, 1fr);
+        padding: 0.8rem 0.75rem !important;
+        gap: 0.75rem !important;
+    }
 }
 
 /* Sidebar widgets */
