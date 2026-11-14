@@ -287,11 +287,19 @@ const hasSidebarForPath = (pathname: string): boolean => {
         widgetManager.hasContentOnSide('right', [], pathname);
 };
 
+const syncLayoutState = (pathname: string): void => {
+    const bodyElement = document.querySelector('body');
+    if (!bodyElement) return;
+    bodyElement.classList.toggle('is-home', pathsEqual(pathname, url('/')));
+    bodyElement.classList.toggle('has-sidebar', hasSidebarForPath(pathname));
+};
+
 
 // 初始化Swup
 const setup = () => {
     let pausedElementIds = new Set();
     window.swup.hooks.on('content:replace', () => {
+        syncLayoutState(window.location.pathname);
         // Restore pause-swup-transition class to newly replaced persistent elements
         pausedElementIds.forEach(id => {
             const el = document.getElementById(id as string);
@@ -305,17 +313,8 @@ const setup = () => {
         if ((window as any).scrollProtectionManager && typeof (window as any).scrollProtectionManager.disable === 'function') {
             (window as any).scrollProtectionManager.disable();
         }
-        // Keep the body home marker in sync without changing layout geometry.
-        const bodyElement = document.querySelector('body')
-        const isHomePage = pathsEqual(visit.to.url, url('/'))
         syncNavbarCurrentPage(new URL(visit.to.url, window.location.origin).pathname);
         window.scrollTo({ top: 0, behavior: 'instant' });
-        if (isHomePage) {
-            bodyElement!.classList.add('is-home');
-        } else {
-            bodyElement!.classList.remove('is-home');
-        }
-        bodyElement!.classList.toggle('has-sidebar', hasSidebarForPath(new URL(visit.to.url, window.location.origin).pathname));
         // Handle animation logic for persistent sidebar components
         const currentPath = window.location.pathname;
         const nextPath = visit.to.url;
@@ -357,6 +356,7 @@ const setup = () => {
         });
     });
     window.swup.hooks.on('page:view', () => {
+        syncLayoutState(window.location.pathname);
         syncNavbarCurrentPage(window.location.pathname);
         window.scrollTo({ top: 0, behavior: 'instant' });
         // Check if the current page is a post page, if so, trigger a custom event to initialize the comment system

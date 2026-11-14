@@ -433,15 +433,7 @@ button:focus-visible {
 }
 
 html.is-changing #navbar > div:last-child::after {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    z-index: 2;
-    border-radius: inherit;
-    pointer-events: none;
-    transform-origin: left center;
-    background: linear-gradient(90deg, transparent, rgb(169 199 232 / 0.55), transparent);
-    animation: flowli-nav-sheen 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    display: none;
 }
 
 html.is-changing #swup-container,
@@ -449,28 +441,28 @@ html.is-changing #editorial-sidebar-rail {
     opacity: 1 !important;
 }
 
+html.is-changing #content-wrapper,
+html.is-changing #content-wrapper > * {
+    animation: none !important;
+    opacity: 1 !important;
+}
+
 html.is-changing #content-wrapper {
-    animation: flowli-page-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: none;
 }
 
 html.is-changing #content-wrapper > * {
-    animation: flowli-page-enter 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: none;
 }
 
-html.is-changing #content-wrapper > :nth-child(2) { animation-delay: 35ms; }
-html.is-changing #content-wrapper > :nth-child(3) { animation-delay: 70ms; }
-html.is-changing #content-wrapper > :nth-child(4) { animation-delay: 105ms; }
-html.is-changing #content-wrapper > :nth-child(5) { animation-delay: 140ms; }
-
 html.is-changing #editorial-sidebar-rail {
-    animation: flowli-page-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) 60ms both;
+    animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
     html.is-changing #content-wrapper,
     html.is-changing #content-wrapper > *,
-    html.is-changing #editorial-sidebar-rail,
-    html.is-changing #navbar > div:last-child::after {
+    html.is-changing #editorial-sidebar-rail {
         animation: none !important;
     }
 }
@@ -1183,7 +1175,7 @@ body.is-home .editorial-shell {
     height: 100%;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 600ms ease;
+    transition: opacity 180ms ease;
     mix-blend-mode: screen;
 }
 

@@ -40,7 +40,12 @@ html.is-animating.is-leaving .transition-leaving {
 
 /* Swup fade 动画 - 只作用于透明度，避免内容整体上下滑动 */
 html.is-changing .transition-swup-fade {
-    transition: opacity var(--transition-duration-medium) var(--transition-ease-page-in);
+    transition: none !important;
+    opacity: 1 !important;
+}
+
+html.is-animating .transition-swup-fade:not(.pause-swup-transition) {
+    opacity: 1 !important;
 }
 
 html.is-animating .transition-swup-fade:not(.pause-swup-transition) {
