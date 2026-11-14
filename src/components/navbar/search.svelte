@@ -24,17 +24,17 @@ const fakeResult: SearchResult[] = [
     {
         url: url("/"),
         meta: {
-            title: "This Is a Fake Search Result",
+            title: "搜索预览结果",
         },
         excerpt:
-            "Because the search cannot work in the <mark>dev</mark> environment.",
+            "当前是 <mark>开发</mark> 环境，正式搜索请在构建后的站点使用。",
     },
     {
         url: url("/"),
         meta: {
-            title: "If You Want to Test the Search",
+            title: "测试正式搜索",
         },
-        excerpt: "Try running <mark>npm build && npm preview</mark> instead.",
+        excerpt: "请运行 <mark>npm build && npm preview</mark>。",
     },
 ];
 
@@ -223,7 +223,7 @@ onDestroy(() => {
         {isDesktopSearchExpanded ? 'bg-black/4 hover:bg-black/6 focus-within:bg-black/6 dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10' : 'btn-plain scale-animation active:scale-90'}"
     role="button"
     tabindex="0"
-    aria-label="Search"
+    aria-label="搜索"
     onmouseenter={() => {if (!isDesktopSearchExpanded) toggleDesktopSearch()}}
     onmouseleave={collapseDesktopSearch}
 >
@@ -236,7 +236,7 @@ onDestroy(() => {
 </div>
 
 <!-- toggle btn for phone/tablet view -->
-<button onclick={togglePanel} aria-label="Search Panel" id="search-switch"
+<button onclick={togglePanel} aria-label="搜索面板" id="search-switch"
         class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 flex items-center justify-center">
     <Icon icon="material-symbols:search" class="text-[1.25rem]"></Icon>
 </button>
@@ -252,7 +252,7 @@ onDestroy(() => {
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
   ">
         <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
-        <input placeholder="Search" bind:value={keywordMobile}
+        <input placeholder="搜索" bind:value={keywordMobile}
                class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
                focus:w-60 text-black/50 dark:text-white/50"
         >

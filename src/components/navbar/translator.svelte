@@ -94,7 +94,7 @@ onDestroy(() => {
 <div class="relative z-50">
     <!-- 翻译按钮 -->
     <button
-        aria-label="Language Translation"
+        aria-label="语言翻译"
         class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center"
         id="translate-switch"
         aria-expanded={isOpen}
@@ -111,7 +111,7 @@ onDestroy(() => {
             class="p-4 w-full"
         >
             <div class="text-sm font-medium text-(--primary) mb-3 px-1">
-                选择语言 / Select Language
+                选择语言
             </div>
             <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                 {#each languages as lang}
