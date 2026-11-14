@@ -227,11 +227,11 @@ onDestroy(() => {
     onmouseenter={() => {if (!isDesktopSearchExpanded) toggleDesktopSearch()}}
     onmouseleave={collapseDesktopSearch}
 >
-    <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none {isDesktopSearchExpanded ? 'ml-3' : 'left-1/2 -translate-x-1/2'} transition my-auto {isDesktopSearchExpanded ? 'text-black/30 dark:text-white/30' : ''}"></Icon>
+    <Icon icon="material-symbols:search" class="search-bar-icon text-[1.25rem] pointer-events-none transition {isDesktopSearchExpanded ? 'text-black/30 dark:text-white/30' : ''}"></Icon>
     <input id="search-input-desktop" placeholder="{i18n(I18nKey.search)}" bind:value={keywordDesktop}
         onfocus={() => {if (!isDesktopSearchExpanded) toggleDesktopSearch(); search(keywordDesktop, true)}}
         onblur={handleBlur}
-        class="transition-all pl-10 text-sm bg-transparent outline-0 h-full text-black/50 dark:text-white/50"
+        class="transition-all text-sm bg-transparent outline-0 h-full text-black/50 dark:text-white/50"
     >
 </div>
 
