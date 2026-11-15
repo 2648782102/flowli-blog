@@ -1,0 +1,404 @@
+/*
+ * Site layout — the single source of truth for structure.
+ * Every container declares its layout model explicitly: flex for one-axis
+ * stacking, grid for two-axis composition. No floats, no implicit blocks.
+ */
+
+/* ---------- 1. Page frame: vertical flex ---------- */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* The nav row is fixed-height; it does not grow. */
+#top-row {
+    flex: 0 0 auto;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+#navbar-wrapper {
+    position: static !important;
+    top: auto !important;
+    height: auto;
+}
+
+/* Main content grows to fill the remaining space. */
+#main-content {
+    flex: 1 1 auto;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------- 2. Navbar: flex, three groups ---------- */
+#navbar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#navbar > div:last-child,
+#navbar[data-transparent-mode] > div:last-child {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100% !important;
+    max-width: none !important;
+    height: 3.5rem !important;
+    min-height: 3.5rem !important;
+    margin: 0 !important;
+    padding-inline: max(1.25rem, calc((100vw - 72rem) / 2)) !important;
+}
+
+#navbar .flowli-brand {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+}
+
+#navbar .navbar-nav-links {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+    min-width: 0;
+    margin-inline: auto;
+}
+
+#navbar .navbar-buttons {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.2rem;
+    min-width: 0;
+    margin-left: auto;
+}
+
+#navbar-buttons > .navbar-control {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- 3. Page body: shell + grid ---------- */
+.editorial-shell {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.editorial-main-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#swup-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1 1 auto;
+}
+
+.editorial-page-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+}
+
+#content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    min-width: 0;
+    padding-block: 2.25rem 0;
+}
+
+/* ---------- 4. Two-column pages: grid ---------- */
+@media (min-width: 768px) {
+    #swup-container[data-layout="with-rail"] .editorial-page-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) clamp(9rem, 18vw, 15rem);
+        grid-template-rows: auto;
+        column-gap: clamp(1.25rem, 3vw, 2.5rem);
+        align-items: start;
+        justify-content: center;
+    }
+
+    #swup-container[data-layout="with-rail"] #content-wrapper {
+        grid-column: 1;
+        grid-row: 1;
+        min-width: 0;
+        max-width: none;
+        padding-block: 2.25rem 0;
+    }
+
+    #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+        display: flex;
+        flex-direction: column;
+        grid-column: 2;
+        grid-row: 1;
+        gap: 1.5rem;
+        width: 100%;
+        min-width: 0;
+        align-self: start;
+        position: static;
+        margin: 0;
+        padding-block-start: 2.25rem;
+    }
+}
+
+/* Rail internals stack vertically. */
+.editorial-sidebar-rail > .editorial-sidebar,
+.editorial-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    min-width: 0;
+}
+
+#sidebar-sticky {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: static;
+    width: 100%;
+}
+
+/* ---------- 5. Single-column pages ---------- */
+#swup-container[data-layout="home"] #content-wrapper,
+#swup-container[data-layout="reading"] #content-wrapper {
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
+}
+
+/* ---------- 6. Footer ---------- */
+.editorial-footer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 46rem;
+    margin: 3rem auto 2rem;
+    padding-inline: 0;
+}
+
+/* ---------- 7. Home sections: flex/grid ---------- */
+.home-composition {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.intro-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.home-section-title {
+    align-self: flex-start;
+}
+
+.post-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.post-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* ---------- 8. Article layout: flex column ---------- */
+#post-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    width: 100%;
+    min-width: 0;
+}
+
+#post-container :is(.custom-md, .markdown-body) {
+    max-width: none;
+    margin-inline: 0;
+}
+
+/* Previous/next navigation: two equal columns. */
+#content-wrapper > .flex.flex-col.md\:flex-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+/* ---------- 9. Archive rows: grid ---------- */
+#archive-index {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#archive-index section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#archive-index .archive-year {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+#archive-index .archive-row {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 1.25rem;
+    width: 100%;
+    min-width: 0;
+}
+
+/* ---------- 10. Responsive ---------- */
+@media (max-width: 900px) {
+    #navbar .nav-link-item .nav-link-text {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        display: flex;
+    }
+
+    #navbar > div:last-child {
+        height: 3.1rem !important;
+        min-height: 3.1rem !important;
+        padding-inline: 0.85rem !important;
+    }
+
+    #navbar .navbar-nav-links {
+        display: none;
+    }
+
+    #swup-container[data-layout="with-rail"] .editorial-page-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+        display: flex;
+        flex-direction: column;
+        padding-block-start: 0;
+        margin-top: 2rem;
+    }
+
+    #archive-index .archive-row {
+        grid-template-columns: 3.75rem minmax(0, 1fr);
+        gap: 0.85rem;
+    }
+
+    #archive-index .archive-row-tags {
+        display: none;
+    }
+
+    #content-wrapper > .flex.flex-col.md\:flex-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* ---------- Final: enforce flex/grid on every structural container ---------- */
+body {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#top-row {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 0 0 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#top-row > #navbar-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100%;
+}
+
+#navbar,
+#navbar > div:last-child {
+    display: flex !important;
+}
+
+#main-content {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+}
+
+#main-content > .editorial-shell {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto;
+}
+
+.editorial-sidebar-rail {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.editorial-page-grid {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Grid model where two columns are intended. */
+@media (min-width: 768px) {
+    #swup-container[data-layout="with-rail"] .editorial-page-grid {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) clamp(9rem, 18vw, 15rem);
+        column-gap: clamp(1.25rem, 3vw, 2.5rem);
+        align-items: start;
+    }
+}
