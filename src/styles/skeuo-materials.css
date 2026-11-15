@@ -459,7 +459,6 @@ html:root.dark #light-dark-panel > .card-base {
     );
     box-shadow: var(--lift-1);
     color: var(--ink);
-    transform: translateX(2px);
 }
 
 html:root.dark #translate-panel button:hover,
@@ -475,7 +474,7 @@ html:root.dark #search-panel a:hover {
 #translate-panel button:active,
 #light-dark-panel button:active,
 #search-panel a:active {
-    transform: translateX(2px) translateY(1px);
+    transform: translateY(1px);
     box-shadow: var(--sink-1);
 }
 

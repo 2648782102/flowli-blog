@@ -175,11 +175,10 @@ onMount(() => {
         background-image: linear-gradient(180deg, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.15));
         box-shadow: var(--lift-1, none);
         color: var(--ink);
-        transform: translateX(2px);
     }
 
     .menu__item:active {
-        transform: translateX(2px) translateY(1px);
+        transform: translateY(1px);
         box-shadow: var(--sink-1, none);
     }
 

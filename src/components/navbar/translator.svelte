@@ -114,7 +114,7 @@ onDestroy(() => {
             <div class="text-sm font-medium text-(--primary) mb-3 px-1">
                 选择语言
             </div>
-            <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
+            <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto overflow-x-hidden">
                 {#each languages as lang}
                     <DropdownItem
                         isActive={currentLanguage === lang.code}
