@@ -467,27 +467,6 @@ h4 {
     line-height: 1.85;
 }
 
-.intro-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-    margin-top: 1.5rem;
-}
-
-.intro-links a {
-    color: var(--ink);
-    font-size: 0.86rem;
-    text-decoration: underline;
-    text-decoration-color: var(--hairline-strong);
-    text-decoration-style: dashed;
-    text-underline-offset: 4px;
-}
-
-.intro-links a:hover {
-    color: var(--accent);
-    text-decoration-color: var(--accent);
-}
-
 .home-section-title {
     margin: 0 0 0.5rem;
     color: var(--ink-faint);
@@ -1256,6 +1235,17 @@ h4 {
         display: none;
     }
 
+    #navbar .nav-link-item {
+        padding-inline: 0.55rem !important;
+    }
+
+    #navbar .nav-link-text {
+        margin-left: 0.35rem;
+    }
+}
+
+/* Icon-only navigation when the viewport is genuinely tight. */
+@media (max-width: 1080px) {
     #navbar .nav-link-item .nav-link-text {
         display: none;
     }
