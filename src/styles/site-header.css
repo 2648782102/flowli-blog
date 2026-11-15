@@ -143,12 +143,23 @@
     display: contents;
 }
 
+/* Tool components render their own wrapper div; make it a block-level flex
+   child so no inline baseline (and its descender gap) can shift the button. */
+.site-header__tool > :where(div, span) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    line-height: 0;
+}
+
 .site-header__tool button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     width: 2.25rem;
     height: 2.25rem;
+    line-height: 0;
     padding: 0;
     border: 0;
     border-radius: 0.4rem;
@@ -162,6 +173,7 @@
 }
 
 .site-header__tool svg {
+    display: block;
     width: 1.15rem;
     height: 1.15rem;
 }
