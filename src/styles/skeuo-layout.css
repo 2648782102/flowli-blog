@@ -222,9 +222,13 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
     }
 
     #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
-        position: sticky;
-        top: 4.5rem;
+        position: static;
         margin-top: 0;
+        align-self: start;
+    }
+
+    #editorial-sidebar-rail #sidebar-sticky {
+        position: static;
     }
 }
 
@@ -242,4 +246,16 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
         position: static;
         margin-top: 2.5rem;
     }
+}
+
+/* The rail must occupy row 1 beside the article, never drop below it. */
+#swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+    grid-row: 1 !important;
+    grid-column: 2 !important;
+    align-self: start;
+}
+
+#swup-container[data-layout="with-rail"] #content-wrapper {
+    grid-row: 1;
+    grid-column: 1;
 }
