@@ -109,7 +109,7 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
 }
 
 /* ---------- Responsive navigation ---------- */
-@media (max-width: 1120px) {
+@media (max-width: 760px) {
     #navbar .nav-link-item .nav-link-text {
         display: none;
     }
@@ -151,16 +151,17 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
 /* Reading pages: main column + sticky rail. */
 #swup-container[data-layout="with-rail"] .editorial-page-grid {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) 16rem;
-    gap: 3rem;
+    grid-template-columns: minmax(0, 1fr) 15rem;
+    column-gap: clamp(1.5rem, 3vw, 2.5rem);
     align-items: start;
+    justify-content: center;
 }
 
 /* Article pages read better slightly narrower than the shell. */
 #swup-container[data-layout="with-rail"] #content-wrapper {
     grid-column: 1;
     min-width: 0;
-    max-width: 46rem;
+    max-width: none;
     margin-inline: 0;
 }
 
@@ -199,7 +200,35 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
     margin: 3.5rem auto 2rem;
 }
 
-@media (max-width: 1023px) {
+/* Keep two columns down to tablet portrait; only stack on phones. */
+@media (min-width: 768px) and (max-width: 1023px) {
+    #swup-container[data-layout="with-rail"] .editorial-page-grid {
+        grid-template-columns: minmax(0, 1fr) 10rem;
+        column-gap: 1.25rem;
+    }
+
+    /* The rail is decorative at this width: tighten its internals. */
+    #editorial-sidebar-rail .font-bold.text-lg,
+    #editorial-sidebar-rail widget-layout > div:first-child {
+        font-size: 0.75rem !important;
+    }
+
+    #editorial-sidebar-rail :is(a, button) {
+        font-size: 0.78rem !important;
+    }
+
+    #swup-container[data-layout="with-rail"] #content-wrapper {
+        max-width: none;
+    }
+
+    #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+        position: sticky;
+        top: 4.5rem;
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 767px) {
     #swup-container[data-layout="with-rail"] .editorial-page-grid {
         display: block !important;
     }
