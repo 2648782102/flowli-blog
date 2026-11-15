@@ -223,7 +223,7 @@ onDestroy(() => {
 </div>
 
 <!-- toggle btn for phone/tablet view -->
-<button onclick={togglePanel} aria-label="搜索面板" id="search-switch"
+<button onclick={togglePanel} aria-label="搜索面板" id="search-switch" data-header-trigger
         class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 flex items-center justify-center">
     <Icon icon="material-symbols:search" class="text-[1.25rem]"></Icon>
 </button>

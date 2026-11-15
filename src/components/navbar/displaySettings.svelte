@@ -58,6 +58,7 @@ $effect(() => {
 <div class="relative z-50">
     <button aria-label="显示设置" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center" 
         id="display-settings-switch"
+        data-header-trigger
         aria-expanded={isOpen}
         aria-controls="display-setting-wrapper"
         onclick={togglePanel}

@@ -71,7 +71,7 @@ onMount(() => {
 
 <!-- z-50 make the panel higher than other float panels -->
 <div class="relative z-50" role="menu" tabindex="-1">
-    <button aria-label="亮色/暗色/跟随系统" role="menuitem" class="relative btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center" id="scheme-switch" aria-expanded={isOpen} aria-controls="light-dark-panel" onclick={openPanel}>
+    <button aria-label="亮色/暗色/跟随系统" role="menuitem" data-header-trigger class="relative btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center" id="scheme-switch" aria-expanded={isOpen} aria-controls="light-dark-panel" onclick={openPanel}>
         <div class="absolute inset-0 flex items-center justify-center" class:opacity-0={mode !== LIGHT_MODE}>
             <Icon icon="material-symbols:wb-sunny-outline-rounded" class="text-[1.25rem]"></Icon>
         </div>
@@ -82,7 +82,7 @@ onMount(() => {
             <Icon icon="material-symbols:radio-button-partial-outline" class="text-[1.25rem]"></Icon>
         </div>
     </button>
-    <div id="light-dark-panel" class="absolute transition top-11 -right-2 pt-5" class:float-panel-closed={!isOpen} aria-hidden={!isOpen}>
+    <div id="light-dark-panel" class="absolute transition top-11 -right-2 pt-5 w-max min-w-36" class:float-panel-closed={!isOpen} aria-hidden={!isOpen}>
         <DropdownPanel>
             <DropdownItem
                     isActive={mode === LIGHT_MODE}

@@ -97,6 +97,7 @@ onDestroy(() => {
         aria-label="语言翻译"
         class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center"
         id="translate-switch"
+        data-header-trigger
         aria-expanded={isOpen}
         aria-controls="translate-panel-wrapper"
         onclick={togglePanel}

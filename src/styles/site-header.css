@@ -96,7 +96,13 @@
 
 .site-header__link:hover {
     color: var(--ink);
-    background: color-mix(in srgb, var(--ink) 7%, transparent);
+    background-color: color-mix(in srgb, var(--ink) 6%, transparent);
+    box-shadow: 0 1px 2px rgb(38 30 18 / 0.10) inset;
+}
+
+.site-header__link:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgb(38 30 18 / 0.18) inset;
 }
 
 .site-header__link.is-active {
@@ -143,39 +149,50 @@
     display: contents;
 }
 
-/* Tool components render their own wrapper div; make it a block-level flex
-   child so no inline baseline (and its descender gap) can shift the button. */
-.site-header__tool > :where(div, span) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    line-height: 0;
-}
-
-.site-header__tool button {
+/* Only the top-level toolbar triggers are square icon buttons. Panel
+   descendants (options, links, sliders) must never inherit this sizing or
+   they collapse; that is why the selector is scoped to [data-header-trigger]. */
+.site-header__tool [data-header-trigger] {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 2.25rem;
     height: 2.25rem;
+    flex: 0 0 auto;
     line-height: 0;
     padding: 0;
     border: 0;
-    border-radius: 0.4rem;
+    border-radius: var(--r-md, 0.4rem);
     background: transparent;
     color: var(--ink);
     cursor: pointer;
+    transition: background-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
-.site-header__tool button:hover {
-    background: color-mix(in srgb, var(--ink) 8%, transparent);
+.site-header__tool [data-header-trigger]:hover {
+    background: color-mix(in srgb, var(--ink) 9%, transparent);
+    box-shadow: 0 1px 2px rgb(38 30 18 / 0.14);
 }
 
-.site-header__tool svg {
+.site-header__tool [data-header-trigger]:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgb(38 30 18 / 0.2) inset;
+}
+
+/* Icon sizing is limited to the icon inside a trigger, not every svg in a
+   dropdown panel. */
+.site-header__tool [data-header-trigger] svg {
     display: block;
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+/* Keep the inner wrapper of each island on the header baseline only. */
+.site-header__tool > :where(astro-island) > :where(div, span):first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
 }
 
 /* ---- Search: collapsed pill that grows on hover/focus ---- */

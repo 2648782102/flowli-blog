@@ -647,29 +647,6 @@ h4 {
 .btn-plain,
 .expand-btn button {
     border-radius: var(--radius-paper) !important;
-    box-shadow: none !important;
-}
-
-.btn-card:hover,
-.btn-regular:hover,
-.btn-plain:hover {
-    color: var(--accent) !important;
-    border-color: var(--hairline-strong) !important;
-}
-
-/* Floating panels */
-#display-setting-wrapper,
-#translate-panel-wrapper,
-#display-setting,
-#nav-menu-panel,
-#translate-panel,
-#search-panel {
-    background: var(--float-panel-bg) !important;
-    border: 1px solid var(--hairline) !important;
-    border-radius: var(--radius-large) !important;
-    box-shadow: 0 12px 32px rgb(21 28 38 / 0.12) !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
 }
 
 #search-panel mark {
@@ -762,11 +739,16 @@ h4 {
 }
 
 .flowli-footer-links a {
-    color: var(--ink-faint) !important;
+    color: var(--ink-faint);
+    padding: 0.15rem 0.35rem;
+    border-radius: var(--radius-paper);
+    text-decoration: none;
+    transition: color 140ms ease, background-color 140ms ease;
 }
 
 .flowli-footer-links a:hover {
-    color: var(--accent) !important;
+    color: var(--foil);
+    background-color: color-mix(in srgb, var(--ink) 6%, transparent);
 }
 
 /* Responsive */

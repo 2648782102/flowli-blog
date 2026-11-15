@@ -96,10 +96,17 @@ onMount(() => {
         background: transparent;
         color: var(--ink);
         cursor: pointer;
+        transition: background-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
     }
 
     .menu__toggle:hover {
-        background: color-mix(in srgb, var(--ink) 8%, transparent);
+        background: color-mix(in srgb, var(--ink) 9%, transparent);
+        box-shadow: 0 1px 2px rgb(38 30 18 / 0.14);
+    }
+
+    .menu__toggle:active {
+        transform: translateY(1px);
+        box-shadow: 0 1px 2px rgb(38 30 18 / 0.2) inset;
     }
 
     .menu__bars {
@@ -122,6 +129,7 @@ onMount(() => {
         z-index: 40;
     }
 
+    /* A sheet of paper lifted off the desk, matching every other panel. */
     .menu__panel {
         position: absolute;
         top: calc(100% + 0.6rem);
@@ -131,26 +139,96 @@ onMount(() => {
         flex-direction: column;
         min-width: 11rem;
         padding: 0.4rem;
-        border: 1px solid var(--hairline);
-        border-radius: 0.5rem;
-        background: var(--mat-surface-raised, #fff);
-        box-shadow: var(--shadow-float, 0 12px 32px rgb(0 0 0 / 0.16));
+        border: 0;
+        border-radius: var(--r-lg, 0.5rem);
+        background-color: var(--paper-stock, #fdfbf5);
+        background-image: linear-gradient(
+            175deg,
+            rgb(255 255 255 / 0.9) 0,
+            rgb(255 255 255 / 0) 2.5rem
+        );
+        box-shadow: var(--lift-float, 0 12px 32px rgb(0 0 0 / 0.16));
+        outline: 1px solid rgb(38 30 18 / 0.12);
+        outline-offset: -1px;
+        animation: menu-settle 200ms cubic-bezier(0.22, 0.61, 0.36, 1);
     }
 
     .menu__item {
-        padding: 0.55rem 0.75rem;
-        border-radius: 0.35rem;
-        color: var(--ink);
-        font-size: 0.88rem;
+        display: flex;
+        align-items: center;
+        padding: 0.6rem 0.75rem;
+        border-radius: var(--r-sm, 0.25rem);
+        color: var(--ink-soft, var(--ink));
+        font-size: 0.9rem;
+        font-weight: 500;
+        line-height: 1.4;
         text-decoration: none;
+        transition:
+            background-color 140ms ease,
+            box-shadow 140ms ease,
+            color 140ms ease,
+            transform 140ms ease;
     }
 
     .menu__item:hover {
-        background: color-mix(in srgb, var(--ink) 7%, transparent);
+        background-color: var(--enamel, #f3f1ec);
+        background-image: linear-gradient(180deg, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.15));
+        box-shadow: var(--lift-1, none);
+        color: var(--ink);
+        transform: translateX(2px);
+    }
+
+    .menu__item:active {
+        transform: translateX(2px) translateY(1px);
+        box-shadow: var(--sink-1, none);
     }
 
     .menu__item.is-active {
-        background: color-mix(in srgb, var(--ink) 9%, transparent);
+        background-color: var(--well, #f4f0e6);
+        background-image: none;
+        box-shadow: var(--sink-1, none);
+        color: var(--foil, var(--accent));
         font-weight: 600;
+    }
+
+    .menu__item.is-active:hover {
+        transform: none;
+        background-color: var(--well, #f4f0e6);
+        box-shadow: var(--sink-1, none);
+    }
+
+    /* Dark theme: the top catch must stay a faint bounce, never a white band. */
+    :global(html:root.dark) .menu__panel {
+        background-image: linear-gradient(
+            175deg,
+            rgb(255 255 255 / 0.07) 0,
+            rgb(255 255 255 / 0) 2.5rem
+        );
+        outline-color: rgb(255 255 255 / 0.09);
+    }
+
+    :global(html:root.dark) .menu__item:hover {
+        background-image: linear-gradient(
+            180deg,
+            rgb(255 255 255 / 0.09),
+            rgb(255 255 255 / 0.02)
+        );
+    }
+
+    @keyframes menu-settle {
+        from {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .menu__panel {
+            animation: none;
+        }
     }
 </style>
