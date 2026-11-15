@@ -103,44 +103,49 @@ $effect(() => {
             padding 0
             border 0
             border-radius 999px
-            background linear-gradient(90deg, var(--navy), var(--navy-bright), var(--mist))
+            /*
+             * A machined track: the hue ramp is the only saturated element, and
+             * the recess is drawn by the same inset shadow used elsewhere.
+             */
+            box-shadow inset 0 1px 2px rgb(38 30 18 / 0.35), inset 0 -1px 0 rgb(255 255 255 / 0.35), 0 1px 0 rgb(255 255 255 / 0.5)
+            background linear-gradient(90deg, hsl(0deg 55% 62%), hsl(60deg 55% 58%), hsl(120deg 45% 50%), hsl(180deg 50% 48%), hsl(240deg 55% 55%), hsl(300deg 50% 55%), hsl(360deg 55% 62%))
 
             /* Input Thumb */
             &::-webkit-slider-thumb
                 -webkit-appearance none
                 height 0.9rem
                 width 0.9rem
-                border 2px solid var(--surface)
+                border 2px solid var(--paper-stock)
                 border-radius 50%
-                background var(--navy)
-                box-shadow 0 1px 4px rgba(7, 21, 43, 0.24)
+                background linear-gradient(180deg, #ffffff, #dfe3e9)
+                box-shadow 0 1px 2px rgb(38 30 18 / 0.35), 0 2px 6px -1px rgb(38 30 18 / 0.25)
                 &:hover
-                    background var(--navy-bright)
+                    background linear-gradient(180deg, #ffffff, #e9edf2)
                 &:active
-                    background var(--navy)
+                    background linear-gradient(180deg, #f4f6f8, #d5dae1)
 
             &::-moz-range-thumb
                 -webkit-appearance none
                 height 0.9rem
                 width 0.9rem
-                border 2px solid var(--surface)
+                border 2px solid var(--paper-stock)
                 border-radius 50%
                 border-width 2px
-                background var(--navy)
-                box-shadow 0 1px 4px rgba(7, 21, 43, 0.24)
+                background linear-gradient(180deg, #ffffff, #dfe3e9)
+                box-shadow 0 1px 2px rgb(38 30 18 / 0.35), 0 2px 6px -1px rgb(38 30 18 / 0.25)
                 &:hover
-                    background var(--navy-bright)
+                    background linear-gradient(180deg, #ffffff, #e9edf2)
                 &:active
-                    background var(--navy)
+                    background linear-gradient(180deg, #f4f6f8, #d5dae1)
 
             &::-ms-thumb
                 -webkit-appearance none
                 height 0.9rem
                 width 0.9rem
-                border 2px solid var(--surface)
+                border 2px solid var(--paper-stock)
                 border-radius 50%
-                background var(--navy)
-                box-shadow 0 1px 4px rgba(7, 21, 43, 0.24)
+                background linear-gradient(180deg, #ffffff, #dfe3e9)
+                box-shadow 0 1px 2px rgb(38 30 18 / 0.35), 0 2px 6px -1px rgb(38 30 18 / 0.25)
                 &:hover
                     background rgba(255, 255, 255, 0.8)
                 &:active

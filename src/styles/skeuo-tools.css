@@ -9,23 +9,42 @@
     letter-spacing: -0.02em;
 }
 
-/* Skill / project / timeline cards */
+/*
+ * Cards nested on the page sheet are coated enamel, not more paper: two paper
+ * surfaces at the same value merge into one, so the child has to be a
+ * different material to be legible as a separate object.
+ */
 #content-wrapper .skill-card,
 #content-wrapper .project-card,
 #content-wrapper .timeline-card {
-    border-radius: 0.55rem !important;
+    border-radius: var(--r-md) !important;
     border: 0 !important;
-    background:
-        repeating-linear-gradient(0deg, rgb(0 0 0 / 0.010) 0 1px, transparent 1px 3px),
-        var(--mat-surface-raised) !important;
-    box-shadow: var(--shadow-raised) !important;
+    background-color: var(--enamel) !important;
+    background-image: linear-gradient(
+        178deg,
+        rgb(255 255 255 / 0.85) 0,
+        rgb(255 255 255 / 0.2) 1.5rem,
+        rgb(38 30 18 / 0.025) 100%
+    ) !important;
+    box-shadow: var(--lift-1) !important;
     transition: box-shadow 150ms ease, transform 150ms ease;
+}
+
+html:root.dark #content-wrapper .skill-card,
+html:root.dark #content-wrapper .project-card,
+html:root.dark #content-wrapper .timeline-card {
+    background-image: linear-gradient(
+        178deg,
+        rgb(255 255 255 / 0.08) 0,
+        rgb(255 255 255 / 0.02) 1.5rem,
+        rgb(0 0 0 / 0.16) 100%
+    ) !important;
 }
 
 #content-wrapper .skill-card:hover,
 #content-wrapper .project-card:hover,
 #content-wrapper .timeline-card:hover {
-    box-shadow: var(--shadow-float) !important;
+    box-shadow: var(--lift-2) !important;
 }
 
 /* Icon wells */
@@ -41,24 +60,43 @@
     box-shadow: var(--shadow-inset);
 }
 
-/* Level and category chips: embossed pills. */
+/* Chips are stamped into the sheet: shallow recess, no fill colour. */
 #content-wrapper .skill-card :is(span, .skill-category) {
-    border-radius: 0.3rem;
+    border-radius: var(--r-sm);
 }
 
 #content-wrapper .skill-category {
-    background: linear-gradient(180deg, var(--mat-surface-sunken), var(--mat-surface)) !important;
-    box-shadow: var(--shadow-inset) !important;
+    background-color: var(--well);
+    background-image: none !important;
+    box-shadow: var(--sink-1) !important;
     border: 0 !important;
     color: var(--ink-soft) !important;
 }
 
-/* Stat tiles become inset readouts. */
+/*
+ * Stat tiles are the page sheet pressed in, not a different-coloured block.
+ * Fill stays at the stock colour; the recess is drawn entirely by the shadow
+ * and a hairline groove, which is how embossing actually works.
+ */
 #content-wrapper .bg-linear-to-br {
-    background: linear-gradient(180deg, var(--mat-surface-sunken), var(--mat-surface)) !important;
+    background-color: var(--paper-stock) !important;
+    background-image: none !important;
     border: 0 !important;
-    border-radius: 0.45rem !important;
-    box-shadow: var(--shadow-inset) !important;
+    border-radius: var(--r-sm) !important;
+    box-shadow:
+        0 1px 3px rgb(38 30 18 / 0.16) inset,
+        0 3px 8px -2px rgb(38 30 18 / 0.08) inset,
+        0 -1px 0 rgb(255 255 255 / 0.9) inset,
+        0 1px 0 rgb(38 30 18 / 0.05) !important;
+}
+
+html:root.dark #content-wrapper .bg-linear-to-br {
+    background-color: var(--paper-stock) !important;
+    box-shadow:
+        0 1px 3px rgb(0 0 0 / 0.70) inset,
+        0 3px 8px -2px rgb(0 0 0 / 0.45) inset,
+        0 -1px 0 rgb(255 255 255 / 0.07) inset,
+        0 1px 0 rgb(255 255 255 / 0.035) !important;
 }
 
 #content-wrapper .bg-linear-to-br > div:first-child {

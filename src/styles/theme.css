@@ -146,14 +146,9 @@ body::after {
 
 html,
 body {
-    background: var(--paper) !important;
     color: var(--ink);
     font-family: var(--editorial-sans);
     -webkit-font-smoothing: antialiased;
-}
-
-body {
-    background-image: none !important;
 }
 
 #main-content {
@@ -226,12 +221,6 @@ body {
     }
 }
 
-#editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child {
-    padding: 0 !important;
-    border: 0 !important;
-    background: transparent !important;
-}
-
 #profile-default .text-center,
 #profile-middle .text-center {
     font-size: 0.8rem !important;
@@ -283,52 +272,21 @@ h4 {
     outline-offset: 2px;
 }
 
-/* Cards: flat paper sheets with hairlines, not glass */
-.card-base,
-.card-base-transparent,
-#post-container,
-.wallpaper-transparent .card-base {
-    background: transparent !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
+/*
+ * Surface appearance now lives in skeuo-materials.css, where each element is
+ * assigned a real material. Nothing here may force background, border or
+ * shadow on a card, or the material layer can never take effect.
+ */
+
+/* Page-level wrappers are scaffolding, not sheets. */
+#content-wrapper > .flex,
+#content-wrapper > .onload-animation-up {
+    overflow: visible;
+    padding-inline: 0;
 }
 
-/* Re-add the sheet only where a card is a real container, not a page wrapper. */
-.menu-card,
-.album-card,
-.skill-card,
-.project-card,
-.timeline-card,
-.moment-item,
-#editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child {
-    background: var(--surface) !important;
-    border: 1px solid var(--hairline) !important;
-    border-radius: var(--radius-large) !important;
-}
-
-/* Page-level wrappers must never be sheets. */
-#content-wrapper > .flex > .card-base,
-#content-wrapper > .onload-animation-up > .card-base,
-#content-wrapper #post-container,
-#content-wrapper > .flex {
-    background: transparent !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    padding-inline: 0 !important;
-}
-
-#content-wrapper #post-container {
-    padding-block: 0 !important;
-}
-
-.card-base::before,
-#post-container::before {
-    display: none !important;
+#post-container {
+    padding-block: 0;
 }
 
 /* Navigation: light bar, hairline separation */
@@ -558,32 +516,6 @@ h4 {
     line-height: 1.7 !important;
 }
 
-#content-wrapper > .flex > .card-base,
-#content-wrapper > .onload-animation-up > .card-base,
-.menu-card,
-.album-card,
-.skill-card,
-.project-card,
-.timeline-card,
-.moment-item {
-    background: var(--surface) !important;
-    border: 1px solid var(--hairline) !important;
-    border-radius: var(--radius-large) !important;
-    box-shadow: none !important;
-}
-
-#content-wrapper > .flex > .card-base:hover,
-.menu-card:hover,
-.album-card:hover,
-.skill-card:hover,
-.project-card:hover,
-.timeline-card:hover,
-.moment-item:hover {
-    border-color: var(--hairline-strong) !important;
-    background: var(--surface) !important;
-    box-shadow: 0 2px 8px rgb(21 28 38 / 0.05) !important;
-}
-
 /* Compact page header inside cards */
 #content-wrapper .card-base > header,
 #content-wrapper .card-base > div > header {
@@ -597,31 +529,11 @@ h4 {
     font-weight: 620;
 }
 
-/* AstroPaper-style page headers: plain text, no boxed wrapper */
-#content-wrapper > .flex > .card-base > header,
-#content-wrapper > .flex > .card-base {
-    padding-inline: 0 !important;
-}
-
-#content-wrapper > .flex > .card-base > header {
-    border-bottom: 1px solid var(--hairline) !important;
-}
-
-#post-container {
-    padding-inline: 0 !important;
-}
-
 #post-container .license-container {
     margin-inline: 0;
 }
 
-/* Statistics: plain numbers, no colored tiles */
-#content-wrapper .bg-linear-to-br {
-    background: var(--surface-muted) !important;
-    border: 1px solid var(--hairline) !important;
-    border-radius: var(--radius-paper) !important;
-}
-
+/* Statistics: monospaced figures; the well itself comes from the material layer. */
 #content-wrapper .bg-linear-to-br > div:first-child {
     color: var(--ink) !important;
     font-family: var(--editorial-mono);
@@ -639,26 +551,29 @@ h4 {
     gap: 1.75rem !important;
 }
 
-#editorial-sidebar-rail .card-base,
+/*
+ * Rail sections below the profile board are ruled sections, not cards, so the
+ * column reads as one continuous index rather than a stack of tiles.
+ * The board itself is a material surface — see skeuo-materials.css.
+ */
+#editorial-sidebar-rail .card-base:not(.editorial-rail-item),
 #editorial-sidebar-rail widget-layout.card-base {
-    background: transparent !important;
-    border: 0 !important;
-    border-top: 1px solid var(--hairline) !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    padding: 1rem 0 0 !important;
+    background: transparent;
+    border: 0;
+    border-top: 1px solid var(--hairline);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 1rem 0 0;
 }
 
 #editorial-sidebar-rail .editorial-rail-item:first-child {
-    border-top: 0 !important;
-    padding-top: 0 !important;
+    border-top: 0;
+    padding-top: 0;
 }
 
+/* The profile board is a material surface; see skeuo-materials.css. */
 #editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child {
-    padding: 1rem !important;
-    border: 1px solid var(--hairline) !important;
-    border-radius: var(--radius-large) !important;
-    background: var(--surface) !important;
+    padding: 1rem;
 }
 
 #editorial-sidebar-rail widget-layout > div:first-child,
@@ -956,32 +871,18 @@ h4 {
     }
 }
 
-/* Final override: page-level containers are plain, only real cards get a sheet. */
-#content-wrapper > div > .card-base,
-#content-wrapper > div > div > .card-base,
-#content-wrapper > div[class*="flex"] > .card-base,
-#content-wrapper #post-container,
-#content-wrapper > .flex {
-    background-color: transparent !important;
-    background-image: none !important;
-    border-color: transparent !important;
-    border-width: 0 !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    overflow: visible !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+/*
+ * Structural wrappers stay invisible. Only the elements that actually hold
+ * content become sheets — see the material assignment in skeuo-materials.css.
+ * Anything listed here must never appear as a surface.
+ */
+#content-wrapper > .flex,
+#content-wrapper > .onload-animation-up {
+    overflow: visible;
 }
 
-#content-wrapper #post-container {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-}
-
-#content-wrapper > .flex > .card-base > header,
-#content-wrapper > div > .card-base > header {
-    padding-inline: 0 !important;
-    border-bottom: 1px solid var(--hairline) !important;
+#content-wrapper .flex > .card-base > .flex > .card-base {
+    background: none;
 }
 
 /* Navigation scaffolding (visual styling lives above). */

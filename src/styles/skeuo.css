@@ -1,135 +1,348 @@
 /*
- * Skeuomorphic foundation.
- * Physical materials, one light source, real depth.
- * Loaded after theme.css so it can supply material utilities without
- * fighting the structural layer.
+ * Material foundation.
+ *
+ * The rules here describe *what things are made of*, not how they look on one
+ * page. Every surface is built from the same four ingredients, applied in the
+ * same order:
+ *
+ *   1. body colour       — a flat base tone, never a full-height gradient
+ *   2. light            — one source, 145deg from above-left
+ *   3. edge             — a thin lit rim on the lit side only
+ *   4. contact shadow   — tight, dark, hugging the object
+ *
+ * Low-grade skeuomorphism fails because it applies a light-to-dark vertical
+ * gradient to every surface, outlines all four sides with white, and drops a
+ * soft grey blur underneath. That reads as a sticker. Real material reads as
+ * real when the body tone is flat, the highlight is confined to a narrow band
+ * near the top edge, and the shadow is dark and local.
  */
 
 html:root {
-    /* Light source: top-left, 135deg. */
-    --skeuo-light: rgb(255 255 255);
-    --skeuo-light-strength: 0.72;
-    --skeuo-shadow: rgb(0 0 0);
+    color-scheme: light;
 
-    /* Base material tones (light) */
-    --mat-surface: #eceff3;
-    --mat-surface-raised: #f5f7fa;
-    --mat-surface-sunken: #e2e6ec;
-    --mat-metal-a: #e8ecf1;
-    --mat-metal-b: #cfd6df;
-    --mat-paper: #fbf9f4;
-    --mat-leather: #e9e5de;
-    --mat-rubber: #dfe3e9;
+    /* ---------- Light ---------- */
+    --lit-angle: 145deg;
+    --lit: rgb(255 255 255);
+    --lit-tint: rgb(255 253 248);
+    --lit-strength: 0.85;
 
-    --skeuo-edge: rgb(255 255 255 / 0.9);
-    --skeuo-groove: rgb(0 0 0 / 0.16);
+    /* Rim light only ever appears on the lit side; these are the ramp. */
+    --rim-strong: rgb(255 255 255 / 0.92);
+    --rim-soft: rgb(255 255 255 / 0.55);
+    --rim-gone: rgb(255 255 255 / 0);
 
-    --shadow-raised:
+    /* ---------- Shadow ---------- */
+    --shade-tint: rgb(38 30 18);
+    --contact: rgb(38 30 18 / 0.20);
+    --contact-tight: rgb(38 30 18 / 0.14);
+    --ambient: rgb(38 30 18 / 0.08);
+
+    /* ---------- Materials ---------- */
+    /*
+     * Desk and paper must differ enough to read as two separate planes.
+     * A 2–3% difference in lightness looks like a printing error; 8–10%
+     * looks like a sheet resting on a surface.
+     */
+
+    /* Desk: the surface everything sits on. Warm, flat, faintly fibrous. */
+    --desk: #dcd8ce;
+    --desk-deep: #d1ccc0;
+
+    /* Paper: warm ivory stock, the dominant material. */
+    --paper-stock: #fdfbf5;
+    --paper-stock-warm: #f7f3e9;
+    --paper-fibre: rgb(120 100 70 / 0.016);
+
+    /* Enamel: coated panels — smooth, slightly cool, high specular. */
+    --enamel: #f3f1ec;
+    --enamel-deep: #e6e4de;
+
+    /* Metal: brushed aluminium for the header rail. */
+    --metal-hi: #f4f6f8;
+    --metal-mid: #dde2e8;
+    --metal-lo: #bfc6d0;
+
+    /*
+     * Ink wells: recessed slots cut into paper.
+     * Kept close to the stock colour on purpose — a recess should be defined
+     * by its shadow, not by a darker fill, or it reads as a coloured block.
+     */
+    --well: #f4f0e6;
+    --well-deep: #eee9dc;
+
+    /* Accent foil: the one saturated material. */
+    --foil: #2b4a72;
+    --foil-lit: #3c6193;
+
+    /* ---------- Elevation ramps ----------
+       Each step is a *pair*: the light rim and the contact shadow. Keeping
+       them paired is what makes the depth read consistently. */
+    --lift-1:
+        0 1px 0 rgb(255 255 255 / 0.75) inset,
+        0 -1px 0 rgb(38 30 18 / 0.05) inset,
+        0 1px 2px var(--contact-tight),
+        0 2px 6px -2px var(--ambient);
+
+    --lift-2:
+        0 1px 0 rgb(255 255 255 / 0.85) inset,
+        0 -1px 0 rgb(38 30 18 / 0.06) inset,
+        0 2px 4px -1px var(--contact-tight),
+        0 6px 14px -6px var(--ambient);
+
+    --lift-3:
         0 1px 0 rgb(255 255 255 / 0.9) inset,
-        0 -1px 0 rgb(0 0 0 / 0.06) inset,
-        0 2px 4px rgb(0 0 0 / 0.10),
-        0 8px 20px rgb(0 0 0 / 0.08);
+        0 -1px 0 rgb(38 30 18 / 0.07) inset,
+        0 3px 6px -2px var(--contact),
+        0 12px 26px -12px var(--ambient);
 
-    --shadow-inset:
-        0 2px 3px rgb(0 0 0 / 0.14) inset,
-        0 -1px 0 rgb(255 255 255 / 0.7) inset;
+    /* Panels that float above the page get a wider, softer drop plus a
+       crisp contact line — a single soft blur looks synthetic. */
+    --lift-float:
+        0 1px 0 rgb(255 255 255 / 0.9) inset,
+        0 14px 34px -14px rgb(38 30 18 / 0.30),
+        0 4px 10px -4px rgb(38 30 18 / 0.16),
+        0 1px 2px rgb(38 30 18 / 0.10);
 
-    --shadow-float:
-        0 1px 0 rgb(255 255 255 / 0.7) inset,
-        0 12px 28px rgb(0 0 0 / 0.16),
-        0 4px 8px rgb(0 0 0 / 0.10);
+    /* Recess: inverted light. Top goes dark, bottom picks up the bounce. */
+    --sink-1:
+        0 1px 2px rgb(38 30 18 / 0.14) inset,
+        0 -1px 0 rgb(255 255 255 / 0.65) inset;
 
-    --radius-skeuo: 0.5rem;
+    --sink-2:
+        0 2px 5px rgb(38 30 18 / 0.18) inset,
+        0 -1px 0 rgb(255 255 255 / 0.55) inset;
+
+    /* ---------- Shape ---------- */
+    --r-sm: 0.25rem;
+    --r-md: 0.375rem;
+    --r-lg: 0.5rem;
+    --r-xl: 0.75rem;
+
+    /* ---------- Legacy aliases ----------
+       Older rules reference these names; keep them pointing at the new
+       materials so nothing silently falls back to a sticker gradient. */
+    --mat-surface: var(--enamel);
+    --mat-surface-raised: var(--enamel);
+    --mat-surface-sunken: var(--well);
+    --mat-metal-a: var(--metal-hi);
+    --mat-metal-b: var(--metal-lo);
+    --mat-paper: var(--paper-stock);
+    --mat-leather: var(--paper-stock-warm);
+    --mat-rubber: var(--enamel-deep);
+
+    --skeuo-edge: var(--rim-soft);
+    --skeuo-groove: rgb(38 30 18 / 0.14);
+    --radius-skeuo: var(--r-md);
+
+    --shadow-raised: var(--lift-1);
+    --shadow-inset: var(--sink-1);
+    --shadow-float: var(--lift-float);
 }
 
 html:root.dark {
-    --mat-surface: #232a33;
-    --mat-surface-raised: #2b333d;
-    --mat-surface-sunken: #1b2129;
-    --mat-metal-a: #313a45;
-    --mat-metal-b: #1e242c;
-    --mat-paper: #262d36;
-    --mat-leather: #24282e;
-    --mat-rubber: #272e37;
+    color-scheme: dark;
 
-    --skeuo-edge: rgb(255 255 255 / 0.14);
-    --skeuo-groove: rgb(0 0 0 / 0.55);
+    --lit: rgb(255 255 255);
+    --lit-strength: 0.5;
 
-    --shadow-raised:
+    --rim-strong: rgb(255 255 255 / 0.16);
+    --rim-soft: rgb(255 255 255 / 0.09);
+    --rim-gone: rgb(255 255 255 / 0);
+
+    --shade-tint: rgb(0 0 0);
+    --contact: rgb(0 0 0 / 0.55);
+    --contact-tight: rgb(0 0 0 / 0.40);
+    --ambient: rgb(0 0 0 / 0.30);
+
+    --desk: #101114;
+    --desk-deep: #0a0b0d;
+
+    --paper-stock: #171d25;
+    --paper-stock-warm: #1a2028;
+    --paper-fibre: rgb(255 255 255 / 0.014);
+
+    --enamel: #1e252e;
+    --enamel-deep: #171d25;
+
+    --metal-hi: #2f3843;
+    --metal-mid: #262e38;
+    --metal-lo: #1a2029;
+
+    --well: #11161c;
+    --well-deep: #0d1217;
+
+    --foil: #8db6e8;
+    --foil-lit: #a8c8ee;
+
+    --lift-1:
+        0 1px 0 rgb(255 255 255 / 0.07) inset,
+        0 -1px 0 rgb(0 0 0 / 0.35) inset,
+        0 1px 2px rgb(0 0 0 / 0.40);
+
+    --lift-2:
+        0 1px 0 rgb(255 255 255 / 0.09) inset,
+        0 -1px 0 rgb(0 0 0 / 0.40) inset,
+        0 1px 2px rgb(0 0 0 / 0.45),
+        0 4px 10px -2px rgb(0 0 0 / 0.42),
+        0 10px 24px -10px rgb(0 0 0 / 0.50);
+
+    --lift-3:
         0 1px 0 rgb(255 255 255 / 0.10) inset,
         0 -1px 0 rgb(0 0 0 / 0.45) inset,
-        0 2px 4px rgb(0 0 0 / 0.35),
-        0 8px 20px rgb(0 0 0 / 0.30);
+        0 2px 5px rgb(0 0 0 / 0.50),
+        0 7px 16px -4px rgb(0 0 0 / 0.48),
+        0 18px 36px -16px rgb(0 0 0 / 0.55);
 
-    --shadow-inset:
-        0 2px 4px rgb(0 0 0 / 0.55) inset,
-        0 -1px 0 rgb(255 255 255 / 0.08) inset;
+    --lift-float:
+        0 1px 0 rgb(255 255 255 / 0.10) inset,
+        0 18px 40px -16px rgb(0 0 0 / 0.80),
+        0 6px 14px -6px rgb(0 0 0 / 0.60),
+        0 1px 2px rgb(0 0 0 / 0.50);
 
-    --shadow-float:
-        0 1px 0 rgb(255 255 255 / 0.12) inset,
-        0 12px 28px rgb(0 0 0 / 0.55),
-        0 4px 8px rgb(0 0 0 / 0.35);
+    --sink-1:
+        0 1px 3px rgb(0 0 0 / 0.55) inset,
+        0 -1px 0 rgb(255 255 255 / 0.06) inset;
+
+    --sink-2:
+        0 2px 6px rgb(0 0 0 / 0.65) inset,
+        0 -1px 0 rgb(255 255 255 / 0.05) inset;
+
+    --skeuo-groove: rgb(0 0 0 / 0.45);
 }
 
-/* Material utilities */
-.sk-raised {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface));
-    border-radius: var(--radius-skeuo);
-    box-shadow: var(--shadow-raised);
+/*
+ * Paper grain.
+ *
+ * Real stock has a fine, irregular tooth. A repeating 1px gradient reads as
+ * a screen-door pattern at 100% zoom, so the grain is an inline SVG turbulence
+ * tile instead: fractal noise, desaturated, at very low alpha.
+ */
+html:root {
+    /*
+     * Alpha stays very low on purpose: paper tooth should be felt at reading
+     * distance and only just visible up close. Anything above ~0.2 turns the
+     * sheet into sandpaper.
+     */
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
 }
 
-.sk-inset {
-    background: var(--mat-surface-sunken);
-    border-radius: var(--radius-skeuo);
-    box-shadow: var(--shadow-inset);
+/* ==========================================================================
+   Material primitives
+   ========================================================================== */
+
+/* Paper: flat stock with a faint fibre grain and a narrow top-edge catch. */
+.mat-paper {
+    background-color: var(--paper-stock);
+    background-image:
+        linear-gradient(
+            180deg,
+            rgb(255 255 255 / 0.55) 0,
+            rgb(255 255 255 / 0) 1.5rem
+        ),
+        var(--grain),
+        repeating-linear-gradient(
+            92deg,
+            var(--paper-fibre) 0 1px,
+            transparent 1px 3px
+        );
+    background-blend-mode: normal, multiply, normal;
+    box-shadow: var(--lift-2);
 }
 
-.sk-float {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface));
-    border-radius: var(--radius-skeuo);
-    box-shadow: var(--shadow-float);
+/* Enamel: cooler and glossier than paper, with a real specular band. */
+.mat-enamel {
+    background-color: var(--enamel);
+    background-image: linear-gradient(
+        170deg,
+        rgb(255 255 255 / 0.72) 0,
+        rgb(255 255 255 / 0.18) 22%,
+        rgb(255 255 255 / 0) 46%
+    );
+    box-shadow: var(--lift-2);
 }
 
-.sk-metal {
-    background:
-        linear-gradient(180deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0) 42%),
-        repeating-linear-gradient(90deg, rgb(255 255 255 / 0.05) 0 1px, transparent 1px 3px),
-        linear-gradient(180deg, var(--mat-metal-a), var(--mat-metal-b));
-    box-shadow: var(--shadow-raised);
+/* Metal: fine vertical brushing, brightest just under the top edge. */
+.mat-metal {
+    background-color: var(--metal-mid);
+    background-image:
+        linear-gradient(
+            180deg,
+            var(--metal-hi) 0,
+            rgb(255 255 255 / 0) 3px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgb(255 255 255 / 0.05) 0 1px,
+            rgb(0 0 0 / 0.018) 1px 2px
+        ),
+        linear-gradient(180deg, var(--metal-mid) 0%, var(--metal-lo) 100%);
+    box-shadow: var(--lift-1);
 }
 
-.sk-paper {
-    background:
-        repeating-linear-gradient(0deg, rgb(0 0 0 / 0.012) 0 1px, transparent 1px 3px),
-        var(--mat-paper);
-    box-shadow: var(--shadow-raised);
+/* Well: a slot cut into the material above it. */
+.mat-well {
+    background-color: var(--well);
+    background-image: linear-gradient(
+        180deg,
+        rgb(38 30 18 / 0.05) 0,
+        rgb(38 30 18 / 0) 2rem
+    );
+    box-shadow: var(--sink-1);
 }
 
-.sk-rubber {
-    background: var(--mat-rubber);
-    box-shadow: var(--shadow-inset), 0 1px 0 var(--skeuo-edge);
+/* Inset readout: deeper, for numbers and meters. */
+.mat-readout {
+    background-color: var(--well-deep);
+    box-shadow: var(--sink-2);
 }
 
-/* Physical press feedback */
-.sk-press {
-    transition: box-shadow 120ms ease, transform 120ms ease;
+/* Floating panel: paper that has been lifted off the desk. */
+.mat-float {
+    background-color: var(--paper-stock);
+    background-image: linear-gradient(
+        175deg,
+        rgb(255 255 255 / 0.85) 0,
+        rgb(255 255 255 / 0) 2.5rem
+    );
+    box-shadow: var(--lift-float);
 }
 
-.sk-press:active {
+/* Controls: a shallow key with a press-in response. */
+.mat-key {
+    background-color: var(--enamel);
+    background-image: linear-gradient(
+        180deg,
+        rgb(255 255 255 / 0.85) 0,
+        rgb(255 255 255 / 0.15) 50%,
+        rgb(38 30 18 / 0.03) 100%
+    );
+    box-shadow: var(--lift-1);
+}
+
+.mat-press {
+    transition:
+        box-shadow 110ms ease,
+        transform 110ms ease;
+}
+
+.mat-press:active {
     transform: translateY(1px);
-    box-shadow: var(--shadow-inset);
+    box-shadow: var(--sink-1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sk-press { transition: none; }
-    .sk-press:active { transform: none; }
+    .mat-press {
+        transition: none;
+    }
+
+    .mat-press:active {
+        transform: none;
+    }
 }
 
 @media (prefers-contrast: more) {
-    .sk-raised,
-    .sk-float,
-    .sk-metal,
-    .sk-paper {
-        border: 1px solid CanvasText;
+    :is(.mat-paper, .mat-enamel, .mat-float, .mat-metal) {
+        outline: 1px solid currentColor;
+        outline-offset: -1px;
     }
 }

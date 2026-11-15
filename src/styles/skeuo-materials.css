@@ -1,114 +1,480 @@
 /*
- * Skeuomorphic material application.
- * Maps the material tokens from skeuo.css onto the real blog surfaces:
- * metal navigation, paper reading surfaces, leather sidebar, rubber controls.
+ * Material assignment.
+ *
+ * skeuo.css defines what paper, enamel, metal and wells look like. This file
+ * decides which real-world object each part of the blog is made from, so the
+ * page reads as a desk with things on it rather than a pile of identical
+ * rounded rectangles.
+ *
+ * The desk  → page background      (flat, matte, no gradient wash)
+ * Metal     → site header           (thin rail, brushed)
+ * Paper     → article sheet         (the one big sheet you read)
+ * Enamel    → cards, controls       (coated, cooler, sits above paper)
+ * Wells     → code, quotes, stats   (cut into whatever contains them)
  */
 
-/* ---------- Navigation: brushed metal bar ---------- */
+/* ==========================================================================
+   Desk
+   ========================================================================== */
 
-/* Cards that should sit raised. */
+html,
+body {
+    background-color: var(--desk);
+    /*
+     * A single very wide, very soft light pool from the top-left, plus a faint
+     * weave. Anything stronger starts to look like a printed gradient.
+     */
+    background-image:
+        radial-gradient(
+            130rem 70rem at 22% -22%,
+            rgb(255 255 252 / 0.62) 0%,
+            rgb(255 255 252 / 0.24) 30%,
+            rgb(255 255 252 / 0) 62%
+        ),
+        radial-gradient(
+            90rem 50rem at 88% 112%,
+            rgb(96 88 72 / 0.085) 0%,
+            rgb(96 88 72 / 0) 66%
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgb(110 100 84 / 0.010) 0 1px,
+            transparent 1px 4px
+        );
+    background-attachment: fixed;
+}
+
+html:root.dark,
+html:root.dark body {
+    background-image:
+        radial-gradient(
+            130rem 70rem at 22% -22%,
+            rgb(206 208 214 / 0.10) 0%,
+            rgb(206 208 214 / 0.035) 30%,
+            rgb(255 255 255 / 0) 62%
+        ),
+        radial-gradient(
+            90rem 50rem at 88% 112%,
+            rgb(0 0 0 / 0.40) 0%,
+            rgb(0 0 0 / 0) 66%
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgb(255 255 255 / 0.008) 0 1px,
+            transparent 1px 4px
+        );
+}
+
+/* ==========================================================================
+   Metal: site header rail
+   ========================================================================== */
+
+.site-header {
+    background-color: var(--metal-mid);
+    background-image:
+        linear-gradient(
+            180deg,
+            rgb(255 255 255 / 0.75) 0,
+            rgb(255 255 255 / 0.10) 1px,
+            rgb(255 255 255 / 0) 8px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgb(255 255 255 / 0.045) 0 1px,
+            rgb(0 0 0 / 0.014) 1px 2px
+        ),
+        linear-gradient(180deg, var(--metal-hi) 0%, var(--metal-mid) 62%, var(--metal-lo) 100%);
+    border-bottom: 1px solid rgb(38 30 18 / 0.16);
+    box-shadow:
+        0 1px 0 rgb(255 255 255 / 0.5) inset,
+        0 -1px 0 rgb(38 30 18 / 0.10) inset,
+        0 1px 3px rgb(38 30 18 / 0.12),
+        0 6px 16px -10px rgb(38 30 18 / 0.24);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+html:root.dark .site-header {
+    background-color: var(--metal-mid);
+    background-image:
+        linear-gradient(
+            180deg,
+            rgb(255 255 255 / 0.10) 0,
+            rgb(255 255 255 / 0) 8px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgb(255 255 255 / 0.025) 0 1px,
+            rgb(0 0 0 / 0.02) 1px 2px
+        ),
+        linear-gradient(180deg, var(--metal-hi) 0%, var(--metal-mid) 60%, var(--metal-lo) 100%);
+    border-bottom-color: rgb(0 0 0 / 0.55);
+    box-shadow:
+        0 1px 0 rgb(255 255 255 / 0.10) inset,
+        0 -1px 0 rgb(0 0 0 / 0.45) inset,
+        0 1px 3px rgb(0 0 0 / 0.5);
+}
+
+/* Brand mark reads as a stamped seal on the metal. */
+.site-header__mark {
+    background-color: var(--paper-stock);
+    background-image: none;
+    border: 1px solid rgb(38 30 18 / 0.18);
+    box-shadow:
+        0 1px 0 rgb(255 255 255 / 0.9) inset,
+        0 1px 2px rgb(38 30 18 / 0.16);
+}
+
+html:root.dark .site-header__mark {
+    background-color: var(--metal-hi);
+    border-color: rgb(0 0 0 / 0.5);
+    box-shadow:
+        0 1px 0 rgb(255 255 255 / 0.08) inset,
+        0 1px 2px rgb(0 0 0 / 0.6);
+}
+
+/* Active tab: pressed into the metal. */
+.site-header__link.is-active {
+    background-color: color-mix(in srgb, var(--metal-lo) 70%, var(--metal-mid));
+    background-image: none;
+    box-shadow:
+        0 1px 2px rgb(38 30 18 / 0.20) inset,
+        0 -1px 0 rgb(255 255 255 / 0.55) inset;
+}
+
+html:root.dark .site-header__link.is-active {
+    background-color: color-mix(in srgb, black 32%, var(--metal-mid));
+    box-shadow:
+        0 1px 3px rgb(0 0 0 / 0.7) inset,
+        0 -1px 0 rgb(255 255 255 / 0.07) inset;
+}
+
+/* ==========================================================================
+   Paper: the reading sheet
+   ========================================================================== */
+
+#post-container,
+#content-wrapper > .flex > .card-base,
+#content-wrapper > .onload-animation-up > .card-base,
+.featured-plate,
 .menu-card,
 .album-card,
 .skill-card,
 .project-card,
 .timeline-card,
 .moment-item,
-.home-feature {
-    background:
-        repeating-linear-gradient(0deg, rgb(0 0 0 / 0.010) 0 1px, transparent 1px 3px),
-        var(--mat-surface-raised) !important;
-    border: 0 !important;
-    box-shadow: var(--shadow-raised) !important;
-    transition: box-shadow 140ms ease, transform 140ms ease;
+#content-wrapper > .card-base {
+    background-color: var(--paper-stock);
+    /*
+     * Four layers, in order: the lit top edge, real paper tooth, a faint
+     * directional fibre, then the stock colour underneath.
+     */
+    background-image:
+        linear-gradient(
+            180deg,
+            rgb(255 255 255 / 0.72) 0,
+            rgb(255 255 255 / 0.16) 2px,
+            rgb(255 255 255 / 0) 2.75rem
+        ),
+        var(--grain),
+        repeating-linear-gradient(
+            92deg,
+            var(--paper-fibre) 0 1px,
+            transparent 1px 3px
+        );
+    background-blend-mode: normal, multiply, normal;
+    border: 0;
+    box-shadow: var(--lift-2);
 }
 
+html:root.dark #post-container,
+html:root.dark #content-wrapper > .flex > .card-base,
+html:root.dark #content-wrapper > .onload-animation-up > .card-base,
+html:root.dark .featured-plate,
+html:root.dark .menu-card,
+html:root.dark .album-card,
+html:root.dark .skill-card,
+html:root.dark .project-card,
+html:root.dark .timeline-card,
+html:root.dark .moment-item,
+html:root.dark #content-wrapper > .card-base {
+    /*
+     * In dark themes a wide bright top band reads as a translucent overlay
+     * rather than paper catching light, so the catch is narrowed and dimmed.
+     */
+    background-image:
+        linear-gradient(
+            180deg,
+            rgb(255 255 255 / 0.055) 0,
+            rgb(255 255 255 / 0.02) 2px,
+            rgb(255 255 255 / 0) 1.5rem
+        ),
+        var(--grain),
+        repeating-linear-gradient(
+            92deg,
+            rgb(255 255 255 / 0.012) 0 1px,
+            transparent 1px 3px
+        );
+}
+
+/*
+ * A sheet lying on a desk has one dark edge where it lifts, not a white
+ * outline on all four sides. Draw that edge with a pseudo-element so the
+ * element's own box-shadow stays available for the contact shadow.
+ */
+#content-wrapper > .flex > .card-base,
+#content-wrapper > .onload-animation-up > .card-base,
+.menu-card,
+.album-card,
+.skill-card,
+.project-card,
+.timeline-card,
+.moment-item,
+#content-wrapper > .card-base {
+    position: relative;
+}
+
+#content-wrapper > .flex > .card-base::after,
+#content-wrapper > .onload-animation-up > .card-base::after,
+.menu-card::after,
+.album-card::after,
+.skill-card::after,
+.project-card::after,
+.timeline-card::after,
+.moment-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgb(38 30 18 / 0.10);
+    border-bottom-color: rgb(38 30 18 / 0.18);
+    pointer-events: none;
+}
+
+html:root.dark #content-wrapper > .flex > .card-base::after,
+html:root.dark #content-wrapper > .onload-animation-up > .card-base::after,
+html:root.dark .menu-card::after,
+html:root.dark .album-card::after,
+html:root.dark .skill-card::after,
+html:root.dark .project-card::after,
+html:root.dark .timeline-card::after,
+html:root.dark .moment-item::after {
+    border-color: rgb(255 255 255 / 0.08);
+    border-bottom-color: rgb(0 0 0 / 0.45);
+}
+
+/* Hover: the sheet is nudged, not re-glossed. */
+#content-wrapper > .flex > .card-base:hover,
 .menu-card:hover,
 .album-card:hover,
 .skill-card:hover,
 .project-card:hover,
 .timeline-card:hover,
-.moment-item:hover,
-.home-feature:hover {
-    box-shadow: var(--shadow-float) !important;
+.moment-item:hover {
+    box-shadow: var(--lift-3);
 }
 
-/* Inset wells for code and quote blocks. */
+/* ==========================================================================
+   Wells: recesses cut into paper
+   ========================================================================== */
+
 #post-container :is(pre, .expressive-code, blockquote, table),
-#post-container .license-container {
-    background: var(--mat-surface-sunken) !important;
-    border: 0 !important;
-    border-radius: 0.45rem !important;
-    box-shadow: var(--shadow-inset) !important;
+#post-container .license-container,
+#content-wrapper .bg-linear-to-br,
+#content-wrapper .skill-category {
+    background-color: var(--well);
+    background-image: linear-gradient(
+        180deg,
+        rgb(38 30 18 / 0.05) 0,
+        rgb(38 30 18 / 0) 1.5rem
+    );
+    border: 0;
+    border-radius: var(--r-md);
+    box-shadow: var(--sink-1);
 }
 
 #post-container blockquote {
-    border-left: 3px solid var(--accent) !important;
+    border-left: 2px solid color-mix(in srgb, var(--foil) 55%, transparent);
+    box-shadow:
+        var(--sink-1),
+        inset 2px 0 0 color-mix(in srgb, var(--foil) 22%, transparent);
 }
 
-/* ---------- Sidebar: stitched leather ---------- */
-#editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child {
-    background:
-        linear-gradient(180deg, rgb(255 255 255 / 0.10), rgb(255 255 255 / 0) 40%),
-        var(--mat-leather) !important;
-    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent) !important;
-    border-radius: 0.6rem !important;
-    box-shadow: var(--shadow-raised) !important;
+/* Table header is a metal strip set into the well. */
+#post-container :is(.custom-md, .markdown-body) th {
+    background-color: var(--metal-mid);
+    background-image:
+        linear-gradient(180deg, rgb(255 255 255 / 0.55) 0, rgb(255 255 255 / 0) 3px),
+        linear-gradient(180deg, var(--metal-mid), var(--metal-lo));
+    color: var(--ink);
 }
 
-/* ---------- Controls: rubber keys ---------- */
+#post-container :is(.custom-md, .markdown-body) :is(td, th) {
+    box-shadow: inset 0 -1px 0 rgb(38 30 18 / 0.10);
+}
+
+/* ==========================================================================
+   Enamel: controls and floating panels
+   ========================================================================== */
+
 .btn-card,
-.btn-regular,
-.btn-plain {
-    border-radius: 0.4rem !important;
-}
-
-.btn-card {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
-    box-shadow: var(--shadow-raised) !important;
+.btn-regular {
+    background-color: var(--enamel);
+    background-image: linear-gradient(
+        180deg,
+        rgb(255 255 255 / 0.9) 0,
+        rgb(255 255 255 / 0.2) 48%,
+        rgb(38 30 18 / 0.035) 100%
+    );
+    border: 0;
+    border-radius: var(--r-md);
+    box-shadow: var(--lift-1);
+    transition:
+        box-shadow 120ms ease,
+        transform 120ms ease,
+        color 120ms ease;
 }
 
 .btn-card:hover,
-.btn-regular:hover,
-.btn-plain:hover {
-    box-shadow:
-        0 1px 0 var(--skeuo-edge) inset,
-        0 2px 6px rgb(0 0 0 / 0.12) !important;
+.btn-regular:hover {
+    box-shadow: var(--lift-2);
 }
 
-/* ---------- Form + panels ---------- */
+.btn-card:active,
+.btn-regular:active {
+    transform: translateY(1px);
+    box-shadow: var(--sink-1);
+}
+
+html:root.dark .btn-card,
+html:root.dark .btn-regular {
+    background-image: linear-gradient(
+        180deg,
+        rgb(255 255 255 / 0.09) 0,
+        rgb(255 255 255 / 0.02) 48%,
+        rgb(0 0 0 / 0.18) 100%
+    );
+}
+
+/* Floating panels are paper lifted clear of the desk. */
 #display-setting-wrapper,
 #translate-panel-wrapper,
 #display-setting,
-#nav-menu-panel,
 #translate-panel,
-#search-panel {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
-    border: 1px solid var(--skeuo-groove) !important;
-    border-radius: 0.55rem !important;
-    box-shadow: var(--shadow-float) !important;
+#search-panel,
+#light-dark-panel > .card-base {
+    background-color: var(--paper-stock);
+    background-image: linear-gradient(
+        175deg,
+        rgb(255 255 255 / 0.9) 0,
+        rgb(255 255 255 / 0) 3rem
+    );
+    border: 0;
+    border-radius: var(--r-lg);
+    box-shadow: var(--lift-float);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
+/*
+ * Every floating panel gets a crisp cut edge, like a card on a table.
+ * Drawn with outline rather than a pseudo-element: the search panel scrolls,
+ * and an absolutely positioned ::after would scroll away from the edge.
+ */
+#display-setting,
+#translate-panel,
+#search-panel,
+#light-dark-panel > .card-base {
+    outline: 1px solid rgb(38 30 18 / 0.12);
+    outline-offset: -1px;
+}
+
+html:root.dark #display-setting,
+html:root.dark #translate-panel,
+html:root.dark #search-panel,
+html:root.dark #light-dark-panel > .card-base {
+    outline-color: rgb(255 255 255 / 0.09);
+}
+
+html:root.dark #display-setting,
+html:root.dark #translate-panel,
+html:root.dark #search-panel,
+html:root.dark #light-dark-panel > .card-base {
+    background-image: linear-gradient(
+        175deg,
+        rgb(255 255 255 / 0.07) 0,
+        rgb(255 255 255 / 0) 3rem
+    );
+}
+
+/* Slider sits in its own groove. */
 #display-setting input[type="range"] {
-    box-shadow: var(--shadow-inset) !important;
+    box-shadow: var(--sink-2);
 }
 
-/* ---------- Footer: engraved strip ---------- */
+/* ==========================================================================
+   Sidebar: a small index board on the desk
+   ========================================================================== */
+
+#editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child {
+    position: relative;
+    background-color: var(--paper-stock);
+    background-image:
+        linear-gradient(180deg, rgb(255 255 255 / 0.7) 0, rgb(255 255 255 / 0) 2rem),
+        var(--grain),
+        repeating-linear-gradient(92deg, var(--paper-fibre) 0 1px, transparent 1px 3px);
+    background-blend-mode: normal, multiply, normal;
+    border: 0;
+    border-radius: var(--r-md);
+    box-shadow: var(--lift-2);
+}
+
+/* Cut edge along the bottom, where a card lifts off the desk. */
+#editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgb(38 30 18 / 0.09);
+    border-bottom-color: rgb(38 30 18 / 0.16);
+    pointer-events: none;
+}
+
+html:root.dark #editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child::after {
+    border-color: rgb(255 255 255 / 0.07);
+    border-bottom-color: rgb(0 0 0 / 0.4);
+}
+
+html:root.dark #editorial-sidebar-rail .editorial-sidebar > .editorial-rail-item:first-child {
+    background-color: var(--paper-stock-warm);
+    background-image: linear-gradient(
+        180deg,
+        rgb(255 255 255 / 0.05) 0,
+        rgb(255 255 255 / 0) 2rem
+    );
+}
+
+/* ==========================================================================
+   Footer: engraved strip along the desk edge
+   ========================================================================== */
+
 .flowli-footer {
-    border-top: 1px solid var(--skeuo-groove);
-    box-shadow: 0 -1px 0 var(--skeuo-edge) inset;
+    border-top: 1px solid rgb(38 30 18 / 0.14);
+    box-shadow: 0 -1px 0 rgb(255 255 255 / 0.55);
+}
+
+html:root.dark .flowli-footer {
+    border-top-color: rgb(0 0 0 / 0.5);
+    box-shadow: 0 -1px 0 rgb(255 255 255 / 0.05);
 }
 
 .flowli-footer-mark {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
-    box-shadow: var(--shadow-raised) !important;
-}
-
-/* ---------- Home intro plate ---------- */
-.intro-kicker {
-    border-left-color: var(--accent);
-}
-
-/* ---------- Dark theme adjustments ---------- */
-
-@media (prefers-contrast: more) {
+    background-color: var(--enamel);
+    background-image: linear-gradient(
+        180deg,
+        rgb(255 255 255 / 0.85) 0,
+        rgb(255 255 255 / 0.1) 60%,
+        rgb(38 30 18 / 0.04) 100%
+    );
+    box-shadow: var(--lift-1);
 }
