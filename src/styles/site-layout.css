@@ -13,22 +13,7 @@ body {
 }
 
 /* The nav row is fixed-height; it does not grow. */
-#top-row {
-    flex: 0 0 auto;
-    height: auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
 
-#navbar-wrapper {
-    position: static !important;
-    top: auto !important;
-    height: auto;
-}
 
 /* Main content grows to fill the remaining space. */
 #main-content {
@@ -42,74 +27,7 @@ body {
 }
 
 /* ---------- 2. Navbar: flex, three groups ---------- */
-#navbar {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
 
-#navbar > div:last-child,
-#navbar[data-transparent-mode] > div:last-child {
-    display: flex !important;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100% !important;
-    max-width: none !important;
-    height: 3.5rem !important;
-    min-height: 3.5rem !important;
-    margin: 0 !important;
-    padding-inline: max(1.25rem, calc((100vw - 72rem) / 2)) !important;
-}
-
-#navbar .flowli-brand {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    gap: 0.55rem;
-    min-width: 0;
-}
-
-#navbar .navbar-nav-links {
-    display: flex;
-    flex: 0 1 auto;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 0.1rem;
-    min-width: 0;
-    margin-inline: auto;
-}
-
-#navbar .navbar-buttons {
-    display: flex;
-    flex: 0 0 auto;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.2rem;
-    min-width: 0;
-    margin-left: auto;
-}
-
-#navbar-buttons > .navbar-control {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: center;
-}
-
-/* ---------- 3. Page body: shell + grid ---------- */
-.editorial-shell {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 72rem;
-    margin-inline: auto;
-    padding-inline: clamp(1rem, 3vw, 2rem);
-}
 
 .editorial-main-grid {
     display: flex;
@@ -294,9 +212,6 @@ body {
 
 /* ---------- 10. Responsive ---------- */
 @media (max-width: 900px) {
-    #navbar .nav-link-item .nav-link-text {
-        display: none;
-    }
 }
 
 @media (max-width: 767px) {
@@ -304,15 +219,7 @@ body {
         display: flex;
     }
 
-    #navbar > div:last-child {
-        height: 3.1rem !important;
-        min-height: 3.1rem !important;
-        padding-inline: 0.85rem !important;
-    }
 
-    #navbar .navbar-nav-links {
-        display: none;
-    }
 
     #swup-container[data-layout="with-rail"] .editorial-page-grid {
         display: flex;
@@ -346,36 +253,8 @@ body {
     flex-direction: column !important;
 }
 
-#top-row {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 0 0 auto !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
 
-#top-row > #navbar-wrapper {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100%;
-}
 
-#navbar,
-#navbar > div:last-child {
-    display: flex !important;
-}
-
-#main-content {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100%;
-}
 
 #main-content > .editorial-shell {
     display: flex !important;

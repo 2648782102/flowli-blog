@@ -2,8 +2,8 @@ export const WALLPAPER_FULLSCREEN = "fullscreen",
     WALLPAPER_BANNER = "banner",
     WALLPAPER_NONE = "none";
 
-// Navbar height (px)
-export const NAVBAR_HEIGHT = 72;
+// Site header height (px). Keep in sync with .site-header__inner in site-header.css.
+export const NAVBAR_HEIGHT = 56;
 // Distance between navbar and main content when scroll following is released (rem)
 export const NAVBAR_GAP = 1.25;
 // Following distance for navbar in non-banner mode (rem)

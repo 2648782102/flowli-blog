@@ -65,46 +65,6 @@
     }
 
     /* 导航栏主题切换保护 - 完全禁用过渡以确保性能 */
-    & #navbar > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & #navbar[data-transparent-mode] > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & #navbar[data-transparent-mode].scrolled > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & body.wallpaper-transparent #navbar > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & body.wallpaper-transparent #navbar[data-transparent-mode] > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & body.wallpaper-transparent #navbar[data-transparent-mode].scrolled > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & #banner-wrapper ~ * #navbar > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & #banner-wrapper ~ * #navbar[data-transparent-mode] > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & body:has(#banner-wrapper) #navbar > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & body:has(#banner-wrapper) #navbar[data-transparent-mode] > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
 
     /* 导航栏相关浮动面板的过渡禁用 */
     & .dropdown-content {
@@ -154,21 +114,6 @@
     }
 }
 
-@utility scrolled {
-    .is-theme-transitioning &#navbar[data-transparent-mode] > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-
-    .is-theme-transitioning
-    body.wallpaper-transparent
-    &#navbar[data-transparent-mode]
-    > div {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-}
-
 @utility wallpaper-transparent {
     /* 全屏壁纸模式下的半透明效果 */
     & .card-base {
@@ -179,9 +124,6 @@
     @apply bg-(--card-bg-transparent);
     }
 
-    & #navbar > div {
-    @apply bg-(--card-bg-transparent) backdrop-blur-xs;
-    }
 
     & .btn-card {
     @apply bg-(--card-bg-transparent);
