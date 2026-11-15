@@ -167,16 +167,13 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
 
 #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
     grid-column: 2;
-    display: block !important;
-    position: sticky;
-    top: 5rem;
     width: 100%;
-    align-self: start;
 }
 
 /* Home is a single wide column. */
 #swup-container[data-layout="home"] .editorial-page-grid {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 #swup-container[data-layout="home"] #content-wrapper {
@@ -186,7 +183,8 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
 
 /* Reading-only pages centre their column. */
 #swup-container[data-layout="reading"] .editorial-page-grid {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 #swup-container[data-layout="reading"] #content-wrapper {
@@ -222,9 +220,7 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
     }
 
     #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
-        position: static;
         margin-top: 0;
-        align-self: start;
     }
 
     #editorial-sidebar-rail #sidebar-sticky {
@@ -234,7 +230,8 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
 
 @media (max-width: 767px) {
     #swup-container[data-layout="with-rail"] .editorial-page-grid {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
 
     #swup-container[data-layout="with-rail"] #content-wrapper {
@@ -242,9 +239,7 @@ html:root.dark #navbar .nav-link-item[aria-current="location"] {
     }
 
     #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
-        display: block !important;
-        position: static;
-        margin-top: 2.5rem;
+        margin-top: 2rem;
     }
 }
 
