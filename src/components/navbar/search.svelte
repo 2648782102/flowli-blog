@@ -194,22 +194,9 @@ $effect(() => {
     }
 });
 
-$effect(() => {
-    if (typeof document !== 'undefined') {
-        const navbar = document.getElementById('navbar');
-        if (isDesktopSearchExpanded) {
-            navbar?.classList.add('is-searching');
-        } else {
-            navbar?.classList.remove('is-searching');
-        }
-    }
-});
-
 onDestroy(() => {
     if (typeof document !== 'undefined') {
         document.removeEventListener("click", handleClickOutside);
-        const navbar = document.getElementById('navbar');
-        navbar?.classList.remove('is-searching');
     }
     clearTimeout(debounceTimer);
 });

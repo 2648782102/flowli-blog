@@ -1,0 +1,118 @@
+---
+import { navbarConfig } from "@/config";
+import { LinkPresets } from "@constants/link-presets";
+import { LinkPreset, type NavbarLink } from "@/types/config";
+import { url } from "@utils/url";
+import { Icon } from "astro-icon/components";
+import Search from "@components/navbar/search.svelte";
+import Translator from "@components/navbar/translator.svelte";
+import DisplaySettings from "@components/navbar/displaySettings.svelte";
+import LightDarkSwitch from "@components/navbar/lightDarkSwitch.svelte";
+import MobileMenu from "./MobileMenu.svelte";
+
+const links: NavbarLink[] = navbarConfig.links.map((item: NavbarLink | LinkPreset) =>
+    typeof item === "number" ? LinkPresets[item] : item,
+);
+
+const normalizedPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (link: NavbarLink): boolean => {
+    if (link.external) return false;
+    const target = url(link.url).replace(/\/+$/, "") || "/";
+    if (target === "/") return normalizedPath === "/";
+    return normalizedPath === target || normalizedPath.startsWith(`${target}/`);
+};
+---
+
+<header class="site-header">
+    <div class="site-header__inner">
+        <a class="site-header__brand" href={url("/")} aria-label="flowli 首页">
+            <span class="site-header__mark" aria-hidden="true">f</span>
+            <span class="site-header__name">flowli</span>
+        </a>
+
+        <nav class="site-header__nav" aria-label="主导航">
+            {links.map((link) => (
+                <a
+                    class:list={["site-header__link", { "is-active": isActive(link) }]}
+                    href={link.external ? link.url : url(link.url)}
+                    target={link.external ? "_blank" : null}
+                    rel={link.external ? "noreferrer" : null}
+                    aria-current={isActive(link) ? "page" : undefined}
+                    data-nav-link
+                >
+                    {link.icon && <Icon name={link.icon} class="site-header__icon" aria-hidden="true" />}
+                    <span class="site-header__label">{link.name}</span>
+                </a>
+            ))}
+        </nav>
+
+        <div class="site-header__tools">
+            <div class="site-header__tool site-header__tool--search"><Search client:idle /></div>
+            <div class="site-header__tool site-header__tool--optional"><Translator client:idle /></div>
+            <div class="site-header__tool site-header__tool--optional"><DisplaySettings client:idle /></div>
+            <div class="site-header__tool site-header__tool--optional"><LightDarkSwitch client:idle /></div>
+            <div class="site-header__tool site-header__tool--menu"><MobileMenu client:idle links={links} /></div>
+        </div>
+    </div>
+</header>
+
+{import.meta.env.PROD && <script is:inline define:vars={{ scriptUrl: url('/pagefind/pagefind.js') }}>
+async function loadPagefind() {
+    try {
+        const response = await fetch(scriptUrl, { method: 'HEAD' });
+        if (!response.ok) throw new Error(`Pagefind script not found: ${response.status}`);
+        const pagefind = await import(scriptUrl);
+        await pagefind.options({ excerptLength: 20 });
+        window.pagefind = pagefind;
+        document.dispatchEvent(new CustomEvent('pagefindready'));
+    } catch (error) {
+        console.error('Failed to load Pagefind:', error);
+        window.pagefind = {
+            search: () => Promise.resolve({ results: [] }),
+            options: () => Promise.resolve(),
+        };
+        document.dispatchEvent(new CustomEvent('pagefindloaderror'));
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadPagefind);
+} else {
+    loadPagefind();
+}
+</script>}
+
+<script>
+/*
+ * The header lives outside the swup container, so it is never re-rendered on
+ * client-side navigation. Sync the active state from the real URL instead.
+ */
+const syncHeaderCurrentPage = () => {
+    const brand = document.querySelector<HTMLAnchorElement>(".site-header__brand");
+    if (!brand) return;
+
+    const normalize = (pathname: string) => pathname.replace(/\/+$/, "") || "/";
+    const rootPath = normalize(new URL(brand.href, location.href).pathname);
+    const currentPath = normalize(location.pathname);
+
+    document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]").forEach((link) => {
+        if (link.target === "_blank") return;
+
+        const targetPath = normalize(new URL(link.href, location.href).pathname);
+        const isActive =
+            targetPath === rootPath
+                ? currentPath === rootPath
+                : currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+
+        link.classList.toggle("is-active", isActive);
+        if (isActive) {
+            link.setAttribute("aria-current", "page");
+        } else {
+            link.removeAttribute("aria-current");
+        }
+    });
+};
+
+syncHeaderCurrentPage();
+document.addEventListener("swup:page:view", syncHeaderCurrentPage);
+</script>

@@ -39,7 +39,7 @@ import {
 import { url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
-import Navbar from "@components/navbar.astro";
+import SiteHeader from "@components/chrome/SiteHeader.astro";
 import Footer from "@components/footer.astro";
 import "@styles/fancybox.css";
 import "@styles/editorial-paper.css";
@@ -52,6 +52,7 @@ import "../styles/skeuo-read.css";
 import "../styles/skeuo-tools.css";
 import "../styles/skeuo-layout.css";
 import "../styles/site-layout.css";
+import "../styles/site-header.css";
 
 
 interface Props {
@@ -202,11 +203,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
     >
         <!-- 全局配置载体 -->
         <ConfigCarrier />
-        <div id="top-row" class="relative z-50 mx-auto h-(--top-row-height) max-w-none px-0 md:px-4">
-            <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
-                <Navbar />
-            </div>
-        </div>
+        <SiteHeader />
         <div id="main-content" class="relative z-30 w-full min-h-[calc(100vh-var(--main-content-top))]">
             <div class="editorial-shell relative mx-auto">
                 <div id="main-grid" class="editorial-main-grid">
@@ -262,7 +259,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 
 
 <script>
-import { pathsEqual } from "@utils/url";
 import { initTheme } from "@utils/theme";
 import { initHue } from "@utils/hue";
 import { initMarkdownActions } from "@/utils/markdown";
@@ -270,26 +266,7 @@ import { initFancybox, cleanupFancybox } from "@utils/fancybox";
 import { loadAndInitTranslate } from "@utils/language";
 
 
-const syncNavbarCurrentPage = (pathname: string) => {
-    const links = document.querySelectorAll<HTMLAnchorElement>(
-        '#navbar .nav-link-item, #nav-menu-panel .mobile-menu-item > a',
-    );
-    const normalizedPath = pathname.replace(/\/+$/, "") || "/";
 
-    links.forEach((link) => {
-        const href = link.getAttribute('href');
-        const currentUrl = href ? new URL(href, window.location.href) : null;
-        const isInternal = currentUrl?.origin === window.location.origin;
-        const normalizedHref = currentUrl?.pathname.replace(/\/+$/, "") || "/";
-        const isCurrentPage = isInternal && pathsEqual(normalizedPath, normalizedHref);
-
-        if (isCurrentPage) {
-            link.setAttribute('aria-current', 'page');
-        } else {
-            link.removeAttribute('aria-current');
-        }
-    });
-};
 
 // 初始化Swup
 const setup = () => {
@@ -309,13 +286,11 @@ const setup = () => {
         if ((window as any).scrollProtectionManager && typeof (window as any).scrollProtectionManager.disable === 'function') {
             (window as any).scrollProtectionManager.disable();
         }
-        syncNavbarCurrentPage(new URL(visit.to.url, window.location.origin).pathname);
         window.scrollTo({ top: 0, behavior: 'instant' });
         pausedElementIds.clear();
     });
     window.swup.hooks.on('page:view', () => {
         document.body.classList.toggle('is-home', document.querySelector('#swup-container')?.getAttribute('data-layout') === 'home');
-        syncNavbarCurrentPage(window.location.pathname);
         window.scrollTo({ top: 0, behavior: 'instant' });
         // Check if the current page is a post page, if so, trigger a custom event to initialize the comment system
         setTimeout(() => {
@@ -344,11 +319,7 @@ if (window?.swup?.hooks) {
 } else {
     document.addEventListener('swup:enable', setup)
 }
-syncNavbarCurrentPage(window.location.pathname);
 document.body.classList.toggle('is-home', document.querySelector('#swup-container')?.getAttribute('data-layout') === 'home');
-document.addEventListener('twilight:sync-navbar-current', () => {
-    syncNavbarCurrentPage(window.location.pathname);
-});
 
 // Initialize theme
 initTheme();
