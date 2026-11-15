@@ -1,0 +1,14 @@
+{
+    "title": "博客开始持续更新",
+    "description": "从只有测试数据，到开始写第一批有实质内容的技术文章。",
+    "type": "achievement",
+    "startDate": "2026-11-11",
+    "endDate": "",
+    "skills": ["写作", "前端工程"],
+    "achievements": [
+        "一周内发布五篇基于真实踩坑经历的文章",
+        "重写关于页、友链页与首页内容"
+    ],
+    "icon": "material-symbols:edit-note",
+    "color": "#A4643C"
+}

@@ -1,0 +1,14 @@
+{
+    "title": "系统学习前端框架",
+    "description": "学习组件化开发与 TypeScript，开始用现代框架构建完整项目。",
+    "type": "education",
+    "startDate": "2024-07-01",
+    "endDate": "2025-06-30",
+    "skills": ["TypeScript", "Svelte", "Tailwind CSS"],
+    "achievements": [
+        "理解了组件、状态与数据流",
+        "习惯用类型约束降低重构成本"
+    ],
+    "icon": "material-symbols:school",
+    "color": "#2B4A72"
+}

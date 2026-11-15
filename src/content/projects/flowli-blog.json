@@ -1,0 +1,13 @@
+{
+    "title": "flowli 的个人博客",
+    "description": "基于 Astro 与 Svelte 构建的静态博客，托管在 GitHub Pages。既是写作空间，也是前端视觉与交互的试验场。",
+    "image": "/assets/images/6.png",
+    "category": "website",
+    "techStack": ["Astro", "Svelte", "TypeScript", "Tailwind CSS"],
+    "status": "in-progress",
+    "demoUrl": "https://2648782102.github.io/flowli-blog/",
+    "sourceUrl": "https://github.com/2648782102/flowli-blog",
+    "startDate": "2026-11-07",
+    "featured": true,
+    "tags": ["博客", "前端", "设计"]
+}

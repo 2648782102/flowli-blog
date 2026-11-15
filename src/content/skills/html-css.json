@@ -1,0 +1,15 @@
+{
+    "name": "HTML / CSS",
+    "description": "语义化结构、Flex/Grid 布局、响应式与视觉细节实现。",
+    "icon": "logos:html-5",
+    "category": "frontend",
+    "level": "advanced",
+    "experience": {
+        "years": 3,
+        "months": 0
+    },
+    "projects": [
+        "flowli 的个人博客"
+    ],
+    "color": "#E34F26"
+}

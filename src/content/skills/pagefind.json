@@ -1,0 +1,15 @@
+{
+    "name": "Pagefind",
+    "description": "为静态站点生成轻量全文搜索索引。",
+    "icon": "logos:algolia",
+    "category": "tools",
+    "level": "beginner",
+    "experience": {
+        "years": 0,
+        "months": 1
+    },
+    "projects": [
+        "flowli 的个人博客"
+    ],
+    "color": "#5468FF"
+}

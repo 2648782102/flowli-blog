@@ -1,0 +1,23 @@
+{
+    "title": "博客视觉体系重构",
+    "description": "把博客的贴纸式拟物重做为以材质为基础的高级拟物系统。",
+    "type": "project",
+    "startDate": "2026-11-11",
+    "endDate": "2026-11-15",
+    "skills": ["CSS", "设计系统", "Astro"],
+    "achievements": [
+        "建立桌面 / 纸张 / 金属 / 珐琅 / 凹槽五种材质词汇",
+        "统一深浅两套主题的接触阴影与高光规则",
+        "修复导航对齐、面板布局与 hover 反馈问题"
+    ],
+    "links": [
+        {
+            "name": "相关记录",
+            "url": "https://2648782102.github.io/flowli-blog/posts/2026-11-15-skeuo-material-system/",
+            "type": "other"
+        }
+    ],
+    "icon": "material-symbols:design-services",
+    "color": "#2B4A72",
+    "featured": true
+}

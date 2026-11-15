@@ -1,0 +1,15 @@
+{
+    "name": "TypeScript",
+    "description": "给 JavaScript 加上类型系统，让大型前端项目更可控。",
+    "icon": "logos:typescript-icon",
+    "category": "frontend",
+    "level": "intermediate",
+    "experience": {
+        "years": 2,
+        "months": 0
+    },
+    "projects": [
+        "flowli 的个人博客"
+    ],
+    "color": "#3178C6"
+}

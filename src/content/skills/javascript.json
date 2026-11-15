@@ -1,0 +1,12 @@
+{
+    "name": "JavaScript",
+    "description": "日常主力语言，熟悉语言特性与浏览器端调试。",
+    "icon": "logos:javascript",
+    "category": "frontend",
+    "level": "advanced",
+    "experience": {
+        "years": 3,
+        "months": 0
+    },
+    "color": "#F7DF1E"
+}

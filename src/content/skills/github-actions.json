@@ -1,0 +1,15 @@
+{
+    "name": "GitHub Actions",
+    "description": "用工作流完成静态站点的自动构建与部署。",
+    "icon": "logos:github-actions-icon",
+    "category": "tools",
+    "level": "intermediate",
+    "experience": {
+        "years": 1,
+        "months": 0
+    },
+    "projects": [
+        "flowli 的个人博客"
+    ],
+    "color": "#2088FF"
+}

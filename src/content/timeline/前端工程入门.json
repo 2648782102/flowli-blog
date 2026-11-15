@@ -1,0 +1,14 @@
+{
+    "title": "开始学习前端工程",
+    "description": "从 HTML、CSS、JavaScript 基础开始，逐步接触现代前端工具链。",
+    "type": "education",
+    "startDate": "2023-09-01",
+    "endDate": "2024-06-30",
+    "skills": ["HTML / CSS", "JavaScript", "Git"],
+    "achievements": [
+        "建立了扎实的浏览器基础认知",
+        "开始使用 Git 管理自己的练习项目"
+    ],
+    "icon": "material-symbols:school",
+    "color": "#173A6D"
+}
