@@ -90,6 +90,15 @@ body {
         margin: 0;
         padding-block-start: 2.25rem;
     }
+
+    #swup-container[data-layout="with-rail"][data-page="post"] .editorial-sidebar-rail {
+        position: sticky;
+        top: calc(3.5rem + 1px);
+        max-height: calc(100dvh - 3.5rem - 1px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
 }
 
 /* Rail internals stack vertically. */
@@ -114,7 +123,7 @@ body {
 #swup-container[data-layout="home"] #content-wrapper,
 #swup-container[data-layout="reading"] #content-wrapper {
     width: 100%;
-    max-width: 46rem;
+    max-width: 52rem;
     margin-inline: auto;
 }
 
@@ -123,7 +132,7 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 46rem;
+    max-width: 100%;
     margin: 3rem auto 2rem;
     padding-inline: 0;
 }

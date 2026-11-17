@@ -108,9 +108,19 @@
 
 /* License block: engraved plaque. */
 #post-container .license-container {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
-    box-shadow: var(--shadow-raised) !important;
-    border-radius: 0.5rem !important;
+    padding: 1.1rem 1.35rem 1.15rem !important;
+    padding-inline-start: 2.3rem !important;
+}
+
+.license-container.scroll-edge {
+    margin-block-start: 1.6rem;
+}
+
+@media (max-width: 640px) {
+    .license-container.scroll-edge {
+        padding: 1rem 1rem 1.05rem !important;
+        padding-inline-start: 2rem !important;
+    }
 }
 
 /* Post navigation cards. */

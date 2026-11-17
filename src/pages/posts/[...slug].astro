@@ -8,7 +8,7 @@ import utc from "dayjs/plugin/utc";
 import { siteConfig, profileConfig, postConfig } from "@/config";
 import { getSortedPosts } from "@utils/post";
 import { formatDateToYYYYMMDD } from "@utils/date";
-import { getFileDirFromPath, getPostUrl, getPostUrlBySlug, removeFileExtension} from "@utils/url";
+import { getFileDirFromPath, getPostUrl, getPostUrlBySlug, removeFileExtension, url } from "@utils/url";
 import { SUPPORTED_LANGUAGES, langToTranslateMap } from "@i18n/language";
 import { i18n, getTranslation } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
@@ -21,6 +21,7 @@ import Comment from "@components/comment.astro";
 import CopyProtection from "@components/copyProtection.astro";
 import ReadingProgress from "@components/ui/ReadingProgress.svelte";
 import GridLayout from "@layouts/grid.astro";
+import BackwardButton from "@components/backwardButton.astro";
 
 
 export async function getStaticPaths() {
@@ -116,6 +117,7 @@ const jsonLd = {
     postSlug={entry.id}
     headings={headings}
 >
+    <BackwardButton href={url("/archive/")} text="返回归档" historyBack={true} />
     <ReadingProgress client:idle />
     <script
         is:inline
@@ -232,7 +234,7 @@ const jsonLd = {
                             licenseName={entry.data.licenseName}
                             licenseUrl={entry.data.licenseUrl}
                             postUrl={getPostUrl(entry)}
-                            class="mb-6 rounded-xl license-container onload-animation-up"
+                            class="mb-6 rounded-xl license-container scroll-edge onload-animation-up"
                         />
                     )
                 }

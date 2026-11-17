@@ -12,9 +12,9 @@
 /* ---------- Content shell ---------- */
 .editorial-shell {
     width: 100%;
-    max-width: 72rem;
+    max-width: 76rem;
     margin-inline: auto;
-    padding-inline: clamp(1rem, 3vw, 2rem);
+    padding-inline: clamp(1rem, 2.5vw, 1.25rem);
 }
 
 #content-wrapper {
@@ -54,7 +54,7 @@
 }
 
 #swup-container[data-layout="home"] #content-wrapper {
-    max-width: 46rem;
+    max-width: 52rem;
     margin-inline: auto;
 }
 
@@ -71,7 +71,7 @@
 
 .editorial-footer {
     width: 100%;
-    max-width: 46rem;
+    max-width: 100%;
     margin: 3.5rem auto 2rem;
 }
 

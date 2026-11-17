@@ -12,24 +12,92 @@
     overflow: hidden;
 }
 
-/* A foil strip inset into the sheet, not a gradient bar glued on top. */
-.featured-plate::before {
-    content: "";
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 3px;
-    background: linear-gradient(
-        180deg,
-        var(--foil-lit) 0%,
-        var(--foil) 55%,
-        color-mix(in srgb, var(--foil) 55%, transparent) 100%
-    );
-    box-shadow: 1px 0 0 rgb(255 255 255 / 0.45);
+.featured-plate-inner {
+    padding: clamp(1.5rem, 3.1vw, 2rem) clamp(1.3rem, 2.8vw, 1.8rem);
+    padding-inline-start: clamp(2.2rem, 4vw, 2.7rem);
 }
 
-.featured-plate-inner {
-    padding: clamp(1.4rem, 3vw, 2rem);
+.featured-plate.scroll-edge {
+    padding: 0.3rem;
 }
+
+/* Long rows keep short lines: the card can be wide, the prose should not be. */
+.post-item-desc,
+.featured-desc {
+    max-width: 62ch;
+}
+
+/*
+ * Study wall: two mounted ink scrolls flank the reading column.
+ * Design baseline is 1920×1080: both scrolls share one height (~500px) and
+ * keep their own aspect ratio (the two source mounts differ), so they read as
+ * a matched pair hanging on the wall. Their inner edges line up with the
+ * reading column. They are pinned to the viewport top and stay put while the
+ * column scrolls; below 1240px the side gutters are too narrow and they hide.
+ */
+.wall-art {
+    display: none;
+}
+
+@media (min-width: 1240px) {
+    /* Widen the shell so the gutters have room for the hangings. */
+    .editorial-shell {
+        max-width: 96rem;
+    }
+
+    #swup-container[data-layout="home"] #content-wrapper {
+        max-width: none;
+    }
+
+    /* Column width stays constant across the breakpoint: no reflow jump. */
+    #content-wrapper .home-composition {
+        position: relative;
+        max-width: 52rem;
+        margin-inline: auto;
+    }
+
+    #content-wrapper .home-composition > .wall-art {
+        display: block;
+        position: fixed;
+        top: clamp(6rem, 9vh, 7.5rem);
+        margin: 0;
+        pointer-events: none;
+    }
+
+    /* one shared height; width follows each scroll's true aspect ratio */
+    #content-wrapper .home-composition > .wall-art img {
+        display: block;
+        width: auto;
+        /*
+         * The left mount is the wider of the two (≈0.69 w/h). Fit its width
+         * into the free gutter so neither scroll crowds the screen edge:
+         *   gutter = (100vw - 52rem)/2, minus gap and a 2rem safety margin,
+         *   then convert that width back to a height via ×1.44.
+         */
+        height: min(
+            46vh,
+            500px,
+            calc(((100vw - 52rem) / 2 - 4rem) * 1.44)
+        );
+    }
+
+    #content-wrapper .home-composition > .wall-art--left {
+        right: calc(50% + 26rem + clamp(1rem, 1.5vw, 2.5rem));
+    }
+
+    #content-wrapper .home-composition > .wall-art--right {
+        left: calc(50% + 26rem + clamp(1rem, 1.5vw, 2.5rem));
+    }
+
+    /* Below ~1400px the gutters are tight: captions would wrap, so show the
+       museum credit on hover instead of stacking it into three lines. */
+    @media (max-width: 1439px) {
+        #content-wrapper .home-composition > .wall-art .hanging-scroll__credit {
+            display: none;
+        }
+    }
+}
+
 
 .featured-eyebrow {
     margin: 0 0 0.6rem;

@@ -9,9 +9,10 @@ interface Props {
     currentPath?: string;
     href?: string;
     text?: string;
+    historyBack?: boolean;
 }
 
-const { currentPath, href, text } = Astro.props;
+const { currentPath, href, text, historyBack = false } = Astro.props;
 
 let targetUrl = href;
 let targetText = text;
@@ -33,6 +34,8 @@ if (!targetUrl) {
 <div class="mb-6">
     <a
         href={targetUrl}
+        data-history-back={historyBack ? "" : undefined}
+        data-history-back-fallback={historyBack ? targetUrl : undefined}
         class="inline-flex items-center gap-2 text-neutral-600 dark:text-neutral-400 hover:text-(--primary) transition-colors group"
     >
         <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

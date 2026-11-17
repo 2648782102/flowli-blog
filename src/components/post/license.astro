@@ -1,6 +1,4 @@
 ---
-import { Icon } from "astro-icon/components";
-
 import { getPostUrlBySlug } from "@utils/url";
 import { postConfig, profileConfig } from "@/config";
 import { formatDateToYYYYMMDD } from "@utils/date";
@@ -49,5 +47,4 @@ const postUrl = sourceLink || propPostUrl || getPostUrlBySlug(id);
             <a href={licenseName ? (licenseUrl || undefined) : licenseConf.url} target="_blank" class="link text-(--primary) line-clamp-2">{licenseName || licenseConf.name}</a>
         </div>
     </div>
-    <Icon name="fa6-brands:creative-commons" class="transition text-[8rem] sm:text-[12rem] absolute pointer-events-none right-4 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
 </div>

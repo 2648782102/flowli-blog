@@ -28,6 +28,12 @@
 - inset：凹陷（内阴影 + 底部微光）
 - float：悬浮（大投影 + 边缘光晕）
 
+### 纸卷边
+`scroll-edge` 定义在 `src/styles/skeuo.css`，用于首页精选卡和文章版权卡。卡片本身是一页纸：左缘向后卷起，卷边使用 `public/assets/scroll/curl-left-{light,dark}.png`（受光卷冠、暗侧切口、投在纸面上的阴影），纸面使用同目录的无缝纸纹。没有木轴、金属轴头或任何覆贴条；正文需在左侧预留约 `2.4rem` 空间。
+
+### 立轴挂画
+首页两侧的挂画是中式立轴，不是画框：组件在 `src/components/common/hangingScroll.astro`。它们由 `scripts/bake-scroll/` 中的 Three.js 场景离线烘焙为透明 WebP，放在 `public/assets/art/scroll-*.webp`。画心与暗花绫装裱取自大都会博物馆公有领域的立轴实物照片；纸面的弯曲、木质地杆、车制轴头和左上主光由 3D 场景生成。页面只展示静态图，用 CSS `drop-shadow` 补墙面投影，不引入运行时 WebGL。重新烘焙：`node scripts/bake-scroll/bake.mjs`（需本机 Chrome 与 `puppeteer-core`）。
+
 ## 组件规划
 Phase 1（基座）：
 - 设计 token + 工具类

@@ -39,13 +39,13 @@ const containerClass = isHomePage ? "editorial-content-column is-home-layout" : 
     postSlug={postSlug}
 >
     <slot slot="head" name="head" />
-    <main id="swup-container" class:list={[containerClass, "transition-swup-fade"]} data-layout={layoutMode}>
+    <main id="swup-container" class:list={[containerClass, "transition-swup-fade"]} data-layout={layoutMode} data-page={postSlug ? "post" : undefined}>
         <div class="editorial-page-grid" data-layout={layoutMode}>
             <div id="content-wrapper" class="onload-animation-up transition-leaving">
                 <slot />
             </div>
             {hasAnyComponents && (
-                <aside id="editorial-sidebar-rail" class="editorial-sidebar-rail" aria-label="站点信息">
+                <aside id="editorial-sidebar-rail" class="editorial-sidebar-rail" aria-label="站点信息" tabindex={postSlug ? 0 : undefined}>
                     <Sidebar
                         id="left-sidebar"
                         side="middle"

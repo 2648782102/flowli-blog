@@ -265,6 +265,61 @@ import { initMarkdownActions } from "@/utils/markdown";
 import { initFancybox, cleanupFancybox } from "@utils/fancybox";
 import { loadAndInitTranslate } from "@utils/language";
 
+const canGoBackWithinSite = () => {
+    return window.history.length > 1 && window.history.state?.flowliBlogHasPreviousPage === true;
+};
+
+const restorePostAnchor = () => {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    try {
+        const anchor = document.getElementById(decodeURIComponent(hash));
+        if (!anchor) return;
+        const headerHeight = document.querySelector<HTMLElement>(".site-header")?.offsetHeight || 0;
+        window.scrollTo({ top: window.scrollY + anchor.getBoundingClientRect().top - headerHeight - 16, behavior: "instant" });
+    } catch {
+        return;
+    }
+};
+
+if (window.history.state?.flowliBlogRestoreAnchor) {
+    const state = { ...window.history.state };
+    delete state.flowliBlogRestoreAnchor;
+    window.history.replaceState(state, "");
+    requestAnimationFrame(() => requestAnimationFrame(restorePostAnchor));
+}
+
+const syncPostBackLink = () => {
+    const link = document.querySelector<HTMLAnchorElement>("a[data-history-back]");
+    const label = link?.querySelector("span");
+    if (!link || !label) return;
+    const previousUrl = window.history.state?.flowliBlogPreviousUrl;
+    const canGoBack = canGoBackWithinSite();
+    link.href = canGoBack && typeof previousUrl === "string" ? previousUrl : link.dataset.historyBackFallback || link.href;
+    label.textContent = canGoBack ? "返回上一页" : "返回归档";
+};
+
+document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const target = event.target;
+    if (!(target instanceof Element) || !target.closest("a[data-history-back]") || !canGoBackWithinSite()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const previousUrl = window.history.state?.flowliBlogPreviousUrl;
+    if (typeof previousUrl === "string") {
+        const destination = new URL(previousUrl, window.location.origin);
+        if (destination.origin === window.location.origin && destination.pathname !== window.location.pathname && destination.hash) {
+            window.addEventListener("popstate", () => {
+                window.history.replaceState({ ...window.history.state, flowliBlogRestoreAnchor: true }, "");
+                window.location.reload();
+            }, { once: true });
+        }
+    }
+    window.history.back();
+}, { capture: true });
+
+syncPostBackLink();
+
 
 
 
@@ -289,8 +344,20 @@ const setup = () => {
         window.scrollTo({ top: 0, behavior: 'instant' });
         pausedElementIds.clear();
     });
-    window.swup.hooks.on('page:view', () => {
+    window.swup.hooks.on('page:view', (visit: {
+        from: { url: string; hash?: string };
+        to: { url: string };
+        history: { action: string; popstate: boolean };
+    }) => {
         document.body.classList.toggle('is-home', document.querySelector('#swup-container')?.getAttribute('data-layout') === 'home');
+        if (!visit.history.popstate && visit.history.action === "push" && visit.from.url !== visit.to.url) {
+            window.history.replaceState({
+                ...window.history.state,
+                flowliBlogHasPreviousPage: true,
+                flowliBlogPreviousUrl: visit.from.url + (visit.from.hash || ""),
+            }, "");
+        }
+        syncPostBackLink();
         window.scrollTo({ top: 0, behavior: 'instant' });
         // Check if the current page is a post page, if so, trigger a custom event to initialize the comment system
         setTimeout(() => {

@@ -1,0 +1,72 @@
+---
+interface Props {
+    src: string;
+    srcset?: string;
+    alt: string;
+    credit?: string;
+    class?: string;
+}
+
+const { src, srcset, alt, credit, class: className } = Astro.props;
+---
+
+<figure class:list={["hanging-scroll", className]}>
+    <div class="hanging-scroll__art">
+        <img
+            src={src}
+            srcset={srcset}
+            sizes="(min-width: 1500px) 17rem, (min-width: 1240px) 12vw, 0px"
+            alt={alt}
+            loading="lazy"
+            decoding="async"
+        />
+    </div>
+    {credit && <figcaption class="hanging-scroll__credit">{credit}</figcaption>}
+</figure>
+
+<style>
+    /*
+     * A physically rendered hanging scroll, baked from a Three.js scene.
+     * The silk damask and painting are a public-domain museum photograph of
+     * the real mount; the rods, knobs and curvature are rendered geometry
+     * lit from the upper left. The page only displays a transparent WebP.
+     */
+    .hanging-scroll {
+        position: relative;
+        margin: 0;
+        isolation: isolate;
+    }
+
+    .hanging-scroll__art {
+        position: relative;
+        display: block;
+        filter: drop-shadow(3px 9px 7px rgb(24 18 9 / 0.34))
+                drop-shadow(1px 2px 2px rgb(24 18 9 / 0.22));
+    }
+
+    .hanging-scroll__art img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .hanging-scroll__credit {
+        display: block;
+        margin-block-start: 0.9rem;
+        font-family: var(--editorial-mono);
+        font-size: 0.55rem;
+        letter-spacing: 0.04em;
+        line-height: 1.5;
+        text-align: center;
+        color: var(--ink-faint);
+        opacity: 0.62;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    html:root.dark .hanging-scroll__art {
+        filter: drop-shadow(3px 9px 9px rgb(0 0 0 / 0.66))
+                drop-shadow(1px 2px 3px rgb(0 0 0 / 0.5));
+    }
+</style>

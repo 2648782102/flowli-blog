@@ -9,6 +9,8 @@ import { getPostUrl } from "@utils/url";
 import GridLayout from "@layouts/grid.astro";
 import { pathsEqual, url } from "@utils/url";
 import { Icon } from "astro-icon/components";
+import { url as assetUrl } from "@utils/url";
+import HangingScroll from "@components/common/hangingScroll.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const allBlogPosts = await getSortedPosts();
@@ -26,6 +28,15 @@ const formatDate = (value: Date | string) =>
 <GridLayout>
     {isHomePage && (
         <div class="home-composition">
+            <div class="wall-art wall-art--left">
+                <HangingScroll
+                    src={assetUrl("/assets/art/scroll-wanghui.webp")}
+                    srcset={`${assetUrl("/assets/art/scroll-wanghui-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-wanghui.webp")} 900w`}
+                    alt="王翚《山水》立轴，层叠山峦与林间村舍"
+                    credit="Wang Hui, 1693 · The Met · CC0"
+                />
+            </div>
+
             <header class="intro-block">
                 <p class="intro-kicker">独立写作 / 前端工程 / 工具观察</p>
                 <h1 id="home-opening-title">把好奇心写下来<span>。</span></h1>
@@ -33,7 +44,7 @@ const formatDate = (value: Date | string) =>
             </header>
 
             {latestPost && (
-                <section class="featured-plate" aria-labelledby="featured-title">
+                <section class="featured-plate scroll-edge" aria-labelledby="featured-title">
                     <div class="featured-plate-inner">
                         <p class="featured-eyebrow">最新 · {formatDate(latestPost.data.published!)}</p>
                         <h2 id="featured-title">
@@ -64,6 +75,15 @@ const formatDate = (value: Date | string) =>
                     ))}
                 </ul>
             </section>
+
+            <div class="wall-art wall-art--right">
+                <HangingScroll
+                    src={assetUrl("/assets/art/scroll-morikage.webp")}
+                    srcset={`${assetUrl("/assets/art/scroll-morikage-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-morikage.webp")} 900w`}
+                    alt="久隅守景《山水》立轴，孤峰与江上帆船"
+                    credit="Kusumi Morikage, 17c · The Met · CC0"
+                />
+            </div>
         </div>
     )}
 
