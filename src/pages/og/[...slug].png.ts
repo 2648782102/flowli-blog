@@ -103,16 +103,26 @@ export async function GET({
     const { regular: fontRegular, bold: fontBold } = await fetchNotoSansSCFonts();
 
     // Avatar + icon: still read from disk (small assets)
+    const imageMime = (filePath: string) => {
+        switch (filePath.split(".").pop()?.toLowerCase()) {
+            case "svg": return "image/svg+xml";
+            case "jpg":
+            case "jpeg": return "image/jpeg";
+            case "webp": return "image/webp";
+            case "gif": return "image/gif";
+            default: return "image/png";
+        }
+    };
     let avatarPath = `./public${profileConfig.avatar}`;
     const avatarBuffer = fs.readFileSync(avatarPath);
-    const avatarBase64 = `data:image/png;base64,${avatarBuffer.toString("base64")}`;
+    const avatarBase64 = `data:${imageMime(avatarPath)};base64,${avatarBuffer.toString("base64")}`;
 
     let iconPath = `./public${defaultFavicons[0].src}`;
     if (siteConfig.favicon.length > 0) {
         iconPath = `./public${siteConfig.favicon[0].src}`;
     }
     const iconBuffer = fs.readFileSync(iconPath);
-    const iconBase64 = `data:image/png;base64,${iconBuffer.toString("base64")}`;
+    const iconBase64 = `data:${imageMime(iconPath)};base64,${iconBuffer.toString("base64")}`;
 
     const hue = siteConfig.themeColor.hue;
     const primaryColor = `hsl(${hue}, 90%, 65%)`;

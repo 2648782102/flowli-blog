@@ -80,7 +80,7 @@ if (title) {
 
 let ogImageUrl: string | undefined;
 if (siteConfig.generateOgImages && postSlug) {
-    ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
+    ogImageUrl = new URL(url(`/og/${postSlug}.png`), Astro.site).toString();
 }
 
 const favicons: Favicon[] =
@@ -117,6 +117,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         )}
         <!-- author -->
         <meta name="author" content={profileConfig.name}>
+        <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()} />
         <!-- Open Graph -->
         <meta property="og:site_name" content={siteConfig.title}>
         <meta property="og:url" content={Astro.url}>
@@ -132,7 +133,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         }
         <!-- Twitter -->
         <meta name="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content={Astro.url}>
+        <meta name="twitter:url" content={Astro.url}>
         <meta name="twitter:title" content={pageTitle}>
         <meta name="twitter:description" content={description || pageTitle}>
         <!-- viewport -->
@@ -199,6 +200,7 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 
     <body class="min-h-screen"
     >
+        <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-black">跳转到主要内容</a>
         <!-- 全局配置载体 -->
         <ConfigCarrier />
         <SiteHeader />

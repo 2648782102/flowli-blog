@@ -218,4 +218,7 @@ async function main() {
     console.log(`✅ 已生成 ${OUTPUT_FILE}`);
 }
 
-main().catch(console.error);
+main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
