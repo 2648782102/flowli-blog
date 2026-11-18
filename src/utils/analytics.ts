@@ -21,8 +21,8 @@ export type AnalyticsConfig = {
     baseUrl?: string;
 };
 
-export const getWebsiteId = (code: string): string => {
-    return code.match(/data-website-id="([^"]+)"/)?.[1] || "";
+export const getWebsiteId = (code?: string): string => {
+    return code?.match(/data-website-id="([^"]+)"/)?.[1] || "";
 };
 
 export const getAnalyticsConfig = (): AnalyticsConfig => {
