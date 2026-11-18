@@ -16,10 +16,10 @@ const currentYear = new Date().getFullYear();
         <nav class="flowli-footer-links" aria-label="订阅与站点索引">
             <a href={url('rss/')} onclick={`event.preventDefault(); navigateToPage('${url('rss/')}')`}>RSS</a>
             <a href={url('atom/')} onclick={`event.preventDefault(); navigateToPage('${url('atom/')}')`}>Atom</a>
-            <a target="_blank" href={url('sitemap-index.xml')}>Sitemap</a>
+            <a target="_blank" rel="noopener noreferrer" href={url('sitemap-index.xml')}>Sitemap</a>
             <span aria-hidden="true">·</span>
-            <a target="_blank" href="https://astro.build">Astro</a>
-            <a target="_blank" href="https://pages.github.com/">GitHub Pages</a>
+            <a target="_blank" rel="noopener noreferrer" href="https://astro.build">Astro</a>
+            <a target="_blank" rel="noopener noreferrer" href="https://pages.github.com/">GitHub Pages</a>
         </nav>
     </div>
 </footer>

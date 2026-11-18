@@ -75,10 +75,6 @@
     transition: none !important;
     backdrop-filter: none !important;
     }
-    & #display-setting {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
     & #nav-menu-panel {
     transition: none !important;
     backdrop-filter: none !important;

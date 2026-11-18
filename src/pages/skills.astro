@@ -95,19 +95,19 @@ const allIcons = skillsData.map((skill) => skill.icon).filter(Boolean);
                     <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.total}</div>
                     <div class="text-sm text-blue-600/70 dark:text-blue-400/70">{i18n(I18nKey.skillsTotal)}</div>
                 </div>
-                <div class="bg-linear-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-red-600 dark:text-red-400">{stats.byLevel.expert}</div>
-                    <div class="text-sm text-red-600/70 dark:text-red-400/70">{i18n(I18nKey.skillsExpert)}</div>
+                <div class="bg-linear-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4">
+                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.byLevel.intermediate}</div>
+                    <div class="text-sm text-blue-600/70 dark:text-blue-400/70">{i18n(I18nKey.skillsIntermediate)}</div>
                 </div>
-                <div class="bg-linear-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">{stats.byLevel.advanced}</div>
-                    <div class="text-sm text-orange-600/70 dark:text-orange-400/70">{i18n(I18nKey.skillsAdvanced)}</div>
+                <div class="bg-linear-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4">
+                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.byLevel.advanced}</div>
+                    <div class="text-sm text-blue-600/70 dark:text-blue-400/70">{i18n(I18nKey.skillsAdvanced)}</div>
                 </div>
-                <div class="bg-linear-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                <div class="bg-linear-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4">
+                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
                         {totalExperience.years}{totalExperience.months > 0 ? `.${totalExperience.months}` : ''}
                     </div>
-                    <div class="text-sm text-purple-600/70 dark:text-purple-400/70">{i18n(I18nKey.skillExperience)}</div>
+                    <div class="text-sm text-blue-600/70 dark:text-blue-400/70">{i18n(I18nKey.skillExperience)}</div>
                 </div>
             </div>
 
@@ -174,10 +174,10 @@ const allIcons = skillsData.map((skill) => skill.icon).filter(Boolean);
                                         <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                             <div
                                                 class={`h-2 rounded-full transition-all duration-600 ${
-                                                    level === 'expert' ? 'bg-red-500' :
-                                                    level === 'advanced' ? 'bg-orange-500' :
-                                                    level === 'intermediate' ? 'bg-yellow-500' :
-                                                    'bg-green-500'
+                                                    level === 'expert' ? 'bg-blue-700' :
+                                                    level === 'advanced' ? 'bg-blue-600' :
+                                                    level === 'intermediate' ? 'bg-blue-500' :
+                                                    'bg-blue-400'
                                                 }`}
                                                 style={`width: ${percentage}%`}
                                             ></div>
@@ -206,7 +206,7 @@ const allIcons = skillsData.map((skill) => skill.icon).filter(Boolean);
                                         </div>
                                         <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                             <div
-                                                class="h-2 rounded-full bg-blue-500 transition-all duration-500"
+                                                class="h-2 rounded-full bg-blue-600 transition-all duration-500"
                                                 style={`width: ${percentage}%`}
                                             ></div>
                                         </div>

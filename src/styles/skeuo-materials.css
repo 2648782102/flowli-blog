@@ -363,7 +363,6 @@ html:root.dark .btn-regular {
  * positioning containers with a padding-top gap; giving them a background
  * produced a doubled shadow and a bright band above the panel in dark mode.
  */
-#display-setting,
 #translate-panel,
 #search-panel,
 #light-dark-panel > .card-base {
@@ -385,7 +384,6 @@ html:root.dark .btn-regular {
  * Drawn with outline rather than a pseudo-element: the search panel scrolls,
  * and an absolutely positioned ::after would scroll away from the edge.
  */
-#display-setting,
 #translate-panel,
 #search-panel,
 #light-dark-panel > .card-base {
@@ -393,14 +391,12 @@ html:root.dark .btn-regular {
     outline-offset: -1px;
 }
 
-html:root.dark #display-setting,
 html:root.dark #translate-panel,
 html:root.dark #search-panel,
 html:root.dark #light-dark-panel > .card-base {
     outline-color: rgb(255 255 255 / 0.09);
 }
 
-html:root.dark #display-setting,
 html:root.dark #translate-panel,
 html:root.dark #search-panel,
 html:root.dark #light-dark-panel > .card-base {
@@ -411,10 +407,6 @@ html:root.dark #light-dark-panel > .card-base {
     );
 }
 
-/* Slider sits in its own groove. */
-#display-setting input[type="range"] {
-    box-shadow: var(--sink-2);
-}
 
 /* --------------------------------------------------------------------------
    Panel contents: menu rows, search results, labels.
@@ -526,7 +518,6 @@ html:root.dark #search-panel a:hover {
 /* Panel entrance: a small settle, aligned with the material drop shadow. */
 #search-panel,
 #translate-panel-wrapper,
-#display-setting-wrapper,
 #light-dark-panel {
     transition:
         opacity 160ms ease,
@@ -534,7 +525,6 @@ html:root.dark #search-panel a:hover {
 }
 
 #translate-panel-wrapper.float-panel-closed,
-#display-setting-wrapper.float-panel-closed,
 #light-dark-panel.float-panel-closed,
 #search-panel.float-panel-closed {
     opacity: 0;
@@ -543,7 +533,6 @@ html:root.dark #search-panel a:hover {
 }
 
 #translate-panel-wrapper:not(.float-panel-closed),
-#display-setting-wrapper:not(.float-panel-closed),
 #light-dark-panel:not(.float-panel-closed),
 #search-panel:not(.float-panel-closed) {
     opacity: 1;

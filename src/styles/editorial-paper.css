@@ -269,16 +269,6 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
     }
 }
 
-@media (min-width: 1440px) {
-    #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
-        position: sticky;
-        top: 0;
-        align-self: start;
-        max-height: calc(100vh - 5.5rem);
-        overflow-y: auto;
-        scrollbar-width: thin;
-    }
-}
 
 @media (max-width: 767px) {
     :root {
