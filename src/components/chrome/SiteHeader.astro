@@ -6,7 +6,6 @@ import { url } from "@utils/url";
 import { Icon } from "astro-icon/components";
 import Search from "@components/navbar/search.svelte";
 import Translator from "@components/navbar/translator.svelte";
-import DisplaySettings from "@components/navbar/displaySettings.svelte";
 import LightDarkSwitch from "@components/navbar/lightDarkSwitch.svelte";
 import MobileMenu from "./MobileMenu.svelte";
 
@@ -49,7 +48,6 @@ const isActive = (link: NavbarLink): boolean => {
         <div class="site-header__tools">
             <div class="site-header__tool site-header__tool--search"><Search client:idle /></div>
             <div class="site-header__tool site-header__tool--optional"><Translator client:idle /></div>
-            <div class="site-header__tool site-header__tool--optional"><DisplaySettings client:idle /></div>
             <div class="site-header__tool site-header__tool--optional"><LightDarkSwitch client:idle /></div>
             <div class="site-header__tool site-header__tool--menu"><MobileMenu client:idle links={links} /></div>
         </div>

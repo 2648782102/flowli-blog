@@ -179,10 +179,8 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
             }
             const expressiveTheme = isDark ? "github-dark" : "github-light";
             document.documentElement.setAttribute("data-theme", expressiveTheme);
-            // Load the hue from local storage
-            const hue = localStorage.getItem('hue-v2') || configHue;
-            // Apply the hue to the document
-            document.documentElement.style.setProperty('--hue', hue);
+            // Apply the fixed theme hue to the document
+            document.documentElement.style.setProperty('--hue', String(configHue));
             // calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
             let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
             offset = offset - offset % 4;
@@ -260,7 +258,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 
 <script>
 import { initTheme } from "@utils/theme";
-import { initHue } from "@utils/hue";
 import { initMarkdownActions } from "@/utils/markdown";
 import { initFancybox, cleanupFancybox } from "@utils/fancybox";
 import { loadAndInitTranslate } from "@utils/language";
@@ -391,8 +388,6 @@ document.body.classList.toggle('is-home', document.querySelector('#swup-containe
 // Initialize theme
 initTheme();
 
-// Initialize hue
-initHue();
 
 // 初始化 Markdown 相关操作以防止因 Swup 无刷新跳转的机制限制而导致操作失效
 initMarkdownActions();

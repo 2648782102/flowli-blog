@@ -1,7 +1,7 @@
 {
     "name": "GitHub Actions",
     "description": "用工作流完成静态站点的自动构建与部署。",
-    "icon": "logos:github-actions-icon",
+    "icon": "logos:github-actions",
     "category": "tools",
     "level": "intermediate",
     "experience": {

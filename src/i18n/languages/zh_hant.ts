@@ -4,7 +4,6 @@ import type { Translation } from "@i18n/language";
 
 export const zh_hant: Translation = {
     // 載入遮罩
-    [Key.loading]: "載入中",
 
     // 導航
     [Key.home]: "首頁",
@@ -45,16 +44,10 @@ export const zh_hant: Translation = {
     [Key.postCount]: "篇文章",
     [Key.postsCount]: "篇文章",
 
-    [Key.themeColor]: "主題色",
-
     [Key.lightMode]: "亮色",
     [Key.darkMode]: "暗色",
     [Key.systemMode]: "跟隨系統",
 
-    [Key.wallpaperMode]: "桌布模式",
-    [Key.wallpaperFullscreen]: "全螢幕桌布",
-    [Key.wallpaperBanner]: "橫幅桌布",
-    [Key.wallpaperNone]: "純色背景",
 
     [Key.more]: "更多",
 
@@ -242,17 +235,4 @@ export const zh_hant: Translation = {
 
     // 音樂播放器
     [Key.playlist]: "播放清單",
-    [Key.musicEmptyPlaylist]: "本機播放清單為空",
-    [Key.musicNoSongsAvailable]: "播放清單中沒有可用的歌曲",
-    [Key.musicPlayFailed]: "無法播放 \"{0}\", 正在嘗試下一首...",
-    [Key.musicAutoplayBlocked]: "自動播放被封鎖",
-    [Key.musicMetingFailed]: "Meting 歌單獲取失敗",
-    [Key.musicUnknownArtist]: "未知藝術家",
-    [Key.musicUnknownTrack]: "未知歌曲",
-    [Key.musicSwitchToLocal]: "切換到 Local 模式",
-    [Key.musicSwitchToMeting]: "切換到 Meting 模式",
-    [Key.musicProgress]: "播放進度",
-    [Key.musicCollapse]: "折疊播放器",
-    [Key.musicVolume]: "音量控制",
-    [Key.musicExpand]: "展開音樂播放器",
 };

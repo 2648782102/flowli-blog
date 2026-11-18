@@ -241,3 +241,23 @@ export function toggleLanguage(langCode: string): void {
     translate.changeLanguage(langCode);
     setStoredLanguage(langCode);
 }
+
+/**
+ * 用户主动选择语言时调用：确保 translate.js 已加载并初始化。
+ * 与 loadAndInitTranslate 不同，这里不做“同语种则不加载”的早退，
+ * 因为用户可能正要点一个非站点语言。
+ */
+export async function ensureTranslateLoaded(): Promise<boolean> {
+    if (typeof window === "undefined" || !siteConfig.translate?.enable) return false;
+    try {
+        if (!(window as any).translate) {
+            await import("@/plugins/translate");
+            (window as any).translateScriptLoaded = true;
+            initTranslateService();
+        }
+        return !!(window as any).translate;
+    } catch (error) {
+        console.error("Failed to load translate.js:", error);
+        return false;
+    }
+}

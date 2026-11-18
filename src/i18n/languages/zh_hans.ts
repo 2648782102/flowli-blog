@@ -4,7 +4,6 @@ import type { Translation } from "@i18n/language";
 
 export const zh_hans: Translation = {
     // 加载遮罩
-    [Key.loading]: "加载中",
 
     // 导航
     [Key.home]: "主页",
@@ -45,16 +44,10 @@ export const zh_hans: Translation = {
     [Key.postCount]: "篇文章",
     [Key.postsCount]: "篇文章",
 
-    [Key.themeColor]: "主题色",
-
     [Key.lightMode]: "亮色",
     [Key.darkMode]: "暗色",
     [Key.systemMode]: "跟随系统",
 
-    [Key.wallpaperMode]: "壁纸模式",
-    [Key.wallpaperFullscreen]: "全屏壁纸",
-    [Key.wallpaperBanner]: "横幅壁纸",
-    [Key.wallpaperNone]: "纯色背景",
 
     [Key.more]: "更多",
 
@@ -242,17 +235,4 @@ export const zh_hans: Translation = {
 
     // 音乐播放器
     [Key.playlist]: "播放列表",
-    [Key.musicEmptyPlaylist]: "本地播放列表为空",
-    [Key.musicNoSongsAvailable]: "播放列表中没有可用的歌曲",
-    [Key.musicPlayFailed]: "无法播放 \"{0}\", 正在尝试下一首...",
-    [Key.musicAutoplayBlocked]: "自动播放被拦截",
-    [Key.musicMetingFailed]: "Meting 歌单获取失败",
-    [Key.musicUnknownArtist]: "未知艺术家",
-    [Key.musicUnknownTrack]: "未知歌曲",
-    [Key.musicSwitchToLocal]: "切换到 Local 模式",
-    [Key.musicSwitchToMeting]: "切换到 Meting 模式",
-    [Key.musicProgress]: "播放进度",
-    [Key.musicCollapse]: "折叠播放器",
-    [Key.musicVolume]: "音量控制",
-    [Key.musicExpand]: "展开音乐播放器",
 };

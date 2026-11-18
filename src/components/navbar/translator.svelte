@@ -2,6 +2,7 @@
 import { onDestroy, onMount } from "svelte";
 
 import { getTranslateLanguageFromConfig, getSiteLanguage, setStoredLanguage, getDefaultLanguage } from "@/utils/language";
+import { ensureTranslateLoaded } from "@/utils/language";
 import { onClickOutside } from "@utils/widget";
 import { siteConfig } from "@/config";
 import { getSupportedTranslateLanguages } from "@/i18n/language";
@@ -32,12 +33,9 @@ function closePanel() {
 
 async function changeLanguage(languageCode: string) {
     try {
-        // 如果翻译脚本未加载，先加载
-        if (!(window as any).translateScriptLoaded && typeof (window as any).loadTranslateScript === "function") {
-            await (window as any).loadTranslateScript();
-        }
-        // 确认翻译脚本已加载
-        if (!(window as any).translate) {
+        // 用户主动选语言时确保脚本已加载并初始化
+        const ready = await ensureTranslateLoaded();
+        if (!ready || !(window as any).translate) {
             console.warn("translate.js is not loaded");
             return;
         }

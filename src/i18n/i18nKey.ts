@@ -1,6 +1,5 @@
 enum I18nKey {
     // 加载
-    loading = "loading",
 
     // 导航
     home = "home",
@@ -42,16 +41,10 @@ enum I18nKey {
     postCount = "postCount",
     postsCount = "postsCount",
 
-    themeColor = "themeColor",
-
     lightMode = "lightMode",
     darkMode = "darkMode",
     systemMode = "systemMode",
 
-    wallpaperMode = "wallpaperMode",
-    wallpaperFullscreen = "wallpaperFullscreen",
-    wallpaperBanner = "wallpaperBanner",
-    wallpaperNone = "wallpaperNone",
 
     more = "more",
 
@@ -239,19 +232,6 @@ enum I18nKey {
 
     // 音乐播放器
     playlist = "playlist",
-    musicEmptyPlaylist = "musicEmptyPlaylist",
-    musicNoSongsAvailable = "musicNoSongsAvailable",
-    musicPlayFailed = "musicPlayFailed",
-    musicAutoplayBlocked = "musicAutoplayBlocked",
-    musicMetingFailed = "musicMetingFailed",
-    musicUnknownArtist = "musicUnknownArtist",
-    musicUnknownTrack = "musicUnknownTrack",
-    musicSwitchToLocal = "musicSwitchToLocal",
-    musicSwitchToMeting = "musicSwitchToMeting",
-    musicProgress = "musicProgress",
-    musicCollapse = "musicCollapse",
-    musicVolume = "musicVolume",
-    musicExpand = "musicExpand",
 }
 
 export default I18nKey;

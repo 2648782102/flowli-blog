@@ -4,7 +4,6 @@ import type { Translation } from "@i18n/language";
 
 export const ja: Translation = {
     // 加載遮罩
-    [Key.loading]: "読み込み中",
 
     // ナビゲーション
     [Key.home]: "ホーム",
@@ -45,16 +44,10 @@ export const ja: Translation = {
     [Key.postCount]: "投稿",
     [Key.postsCount]: "投稿",
 
-    [Key.themeColor]: "テーマカラー",
-
     [Key.lightMode]: "ライト",
     [Key.darkMode]: "ダーク",
     [Key.systemMode]: "システム",
 
-    [Key.wallpaperMode]: "壁紙モード",
-    [Key.wallpaperFullscreen]: "全画面",
-    [Key.wallpaperBanner]: "バナー",
-    [Key.wallpaperNone]: "なし",
 
     [Key.more]: "もっと",
 
@@ -242,17 +235,4 @@ export const ja: Translation = {
 
     // 音楽プレイヤー
     [Key.playlist]: "プレイリスト",
-    [Key.musicEmptyPlaylist]: "ローカルプレイリストが空です",
-    [Key.musicNoSongsAvailable]: "プレイリストに利用可能な曲がありません",
-    [Key.musicPlayFailed]: "\"{0}\" の再生に失敗しました。次を試行しています...",
-    [Key.musicAutoplayBlocked]: "自動再生がブロックされました",
-    [Key.musicMetingFailed]: "Meting プレイリストの取得に失敗しました",
-    [Key.musicUnknownArtist]: "未知のアーティスト",
-    [Key.musicUnknownTrack]: "未知の曲",
-    [Key.musicSwitchToLocal]: "ローカルモードに切り替え",
-    [Key.musicSwitchToMeting]: "Metingモードに切り替え",
-    [Key.musicProgress]: "再生の進捗",
-    [Key.musicCollapse]: "プレイヤーを閉じる",
-    [Key.musicVolume]: "音量調節",
-    [Key.musicExpand]: "音楽プレイヤーを展開",
 };

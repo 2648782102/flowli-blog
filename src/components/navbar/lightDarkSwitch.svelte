@@ -79,7 +79,7 @@ onMount(() => {
             <Icon icon="material-symbols:dark-mode-outline-rounded" class="text-[1.25rem]"></Icon>
         </div>
         <div class="absolute inset-0 flex items-center justify-center" class:opacity-0={mode !== SYSTEM_MODE}>
-            <Icon icon="material-symbols:radio-button-partial-outline" class="text-[1.25rem]"></Icon>
+            <Icon icon="material-symbols:radio-button-partial" class="text-[1.25rem]"></Icon>
         </div>
     </button>
     <div id="light-dark-panel" class="absolute transition top-11 -right-2 pt-5 w-max min-w-36" class:float-panel-closed={!isOpen} aria-hidden={!isOpen}>
@@ -105,7 +105,7 @@ onMount(() => {
                     isLast={true}
                     onclick={() => switchScheme(SYSTEM_MODE)}
             >
-                <Icon icon="material-symbols:radio-button-partial-outline" class="text-[1.25rem] mr-3"></Icon>
+                <Icon icon="material-symbols:radio-button-partial" class="text-[1.25rem] mr-3"></Icon>
                 {i18n(I18nKey.systemMode)}
             </DropdownItem>
         </DropdownPanel>

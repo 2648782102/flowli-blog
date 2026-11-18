@@ -91,7 +91,8 @@ body {
         padding-block-start: 2.25rem;
     }
 
-    #swup-container[data-layout="with-rail"][data-page="post"] .editorial-sidebar-rail {
+    /* Rail stays in view while the main column scrolls (archive, custom pages, posts). */
+    #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
         position: sticky;
         top: calc(3.5rem + 1px);
         max-height: calc(100dvh - 3.5rem - 1px);

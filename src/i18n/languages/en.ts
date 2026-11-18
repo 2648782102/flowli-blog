@@ -4,7 +4,6 @@ import type { Translation } from "@i18n/language";
 
 export const en: Translation = {
     // Loading Overlay
-    [Key.loading]: "LOADING",
 
     // Navigations
     [Key.home]: "Home",
@@ -45,16 +44,10 @@ export const en: Translation = {
     [Key.postCount]: "post",
     [Key.postsCount]: "posts",
 
-    [Key.themeColor]: "Theme Color",
-
     [Key.lightMode]: "Light",
     [Key.darkMode]: "Dark",
     [Key.systemMode]: "System",
 
-    [Key.wallpaperMode]: "Wallpaper Mode",
-    [Key.wallpaperFullscreen]: "Fullscreen",
-    [Key.wallpaperBanner]: "Banner",
-    [Key.wallpaperNone]: "None",
 
     [Key.more]: "More",
 
@@ -242,17 +235,4 @@ export const en: Translation = {
 
     // Music Player
     [Key.playlist]: "Playlist",
-    [Key.musicEmptyPlaylist]: "Local playlist is empty",
-    [Key.musicNoSongsAvailable]: "No songs available in playlist",
-    [Key.musicPlayFailed]: "Failed to play \"{0}\", trying next...",
-    [Key.musicAutoplayBlocked]: "Autoplay blocked",
-    [Key.musicMetingFailed]: "Failed to fetch Meting playlist",
-    [Key.musicUnknownArtist]: "Unknown Artist",
-    [Key.musicUnknownTrack]: "Unknown Track",
-    [Key.musicSwitchToLocal]: "Switch to Local mode",
-    [Key.musicSwitchToMeting]: "Switch to Meting mode",
-    [Key.musicProgress]: "Progress",
-    [Key.musicCollapse]: "Collapse player",
-    [Key.musicVolume]: "Volume",
-    [Key.musicExpand]: "Expand music player",
 };
