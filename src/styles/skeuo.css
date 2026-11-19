@@ -21,18 +21,13 @@ html:root {
     color-scheme: light;
 
     /* ---------- Light ---------- */
-    --lit-angle: 145deg;
     --lit: rgb(255 255 255);
-    --lit-tint: rgb(255 253 248);
-    --lit-strength: 0.85;
 
     /* Rim light only ever appears on the lit side; these are the ramp. */
     --rim-strong: rgb(255 255 255 / 0.92);
     --rim-soft: rgb(255 255 255 / 0.55);
-    --rim-gone: rgb(255 255 255 / 0);
 
     /* ---------- Shadow ---------- */
-    --shade-tint: rgb(38 30 18);
     --contact: rgb(38 30 18 / 0.20);
     --contact-tight: rgb(38 30 18 / 0.14);
     --ambient: rgb(38 30 18 / 0.08);
@@ -116,7 +111,6 @@ html:root {
     --r-sm: 0.25rem;
     --r-md: 0.375rem;
     --r-lg: 0.5rem;
-    --r-xl: 0.75rem;
 
     /* ---------- Legacy aliases ----------
        Older rules reference these names; keep them pointing at the new
@@ -126,13 +120,9 @@ html:root {
     --mat-surface-sunken: var(--well);
     --mat-metal-a: var(--metal-hi);
     --mat-metal-b: var(--metal-lo);
-    --mat-paper: var(--paper-stock);
-    --mat-leather: var(--paper-stock-warm);
-    --mat-rubber: var(--enamel-deep);
 
     --skeuo-edge: var(--rim-soft);
     --skeuo-groove: rgb(38 30 18 / 0.14);
-    --radius-skeuo: var(--r-md);
 
     --shadow-raised: var(--lift-1);
     --shadow-inset: var(--sink-1);
@@ -143,13 +133,10 @@ html:root.dark {
     color-scheme: dark;
 
     --lit: rgb(255 255 255);
-    --lit-strength: 0.5;
 
     --rim-strong: rgb(255 255 255 / 0.16);
     --rim-soft: rgb(255 255 255 / 0.09);
-    --rim-gone: rgb(255 255 255 / 0);
 
-    --shade-tint: rgb(0 0 0);
     --contact: rgb(0 0 0 / 0.55);
     --contact-tight: rgb(0 0 0 / 0.40);
     --ambient: rgb(0 0 0 / 0.30);

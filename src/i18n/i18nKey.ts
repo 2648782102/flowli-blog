@@ -11,10 +11,7 @@ enum I18nKey {
     directory = "directory",
     tags = "tags",
     categories = "categories",
-    series = "series",
     posts = "posts",
-    recentPosts = "recentPosts",
-    postList = "postList",
     statistics = "statistics",
     tableOfContents = "tableOfContents",
 
@@ -28,13 +25,10 @@ enum I18nKey {
     announcement = "announcement",
     announcementClose = "announcementClose",
 
-    comments = "comments",
 
-    untitled = "untitled",
     uncategorized = "uncategorized",
     noTags = "noTags",
 
-    wordCount = "wordCount",
     wordsCount = "wordsCount",
     minuteCount = "minuteCount",
     minutesCount = "minutesCount",
@@ -63,19 +57,10 @@ enum I18nKey {
     // 项目展示页面
     projects = "projects",
     projectsSubtitle = "projectsSubtitle",
-    projectsAll = "projectsAll",
     projectsWeb = "projectsWeb",
     projectsMobile = "projectsMobile",
     projectsDesktop = "projectsDesktop",
     projectsOther = "projectsOther",
-    projectTechStack = "projectTechStack",
-    projectLiveDemo = "projectLiveDemo",
-    projectSourceCode = "projectSourceCode",
-    projectDescription = "projectDescription",
-    projectStatus = "projectStatus",
-    projectStatusCompleted = "projectStatusCompleted",
-    projectStatusInProgress = "projectStatusInProgress",
-    projectStatusPlanned = "projectStatusPlanned",
     projectsTotal = "projectsTotal",
     projectsCompleted = "projectsCompleted",
     projectsInProgress = "projectsInProgress",
@@ -96,11 +81,6 @@ enum I18nKey {
     skillsEngines = "skillsEngines",
     skillsTools = "skillsTools",
     skillsOthers = "skillsOthers",
-    skillLevel = "skillLevel",
-    skillLevelBeginner = "skillLevelBeginner",
-    skillLevelIntermediate = "skillLevelIntermediate",
-    skillLevelAdvanced = "skillLevelAdvanced",
-    skillLevelExpert = "skillLevelExpert",
     skillExperience = "skillExperience",
     skillYears = "skillYears",
     skillMonths = "skillMonths",
@@ -123,13 +103,10 @@ enum I18nKey {
     timelineProject = "timelineProject",
     timelineAchievement = "timelineAchievement",
     timelinePresent = "timelinePresent",
-    timelineLocation = "timelineLocation",
-    timelineDescription = "timelineDescription",
     timelineMonths = "timelineMonths",
     timelineYears = "timelineYears",
     timelineTotal = "timelineTotal",
     timelineProjects = "timelineProjects",
-    timelineExperience = "timelineExperience",
     timelineCurrent = "timelineCurrent",
     timelineHistory = "timelineHistory",
     timelineAchievements = "timelineAchievements",
@@ -147,7 +124,6 @@ enum I18nKey {
     diarySubtitle = "diarySubtitle",
     diaryCount = "diaryCount",
     diaryImage = "diaryImage",
-    diaryReply = "diaryReply",
     diaryTips = "diaryTips",
     diaryMinutesAgo = "diaryMinutesAgo",
     diaryHoursAgo = "diaryHoursAgo",
@@ -180,8 +156,6 @@ enum I18nKey {
     rssBenefit3 = "rssBenefit3",
     rssBenefit4 = "rssBenefit4",
     rssHowToUse = "rssHowToUse",
-    rssCopied = "rssCopied",
-    rssCopyFailed = "rssCopyFailed",
 
     // Atom页面
     atom = "atom",
@@ -197,28 +171,13 @@ enum I18nKey {
     atomBenefit2 = "atomBenefit2",
     atomBenefit3 = "atomBenefit3",
     atomBenefit4 = "atomBenefit4",
-    atomHowToUse = "atomHowToUse",
-    atomCopied = "atomCopied",
-    atomCopyFailed = "atomCopyFailed",
 
     // 密码保护
-    passwordProtected = "passwordProtected",
     passwordProtectedTitle = "passwordProtectedTitle",
     passwordProtectedDescription = "passwordProtectedDescription",
     passwordPlaceholder = "passwordPlaceholder",
     passwordUnlock = "passwordUnlock",
-    passwordUnlocking = "passwordUnlocking",
     passwordIncorrect = "passwordIncorrect",
-    passwordDecryptError = "passwordDecryptError",
-    passwordRequired = "passwordRequired",
-    passwordVerifying = "passwordVerifying",
-    passwordDecryptFailed = "passwordDecryptFailed",
-    passwordDecryptRetry = "passwordDecryptRetry",
-    passwordUnlockButton = "passwordUnlockButton",
-    copyFailed = "copyFailed",
-    syntaxHighlightFailed = "syntaxHighlightFailed",
-    autoSyntaxHighlightFailed = "autoSyntaxHighlightFailed",
-    decryptionError = "decryptionError",
 
     //最后编辑时间卡片
     lastModifiedPrefix = "lastModifiedPrefix",
@@ -231,7 +190,6 @@ enum I18nKey {
     second = "second",
 
     // 音乐播放器
-    playlist = "playlist",
 }
 
 export default I18nKey;
