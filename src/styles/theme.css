@@ -81,6 +81,54 @@ html:root {
     --solid-fg: #f7f8fa;
 }
 
+/*
+ * Home composition tokens.
+ *
+ * The reading column, the gutter that separates it from the hanging scrolls
+ * and the scroll height are all derived from one another, so the homepage
+ * scales as a single piece between 1080p and 4K instead of each part hitting
+ * its own clamp. Below 1240px the scrolls are hidden and none of this applies.
+ */
+html:root {
+    --home-column: 52rem;
+    --home-gutter: 2rem;
+    --wall-height: 0px;
+}
+
+@media (min-width: 1240px) {
+    html:root {
+        /*
+         * 44rem keeps long paragraphs readable on 1280–1792px desktops;
+         * the column then grows with the viewport and stops at 60rem.
+         */
+        --home-column: clamp(44rem, 100vw - 68rem, 60rem);
+        --home-gutter: clamp(1.25rem, 2.2vw, 4rem);
+        /*
+         * One shared height for both scrolls, so their lower rollers line up
+         * on the same horizontal; each mount then keeps its own aspect ratio.
+         * The height is the smallest of: a fraction of the column, ~62% of
+         * the viewport, and whatever still fits in the free gutter (×1.45
+         * converts the widest mount's width — ≈0.69 w/h — back into height).
+         */
+        --wall-height: min(
+            calc(var(--home-column) * 0.66),
+            62vh,
+            calc(((100vw - var(--home-column)) / 2 - var(--home-gutter) - clamp(1.5rem, 3.2vw, 6rem)) * 1.45)
+        );
+    }
+}
+
+/*
+ * Ultra-wide displays: scale the whole page so 4K does not read as miniature.
+ * Starts exactly where --home-column begins to grow (100vw = 112rem), so the
+ * type ramp and the column ramp stay continuous.
+ */
+@media (min-width: 1792px) {
+    html:root {
+        font-size: clamp(16px, 0.55vw + 5px, 24px);
+    }
+}
+
 html:root.dark {
     color-scheme: dark;
 

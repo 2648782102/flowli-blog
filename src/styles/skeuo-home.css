@@ -29,30 +29,28 @@
 
 /*
  * Study wall: two mounted ink scrolls flank the reading column.
- * Design baseline is 1920×1080: both scrolls share one height (~500px) and
- * keep their own aspect ratio (the two source mounts differ), so they read as
- * a matched pair hanging on the wall. Their inner edges line up with the
- * reading column. They are pinned to the viewport top and stay put while the
- * column scrolls; below 1240px the side gutters are too narrow and they hide.
+ * Both scrolls share one height and keep their own aspect ratio (the two
+ * source mounts differ), so they read as a matched pair hanging on the wall.
+ * Height, column and gutter all come from the same tokens in theme.css:
+ * each scroll is a fixed fraction of the reading column, so the composition
+ * looks identical at 1080p, 1440p and 4K. They are pinned to the viewport and
+ * stay put while the column scrolls; below 1240px the side gutters are too
+ * narrow and they hide.
  */
 .wall-art {
     display: none;
 }
 
 @media (min-width: 1240px) {
-    /* Widen the shell so the gutters have room for the hangings. */
-    .editorial-shell {
-        max-width: 96rem;
-    }
-
+    /* The column centres itself; the scrolls are pinned to the viewport. */
     #swup-container[data-layout="home"] #content-wrapper {
         max-width: none;
     }
 
-    /* Column width stays constant across the breakpoint: no reflow jump. */
+    /* Column width comes from one token shared by every home rule. */
     #content-wrapper .home-composition {
         position: relative;
-        max-width: 52rem;
+        max-width: var(--home-column);
         margin-inline: auto;
     }
 
@@ -64,29 +62,18 @@
         pointer-events: none;
     }
 
-    /* one shared height; width follows each scroll's true aspect ratio */
     #content-wrapper .home-composition > .wall-art img {
         display: block;
         width: auto;
-        /*
-         * The left mount is the wider of the two (≈0.69 w/h). Fit its width
-         * into the free gutter so neither scroll crowds the screen edge:
-         *   gutter = (100vw - 52rem)/2, minus gap and a 2rem safety margin,
-         *   then convert that width back to a height via ×1.44.
-         */
-        height: min(
-            46vh,
-            500px,
-            calc(((100vw - 52rem) / 2 - 4rem) * 1.44)
-        );
+        height: var(--wall-height);
     }
 
     #content-wrapper .home-composition > .wall-art--left {
-        right: calc(50% + 26rem + clamp(1rem, 1.5vw, 2.5rem));
+        right: calc(50% + (var(--home-column) / 2) + var(--home-gutter));
     }
 
     #content-wrapper .home-composition > .wall-art--right {
-        left: calc(50% + 26rem + clamp(1rem, 1.5vw, 2.5rem));
+        left: calc(50% + (var(--home-column) / 2) + var(--home-gutter));
     }
 
     /* Below ~1400px the gutters are tight: captions would wrap, so show the
