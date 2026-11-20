@@ -414,13 +414,19 @@ const topB  = SILK_TOP + rodR * 3.2;
  * extra room below keeps the bottom edge from sitting on the pixel boundary,
  * where the WebP's soft alpha would get clipped.
  */
-const botB  = SILK_BOT - silkW * 0.012;
+const botB  = SILK_BOT;
 const spanH = topB - botB;
 const totalW = silkW;
 
-/* pad the tight bounds so the object never touches the frame edge */
-const padY = spanH * 0.045;
-const padX = totalW * 0.045;
+/*
+ * Keep the transparent margin to just enough for antialiasing, so the image
+ * edge lands on the paper edge. A wide safety margin looks harmless in the
+ * bake, but the page fades the outer few percent of the image to blend the
+ * mount into the wall — with a 4.5% margin that fade was spent dissolving
+ * empty pixels and the paper kept a hard edge.
+ */
+const padY = spanH * 0.006;
+const padX = totalW * 0.006;
 const needH = spanH + padY * 2;
 const needW = totalW + padX * 2;
 

@@ -18,6 +18,11 @@ knobs reads as lacquered plastic long before the eye accepts it, so the mount
 ends in a bare paper edge and lets its own silhouette and cast shadow carry
 the bottom of the composition.
 
+The transparent margin around each mount is kept to ~0.6% so the image edge
+lands on the paper edge. The page fades the outer few percent of the image to
+blend the mount into the wall, and a wide safety margin would spend that fade
+on empty pixels instead of on paper.
+
 The mount itself is *not* relit. Its photograph already carries gallery light
 that is correct for silk, and pushing it through the scene key clipped the
 damask weave to white — so the sheet is drawn unlit and only the form
