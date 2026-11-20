@@ -18,10 +18,16 @@ knobs reads as lacquered plastic long before the eye accepts it, so the mount
 ends in a bare paper edge and lets its own silhouette and cast shadow carry
 the bottom of the composition.
 
-The transparent margin around each mount is kept to ~0.6% so the image edge
-lands on the paper edge. The page fades the outer few percent of the image to
-blend the mount into the wall, and a wide safety margin would spend that fade
-on empty pixels instead of on paper.
+The transparent margin around each mount is kept to 1.2%. Fewer pixels put the
+paper edge on the canvas boundary, where the outermost row got clipped
+mid-coverage and the bottom edge came out stair-stepped; more wasted the
+frame. The bake is also supersampled 2× and downsampled with Lanczos, so the
+curved silhouette has real coverage levels to interpolate from.
+
+The page does not fade the mount into the wall. It tried, and blending paper
+through alpha pulls it toward the backdrop — on the dark theme the scrolls
+grew a grey halo and the paper looked dirty. Depth comes from layered
+drop-shadows instead, so the paper keeps its own colour right to its edge.
 
 The mount itself is *not* relit. Its photograph already carries gallery light
 that is correct for silk, and pushing it through the scene key clipped the

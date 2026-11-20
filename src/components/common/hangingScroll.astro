@@ -40,52 +40,30 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
     .hanging-scroll__art {
         position: relative;
         display: block;
-        filter: drop-shadow(4px 11px 9px rgb(24 18 9 / 0.42))
-                drop-shadow(1px 2px 2px rgb(24 18 9 / 0.30));
+        /*
+         * The silhouette is a rectangle of paper a few millimetres off the
+         * wall, so its edge should stay crisp and the depth should come from
+         * the shadow instead. Three layers, stacked from ambient to contact:
+         * a wide soft ambient shadow, a directed one cast down and to the
+         * right by the upper-left key, and a tight dark contact line right
+         * under the bottom edge where the paper meets the wall.
+         *
+         * An earlier version faded the left, right and bottom edges to
+         * transparency instead. Blending paper into a wall through alpha
+         * darkens toward the backdrop, so on the dark theme the mount grew a
+         * grey halo — the paper looked dirty rather than distant. Shadows do
+         * the same job without touching the paper's own colour.
+         */
+        filter:
+            drop-shadow(0 16px 24px rgb(20 14 8 / 0.34))
+            drop-shadow(5px 9px 12px rgb(20 14 8 / 0.26))
+            drop-shadow(1px 2px 2px rgb(20 14 8 / 0.30));
     }
 
     .hanging-scroll__art img {
         display: block;
         width: 100%;
         height: auto;
-        /*
-         * The mount is a hard-edged rectangle on a soft wall, so its
-         * silhouette is the loudest thing in the margin. A few millimetres of
-         * fade at the left, right and bottom edges is enough to take the
-         * cut-out look off it — anything wider starts dissolving the silk
-         * itself and reads as a blur rather than as air. Top stays crisp:
-         * that is the 天杆, and softening it would look like a mistake.
-         *
-         * The two mask layers would otherwise combine with a union, which
-         * cancels both fades; mask-composite: intersect makes them multiply.
-         *
-         * The baked WebP keeps a 4.5% transparent margin on every side so the
-         * sheet never touches the canvas edge. The fade has to start inside
-         * that margin, otherwise it dissolves empty pixels and the paper
-         * itself stays hard-edged.
-         */
-        --scroll-fade-x: 0.4rem;
-        --scroll-fade-y: 0.35rem;
-        -webkit-mask-image:
-            linear-gradient(to right,
-                transparent 0,
-                #000 var(--scroll-fade-x),
-                #000 calc(100% - var(--scroll-fade-x)),
-                transparent 100%),
-            linear-gradient(to bottom,
-                #000 calc(100% - var(--scroll-fade-y)),
-                transparent 100%);
-        mask-image:
-            linear-gradient(to right,
-                transparent 0,
-                #000 var(--scroll-fade-x),
-                #000 calc(100% - var(--scroll-fade-x)),
-                transparent 100%),
-            linear-gradient(to bottom,
-                #000 calc(100% - var(--scroll-fade-y)),
-                transparent 100%);
-        -webkit-mask-composite: source-in;
-        mask-composite: intersect;
     }
 
     .hanging-scroll__credit {
@@ -104,7 +82,14 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
     }
 
     html:root.dark .hanging-scroll__art {
-        filter: drop-shadow(3px 9px 9px rgb(0 0 0 / 0.66))
-                drop-shadow(1px 2px 3px rgb(0 0 0 / 0.5));
+        /*
+         * On a near-black wall a long soft shadow is invisible; what still
+         * reads is the tight contact line and a short falloff, so the mount
+         * sits on the surface rather than floating in front of it.
+         */
+        filter:
+            drop-shadow(0 14px 22px rgb(0 0 0 / 0.72))
+            drop-shadow(4px 8px 10px rgb(0 0 0 / 0.60))
+            drop-shadow(1px 2px 3px rgb(0 0 0 / 0.62));
     }
 </style>

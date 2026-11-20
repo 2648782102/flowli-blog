@@ -152,12 +152,16 @@ function sheetTexture(img) {
   ctx.drawImage(img, 0, 0);
 
   /*
-   * The Met photographs are flatbed scans, and both of them carry 1-4 px of
+   * The Met photographs are flatbed scans, and both carry a few pixels of
    * near-black sliver along the left (and, on wanghui, the right) edge where
-   * the mount ran past the scanner glass. Stretched over a 377px-wide scroll
-   * that sliver becomes a hard drawn-looking border, which is the "framed
-   * poster" tell. Replicate the interior colour outward across those pixels
-   * before anything else touches the image.
+   * the mount ran past the scanner glass. Left alone, that sliver becomes a
+   * hard drawn-looking border at display size.
+   *
+   * The colour used to fill it has to come from *settled* silk, not from the
+   * first pixel that passes a brightness test — that one is still on the edge
+   * of the dark band, and copying it left a grey stripe down the side that
+   * looked exactly like a cheap gradient. So: find where the scan first
+   * leaves the sliver, step a few pixels further in, and average a short run.
    */
   const probe = ctx.getImageData(0, 0, W0, H0);
   const px = probe.data;
@@ -165,26 +169,34 @@ function sheetTexture(img) {
     const i = (y * W0 + x) * 4;
     return 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2];
   };
-  const EDGE = 12;
+  const meanRun = (x0, x1, y) => {
+    let r = 0, g = 0, b = 0, n = 0;
+    for (let x = Math.max(0, x0); x <= Math.min(W0 - 1, x1); x++) {
+      const i = (y * W0 + x) * 4;
+      r += px[i]; g += px[i + 1]; b += px[i + 2]; n++;
+    }
+    return [r / n, g / n, b / n];
+  };
+  const EDGE = 16;
   for (let y = 0; y < H0; y++) {
     /* left */
     let x = 0;
     while (x < EDGE && lumAt(x, y) < 120) x++;
     if (x > 0 && x < EDGE) {
-      const s = (y * W0 + x) * 4;
-      for (let k = 0; k < x; k++) {
+      const [r, g, b] = meanRun(x + 3, x + 8, y);
+      for (let k = 0; k < x + 3; k++) {
         const d = (y * W0 + k) * 4;
-        px[d] = px[s]; px[d + 1] = px[s + 1]; px[d + 2] = px[s + 2]; px[d + 3] = 255;
+        px[d] = r; px[d + 1] = g; px[d + 2] = b; px[d + 3] = 255;
       }
     }
     /* right */
     let xr = W0 - 1;
     while (xr > W0 - EDGE && lumAt(xr, y) < 120) xr--;
     if (xr < W0 - 1) {
-      const s = (y * W0 + xr) * 4;
-      for (let k = xr + 1; k < W0; k++) {
+      const [r, g, b] = meanRun(xr - 8, xr - 3, y);
+      for (let k = xr - 3; k < W0; k++) {
         const d = (y * W0 + k) * 4;
-        px[d] = px[s]; px[d + 1] = px[s + 1]; px[d + 2] = px[s + 2]; px[d + 3] = 255;
+        px[d] = r; px[d + 1] = g; px[d + 2] = b; px[d + 3] = 255;
       }
     }
   }
@@ -216,11 +228,18 @@ function sheetTexture(img) {
       for (let x = 0; x < W; x++) {
         const u = x / W;
 
-        /* central difference in the two tangent directions */
-        const dzdu = (sheetDisplacement(Math.min(1, u + stepU), v) -
-                      sheetDisplacement(Math.max(0, u - stepU), v)) / (2 * stepU);
-        const dzdv = (sheetDisplacement(u, Math.min(1, v + stepV)) -
-                      sheetDisplacement(u, Math.max(0, v - stepV))) / (2 * stepV);
+        /*
+         * Central difference in the two tangent directions, with the divisor
+         * following the actual span. Clamping at the border while still
+         * dividing by 2·step halves the span but not the divisor, so the
+         * outermost column reported twice the true slope, its normal leaned
+         * hard, and the bake grew a dark seam down both edges and along the
+         * foot — the "dirty border" that looked like a bad gradient.
+         */
+        const u0 = Math.max(0, u - stepU), u1 = Math.min(1, u + stepU);
+        const v0 = Math.max(0, v - stepV), v1 = Math.min(1, v + stepV);
+        const dzdu = (sheetDisplacement(u1, v) - sheetDisplacement(u0, v)) / (u1 - u0);
+        const dzdv = (sheetDisplacement(u, v1) - sheetDisplacement(u, v0)) / (v1 - v0);
 
         /* For z = z(u,v) over the sheet plane, N ∝ (-z_u, -z_v, 1) scaled by
            the sheet's aspect so the slopes are in comparable units. */
@@ -419,14 +438,14 @@ const spanH = topB - botB;
 const totalW = silkW;
 
 /*
- * Keep the transparent margin to just enough for antialiasing, so the image
- * edge lands on the paper edge. A wide safety margin looks harmless in the
- * bake, but the page fades the outer few percent of the image to blend the
- * mount into the wall — with a 4.5% margin that fade was spent dissolving
- * empty pixels and the paper kept a hard edge.
+ * Enough transparent margin for the sheet's edge to be antialiased. Too
+ * little (~0.6%) put the paper edge on the canvas boundary, so the outermost
+ * row was clipped mid-coverage and the bottom edge came out visibly
+ * stair-stepped. Too much (4.5%) wasted the frame. 1.2% is the point where
+ * the edge has a clean two-or-three pixel ramp and the margins stay tight.
  */
-const padY = spanH * 0.006;
-const padX = totalW * 0.006;
+const padY = spanH * 0.012;
+const padX = totalW * 0.012;
 const needH = spanH + padY * 2;
 const needW = totalW + padX * 2;
 
