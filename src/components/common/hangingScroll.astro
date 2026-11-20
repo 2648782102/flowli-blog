@@ -51,9 +51,10 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
         /*
          * The mount is a hard-edged rectangle on a soft wall, so its
          * silhouette is the loudest thing in the margin. A few millimetres of
-         * fade at the left, right and bottom edges lets the paper settle into
-         * the wall instead of being pasted onto it. Top stays crisp — that is
-         * the 天杆, and a blur there reads as a mistake rather than as air.
+         * fade at the left, right and bottom edges is enough to take the
+         * cut-out look off it — anything wider starts dissolving the silk
+         * itself and reads as a blur rather than as air. Top stays crisp:
+         * that is the 天杆, and softening it would look like a mistake.
          *
          * The two mask layers would otherwise combine with a union, which
          * cancels both fades; mask-composite: intersect makes them multiply.
@@ -63,8 +64,8 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
          * that margin, otherwise it dissolves empty pixels and the paper
          * itself stays hard-edged.
          */
-        --scroll-fade-x: 1.2rem;
-        --scroll-fade-y: 1rem;
+        --scroll-fade-x: 0.4rem;
+        --scroll-fade-y: 0.35rem;
         -webkit-mask-image:
             linear-gradient(to right,
                 transparent 0,
