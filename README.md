@@ -32,13 +32,13 @@ pnpm dev
 
 - `src/pages`：静态页面与 RSS/Atom/Sitemap 等端点。
 - `src/components`：导航、卡片、侧栏与交互组件。
-- `src/styles`：液态玻璃系统、藏蓝调色板与各模块样式。
+- `src/styles`：拟物材质系统（`skeuo-*.css`）、藏蓝调色板与各模块样式。
 - `src/content`：文章、作品、技能、时间线和页面正文。
 - `public/favicon`：站点图标、浏览器标签图标与 PWA manifest。
 
 ## 视觉风格
 
-全站使用藏蓝主色、冰蓝文字和克制的玻璃表面。样式集中在 `src/styles/editorial-paper.css`，页面切换由 Swup 处理。
+全站是拟物风的「一张桌子」：暖色桌面、纸页正文、搪瓷卡片与控件、拉丝金属头部、从纸里挖出的凹槽。材质定义在 `src/styles/skeuo.css`，各部件用哪种材质写在 `src/styles/skeuo-materials.css`，调色板在 `src/styles/theme.css`；`editorial-paper.css` 只负责结构与 Markdown 排版。页面切换由 Swup 处理。完整说明见 [拟物风设计基础](docs/skeuomorphic-design.md)。
 
 ## 模板来源
 

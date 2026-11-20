@@ -91,7 +91,7 @@ html:root {
  */
 html:root {
     --home-column: 52rem;
-    --home-gutter: 2rem;
+    --wall-edge: 2rem;
     --wall-height: 0px;
 }
 
@@ -102,18 +102,29 @@ html:root {
          * the column then grows with the viewport and stops at 60rem.
          */
         --home-column: clamp(44rem, 100vw - 68rem, 60rem);
-        --home-gutter: clamp(1.25rem, 2.2vw, 4rem);
         /*
-         * One shared height for both scrolls, so their lower rollers line up
-         * on the same horizontal; each mount then keeps its own aspect ratio.
+         * The scrolls hang in the free strip between the column and the
+         * screen edge. --wall-edge is the least margin kept at the screen
+         * edge and --wall-pull is how far back off that edge they sit, so
+         * they neither crowd the text nor press against the bezel.
+         */
+        --home-free: calc((100vw - var(--home-column)) / 2);
+        --wall-edge: clamp(1rem, 1.6vw, 3rem);
+        --wall-pull: clamp(0.75rem, 2.2vw, 3.5rem);
+        --wall-gap: clamp(0.75rem, 1.2vw, 2rem);
+        /*
+         * One shared height for both scrolls, so their lower edges line up on
+         * the same horizontal; each mount then keeps its own aspect ratio.
          * The height is the smallest of: a fraction of the column, ~62% of
-         * the viewport, and whatever still fits in the free gutter (×1.45
-         * converts the widest mount's width — ≈0.69 w/h — back into height).
+         * the viewport, and whatever is left of the free strip once the edge
+         * margin, the pull off it and a minimum gap back to the column are
+         * taken out. 0.63 is a hair above the wider mount's width/height
+         * (900×1464 = 0.615), so the scroll never touches the text.
          */
         --wall-height: min(
-            calc(var(--home-column) * 0.66),
+            calc(var(--home-column) * 0.62),
             62vh,
-            calc(((100vw - var(--home-column)) / 2 - var(--home-gutter) - clamp(1.5rem, 3.2vw, 6rem)) * 1.45)
+            calc((var(--home-free) - var(--wall-edge) - var(--wall-pull) - var(--wall-gap)) / 0.63)
         );
     }
 }

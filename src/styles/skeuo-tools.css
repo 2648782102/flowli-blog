@@ -13,6 +13,10 @@
  * Cards nested on the page sheet are coated enamel, not more paper: two paper
  * surfaces at the same value merge into one, so the child has to be a
  * different material to be legible as a separate object.
+ *
+ * Flat body plus a 1px lit rim. These cards are tall, so a 178deg ramp ran the
+ * full height and read as a varnished plaque rather than a flat panel; the rim
+ * says "raised" without a second light source.
  */
 #content-wrapper .skill-card,
 #content-wrapper .project-card,
@@ -20,25 +24,19 @@
     border-radius: var(--r-md) !important;
     border: 0 !important;
     background-color: var(--enamel) !important;
-    background-image: linear-gradient(
-        178deg,
-        rgb(255 255 255 / 0.85) 0,
-        rgb(255 255 255 / 0.2) 1.5rem,
-        rgb(38 30 18 / 0.025) 100%
-    ) !important;
-    box-shadow: var(--lift-1) !important;
+    background-image: none !important;
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.7),
+        var(--lift-1) !important;
     transition: box-shadow 150ms ease, transform 150ms ease;
 }
 
 html:root.dark #content-wrapper .skill-card,
 html:root.dark #content-wrapper .project-card,
 html:root.dark #content-wrapper .timeline-card {
-    background-image: linear-gradient(
-        178deg,
-        rgb(255 255 255 / 0.08) 0,
-        rgb(255 255 255 / 0.02) 1.5rem,
-        rgb(0 0 0 / 0.16) 100%
-    ) !important;
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.08),
+        var(--lift-1) !important;
 }
 
 #content-wrapper .skill-card:hover,

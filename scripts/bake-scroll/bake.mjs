@@ -53,10 +53,20 @@ http.createServer((req,res)=>{
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function bake(art, name, width) {
+    /*
+     * Render at 2× and downsample. The sheet's silhouette is a gentle curve
+     * against transparency, and at 1× the alpha edge went from 0 to 255 in a
+     * single pixel — the page then scaled that staircase down and the bottom
+     * edge came out visibly jagged. Supersampling gives the edge two or three
+     * real coverage levels to interpolate from, which is what fixes it; adding
+     * margin back to the bake only hid it.
+     */
+    const SS = 2;
+    const renderW = width * SS;
     const page = await browser.newPage();
-    await page.setViewport({ width, height: 1400, deviceScaleFactor: 1 });
+    await page.setViewport({ width: renderW, height: 2800, deviceScaleFactor: 1 });
     await page.goto(
-        `http://127.0.0.1:${PORT}/index.html?art=${art}&theme=light&w=${width}&h=0`,
+        `http://127.0.0.1:${PORT}/index.html?art=${art}&theme=light&w=${renderW}&h=0`,
         { waitUntil: "networkidle0" }
     );
     await page.evaluate(() => new Promise((resolve) => {
@@ -73,8 +83,11 @@ async function bake(art, name, width) {
     await page.close();
 
     const sharp = require("sharp");
-    await sharp(png).webp({ quality: 88, effort: 6 }).toFile(path.join(OUT_DIR, `${name}.webp`));
-    await sharp(png).resize({ width: 480 }).webp({ quality: 84, effort: 6 })
+    await sharp(png)
+        .resize({ width, kernel: "lanczos3" })
+        .webp({ quality: 88, effort: 6 })
+        .toFile(path.join(OUT_DIR, `${name}.webp`));
+    await sharp(png).resize({ width: 480, kernel: "lanczos3" }).webp({ quality: 84, effort: 6 })
         .toFile(path.join(OUT_DIR, `${name}-sm.webp`));
     const fs = await import("node:fs");
     fs.unlinkSync(png);

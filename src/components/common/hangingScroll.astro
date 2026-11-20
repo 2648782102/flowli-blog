@@ -28,8 +28,10 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
     /*
      * A physically rendered hanging scroll, baked from a Three.js scene.
      * The silk damask and painting are a public-domain museum photograph of
-     * the real mount; the rods, knobs and curvature are rendered geometry
-     * lit from the upper left. The page only displays a transparent WebP.
+     * the real mount. The sheet and its silk-wrapped 天杆 are drawn unlit —
+     * the photograph already carries gallery light — so only curvature
+     * shading is multiplied in. There is deliberately no 地杆. The page only
+     * displays a transparent WebP; depth comes from the shadows below.
      */
     .hanging-scroll {
         position: relative;
@@ -40,8 +42,24 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
     .hanging-scroll__art {
         position: relative;
         display: block;
-        filter: drop-shadow(4px 11px 9px rgb(24 18 9 / 0.42))
-                drop-shadow(1px 2px 2px rgb(24 18 9 / 0.30));
+        /*
+         * The silhouette is a rectangle of paper a few millimetres off the
+         * wall, so its edge should stay crisp and the depth should come from
+         * the shadow instead. Three layers, stacked from ambient to contact:
+         * a wide soft ambient shadow, a directed one cast down and to the
+         * right by the upper-left key, and a tight dark contact line right
+         * under the bottom edge where the paper meets the wall.
+         *
+         * An earlier version faded the left, right and bottom edges to
+         * transparency instead. Blending paper into a wall through alpha
+         * darkens toward the backdrop, so on the dark theme the mount grew a
+         * grey halo — the paper looked dirty rather than distant. Shadows do
+         * the same job without touching the paper's own colour.
+         */
+        filter:
+            drop-shadow(0 16px 24px rgb(20 14 8 / 0.34))
+            drop-shadow(5px 9px 12px rgb(20 14 8 / 0.26))
+            drop-shadow(1px 2px 2px rgb(20 14 8 / 0.30));
     }
 
     .hanging-scroll__art img {
@@ -66,7 +84,14 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
     }
 
     html:root.dark .hanging-scroll__art {
-        filter: drop-shadow(3px 9px 9px rgb(0 0 0 / 0.66))
-                drop-shadow(1px 2px 3px rgb(0 0 0 / 0.5));
+        /*
+         * On a near-black wall a long soft shadow is invisible; what still
+         * reads is the tight contact line and a short falloff, so the mount
+         * sits on the surface rather than floating in front of it.
+         */
+        filter:
+            drop-shadow(0 14px 22px rgb(0 0 0 / 0.72))
+            drop-shadow(4px 8px 10px rgb(0 0 0 / 0.60))
+            drop-shadow(1px 2px 3px rgb(0 0 0 / 0.62));
     }
 </style>

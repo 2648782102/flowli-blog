@@ -109,7 +109,6 @@
 /* License block: engraved plaque. */
 #post-container .license-container {
     padding: 1.1rem 1.35rem 1.15rem !important;
-    padding-inline-start: 2.3rem !important;
 }
 
 .license-container.scroll-edge {
@@ -119,14 +118,15 @@
 @media (max-width: 640px) {
     .license-container.scroll-edge {
         padding: 1rem 1rem 1.05rem !important;
-        padding-inline-start: 2rem !important;
     }
 }
 
 /* Post navigation cards. */
 #content-wrapper > div:has(> a[href*="/posts/"] > .btn-card) > a > .btn-card {
     box-shadow: var(--shadow-raised) !important;
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
+    /* --mat-surface-raised and --mat-surface are the same token, so this was
+       a gradient from a colour to itself. Stated as a flat fill instead. */
+    background: var(--mat-surface) !important;
 }
 
 #content-wrapper > div:has(> a[href*="/posts/"] > .btn-card) > a > .btn-card:hover {
@@ -140,7 +140,7 @@
 }
 
 #editorial-sidebar-rail table-of-contents a:hover {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface));
+    background: var(--mat-surface);
     box-shadow: var(--shadow-raised);
 }
 
