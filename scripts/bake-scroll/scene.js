@@ -27,10 +27,10 @@ scene.environmentIntensity = light ? 0.34 : 0.20;
 
 /* ============ the single physical key light ============ */
 /*
- * Only the rods are lit now — the mount is drawn unlit so the photograph
- * keeps its own values. At 2.1 this light drove dark walnut up to #b5966f,
- * which is why the roller read as caramel plastic; 1.35 puts the crown of the
- * rod around #8a6a4c, where a waxed walnut dowel actually sits.
+ * Nothing solid is lit any more — the sheet and the 天杆 are both drawn unlit
+ * so the photograph keeps its own values. This light now only feeds the
+ * shadow map and the hemisphere bounce, and it is what keeps the cast shadow
+ * on the wall consistent with the light painted into the silk.
  */
 const key = new THREE.DirectionalLight(0xfff4e6, light ? 1.35 : 0.85);
 /* Raking from the upper left: real museum plates are lit from one side, and
@@ -63,8 +63,6 @@ const RATIO = ART === 'morikage' ? 1.8670 : 1.5950;
 const silkW = W * 0.62;
 const silkH = silkW * RATIO;
 const rodR      = silkW * 0.0100;   // ≈12mm on a 60cm mount
-const rollerR   = silkW * 0.0250;   // ≈34mm roller
-const capLen    = silkW * 0.0600;   // ≈75mm knob
 const belly     = silkW * 0.0260;   // the sheet bellies off the wall
 
 const CY = 0;
@@ -72,102 +70,12 @@ const SILK_TOP = CY + silkH / 2;
 const SILK_BOT = CY - silkH / 2;
 
 /* ============ procedural surface detail ============ */
-/* Everything below is a real material cue that a photograph of a mounted
-   scroll carries and a clean cylinder does not: grain that runs along the
-   rod, a satin (not plastic) finish, paper tooth, and the shadow the mount
-   casts on its own roller. All of it is generated, so the bake stays
-   reproducible and the site ships no extra assets. */
+/* Everything below is generated, so the bake stays reproducible and the site
+   ships no extra assets beyond the two mount photographs. */
 function makeCanvas(w, h) {
   const c = document.createElement('canvas');
   c.width = w; c.height = h;
   return { c, ctx: c.getContext('2d') };
-}
-
-function rng(seed) {
-  let s = seed >>> 0;
-  return () => {
-    s ^= s << 13; s >>>= 0;
-    s ^= s >> 17;
-    s ^= s << 5; s >>>= 0;
-    return s / 4294967296;
-  };
-}
-
-/*
- * Wood grain for the ground roller.
- *
- * Cylinder UVs run u = around the barrel, v = along the axis, so grain lines
- * (which run down the length of a dowel) are constant-u lines. The first
- * version of this texture drew them the other way, with 1024 texels squeezed
- * across the ~80 visible pixels of the barrel — they averaged out into a
- * smooth airbrushed gradient, which is exactly how it rendered.
- *
- * So: X is the across-the-barrel axis and carries the fibre detail at a
- * density that survives the downscale; Y runs along the rod and is almost
- * constant. Albedo stays near-uniform mid walnut — the cylinder's shading is
- * the light's job, and baking a value ramp into the map is what made it look
- * like lacquered plastic rather than turning wood.
- */
-function woodGrainTexture() {
-  const { c, ctx } = makeCanvas(512, 32);
-  const rand = rng(20261120);
-  ctx.fillStyle = '#4a3122';
-  ctx.fillRect(0, 0, 512, 32);
-
-  /* ~28 fibres across the full circumference: ≈7 visible on the front face,
-     each a few screen pixels wide at display size. */
-  for (let i = 0; i < 28; i++) {
-    const x0 = rand() * 512;
-    const w = 2 + rand() * 9;
-    const dark = rand() > 0.42;
-    const g = ctx.createLinearGradient(x0 - w, 0, x0 + w, 0);
-    const peak = dark ? '18,11,7' : '122,88,58';
-    const alpha = dark ? 0.16 + rand() * 0.16 : 0.06 + rand() * 0.10;
-    g.addColorStop(0, `rgba(${peak},0)`);
-    g.addColorStop(0.5, `rgba(${peak},${alpha})`);
-    g.addColorStop(1, `rgba(${peak},0)`);
-    ctx.fillStyle = g;
-    ctx.fillRect(x0 - w, 0, w * 2, 32);
-  }
-
-  /* A few fine lengthwise scratches catch the key light as hairline lights. */
-  for (let i = 0; i < 6; i++) {
-    ctx.fillStyle = `rgba(196,150,102,${0.05 + rand() * 0.06})`;
-    ctx.fillRect(rand() * 512, 0, 0.8 + rand() * 0.9, 32);
-  }
-
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(1, 1);
-  return tex;
-}
-
-/*
- * Same fibre layout as a height map. Turned, waxed wood is not uniformly
- * rough: the late-wood rings sit slightly proud and hold a weak highlight
- * along the rod, and that broken highlight is the single strongest cue that
- * the object is a lathe-turned solid rather than an extruded tube.
- */
-function woodRoughnessTexture() {
-  const { c, ctx } = makeCanvas(512, 32);
-  const rand = rng(77123);
-  ctx.fillStyle = '#a8a8a8';   // ≈0.66 roughness baseline
-  ctx.fillRect(0, 0, 512, 32);
-  for (let i = 0; i < 28; i++) {
-    const x0 = rand() * 512;
-    const w = 2 + rand() * 9;
-    const g = ctx.createLinearGradient(x0 - w, 0, x0 + w, 0);
-    const v = rand() > 0.5 ? '196,196,196' : '86,86,86';
-    g.addColorStop(0, `rgba(${v},0)`);
-    g.addColorStop(0.5, `rgba(${v},0.55)`);
-    g.addColorStop(1, `rgba(${v},0)`);
-    ctx.fillStyle = g;
-    ctx.fillRect(x0 - w, 0, w * 2, 32);
-  }
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  return tex;
 }
 
 /* ============ mounted sheet ============ */
@@ -233,10 +141,10 @@ const sheetGeo = new THREE.PlaneGeometry(silkW, silkH, 96, 160);
  * bake read as a flat white board.
  *
  * So the sheet is drawn unlit and the only shading applied is what a sheet of
- * hanging paper actually carries: a gentle cross-falloff from the upper-left
- * light, the narrow occlusion right under the 天杆, and the heavier contact
- * with the 地杆 at the foot. That shading is multiplied into the pixels here
- * so it survives the downscale to 377px on screen.
+ * hanging paper actually carries: the form shading of its own curvature, the
+ * narrow occlusion right under the 天杆, and a soft lift where the bottom
+ * edge curls away from the wall. That shading is multiplied into the pixels
+ * here so it survives the downscale to 377px on screen.
  */
 function sheetTexture(img) {
   const W0 = img.width, H0 = img.height;
@@ -290,8 +198,8 @@ function sheetTexture(img) {
    * An unlit, unshaded plane reads as a sticker no matter how good its silk
    * is: a hanging sheet curves, and the eye uses the resulting brightness
    * change to place it in space. So the normal is derived per pixel from
-   * sheetDisplacement() and multiplied into the photograph against the same
-   * upper-left key the rods are lit by.
+   * sheetDisplacement() and multiplied into the photograph against the
+   * upper-left key the shadow and the 天杆 both agree on.
    */
   ctx.globalCompositeOperation = 'multiply';
   {
@@ -348,16 +256,6 @@ function sheetTexture(img) {
   rodOcc.addColorStop(1, 'rgb(255,255,255)');
   ctx.fillStyle = rodOcc;
   ctx.fillRect(0, 0, W, H * 0.045);
-
-  /* The 地杆 is heavy and the paper wraps over it, so the contact is darker,
-     warmer, and reaches a little further up than the top bar does. */
-  const rollOcc = ctx.createLinearGradient(0, H, 0, H * 0.935);
-  rollOcc.addColorStop(0.00, 'rgb(150,141,126)');
-  rollOcc.addColorStop(0.22, 'rgb(196,187,171)');
-  rollOcc.addColorStop(0.58, 'rgb(238,233,223)');
-  rollOcc.addColorStop(1.00, 'rgb(255,255,255)');
-  ctx.fillStyle = rollOcc;
-  ctx.fillRect(0, H * 0.935, W, H * 0.065);
 
   /* A faint bottom-corner lift on each side: the sheet relaxes away from the
      wall at the very bottom, so those few millimetres sit in their own light. */
@@ -497,168 +395,28 @@ topRod.receiveShadow = true;
 scene.add(topRod);
 syncBarTone();
 
-/* ============ 地杆 : the roller ============ */
 /*
- * A real 地杆 is a turned wooden dowel with the mount pasted around it, so
- * three things matter visually: the paper meets the rod (no floating gap),
- * the wood grain runs along the axis and catches the key light unevenly, and
- * the finish is satin lacquer rather than a mirror cylinder.
- */
-const grainMap = woodGrainTexture();
-grainMap.repeat.set(1, 1);
-const grainRough = woodRoughnessTexture();
-grainRough.repeat.set(1, 1);
-
-const rollerMat = new THREE.MeshPhysicalMaterial({
-  /* The wood colour lives in the map; tinting it again turned the grain into
-     a flat bar. Dark theme simply multiplies the same map down. */
-  color: new THREE.Color(light ? '#ffffff' : '#5a4a3a'),
-  map: grainMap,
-  roughnessMap: grainRough,
-  /* Satin wax, not lacquer: at 0.45 the crown highlight was a hard white
-     stripe that read as plastic tubing. */
-  roughness: 0.72,
-  metalness: 0,
-  clearcoat: 0.03,
-  clearcoatRoughness: 0.88,
-  sheen: 0.04,
-  sheenRoughness: 0.9,
-  sheenColor: new THREE.Color(light ? '#b98f63' : '#4a3a28'),
-  bumpMap: grainRough,
-  bumpScale: 0.006,
-});
-
-/* The mount is pasted round the rod: the rod's crown sits inside the paper
-   edge instead of hanging below it with a gap. */
-const rollerY = SILK_BOT - rollerR * 0.62;
-const rollerZ = rollerR * 0.22;
-const rollerLen = silkW + rollerR * 1.1;
-
-/*
- * A turned dowel is never a perfect cylinder: it carries a shallow barrel and
- * a slight taper at each end. That irregularity is what lets the highlight
- * travel along the rod instead of sitting as one flat stripe.
- */
-function rollerProfile(r, len) {
-  const pts = [];
-  const N = 40;
-  for (let i = 0; i <= N; i++) {
-    const t = i / N;
-    const y = (t - 0.5) * len;
-    const barrel = 1 + 0.016 * (1 - Math.pow((t - 0.5) * 2, 2));
-    const taper = 1 - 0.045 * Math.pow(Math.abs(t - 0.5) * 2, 6);
-    pts.push(new THREE.Vector2(Math.max(r * barrel * taper, 0.2), y));
-  }
-  return pts;
-}
-
-const roller = new THREE.Mesh(
-  new THREE.LatheGeometry(rollerProfile(rollerR, rollerLen), 128),
-  rollerMat
-);
-roller.rotation.z = Math.PI / 2;
-roller.position.set(0, rollerY, rollerZ);
-roller.castShadow = true;
-roller.receiveShadow = true;
-scene.add(roller);
-
-/* ============ 轴头 : turned end knobs ============ */
-/*
- * Bone/ivory 轴头: a collar where it meets the rod, a short barrel, and a
- * rounded end. Matte, warm, and slightly translucent at the rim — the old
- * profile tapered to a point and read as a plastic crayon.
- */
-/*
- * The knobs are drawn unlit, for the same reason the 天杆 is: under the scene
- * key they picked up the warm key on top of an already-warm albedo and landed
- * at brass. Bone is a cool grey-white, so the tone is painted directly.
+ * Deliberately no 地杆.
  *
- * Shading cannot come from a texture gradient on a lathe — the UV axis runs
- * along the profile, so any u-gradient ramps front-to-back across the cap and
- * reads as a smeared smear rather than a lit cylinder. Instead each vertex is
- * shaded from its own normal in world space, which is exact at any scale.
+ * The roller and its bone end knobs were the most literal, least convincing
+ * part of the composite at display size — a lacquered dowel reads as plastic
+ * long before the eye accepts it as a wooden fitting. The mount now ends in a
+ * bare paper edge, so the sheet's own silhouette and its soft cast shadow do
+ * the work, and the frame holds nothing that has to be a cylinder.
  */
-const BONE = light ? new THREE.Color('#b9b4a9') : new THREE.Color('#5f574a');
-
-function shadeByNormal(geo, base) {
-  const n = geo.attributes.normal;
-  const colors = new Float32Array(n.count * 3);
-  for (let i = 0; i < n.count; i++) {
-    const nx = n.getX(i), ny = n.getY(i);
-    /* Key sits high and to the left, so the crown is the brightest zone and
-       the underside keeps only wall bounce. */
-    const lit = Math.max(0, ny) * 0.74 + Math.max(0, -nx) * 0.12;
-    const k = 0.60 + 0.66 * Math.pow(lit, 0.75);
-    colors[i * 3] = base.r * k;
-    colors[i * 3 + 1] = base.g * k;
-    colors[i * 3 + 2] = base.b * k;
-  }
-  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  return geo;
-}
-
-const knobMat = new THREE.MeshBasicMaterial({
-  vertexColors: true,
-  toneMapped: false,
-});
-
-/*
- * 轴头: a bone cylinder a little fatter than the rod, with a small step where
- * it butts on, and a flat face with a slight round-over. The old profile
- * flared out then tapered to a dome, which is a knob shape from furniture,
- * not a scroll fitting.
- */
-function capProfile(r, len) {
-  const pts = [new THREE.Vector2(0.0001, 0)];
-  const N = 72;
-  for (let i = 0; i <= N; i++) {
-    const t = i / N;
-    let shape;
-    if (t < 0.035) {
-      /* step out from the rod: a near-vertical collar face */
-      shape = 1.12 + 0.10 * (t / 0.035);
-    } else if (t < 0.10) {
-      /* small chamfer off the collar */
-      shape = 1.22 - 0.03 * ((t - 0.035) / 0.065);
-    } else if (t < 0.88) {
-      /* straight barrel, a hair of taper toward the tip */
-      shape = 1.19 - 0.02 * ((t - 0.10) / 0.78);
-    } else if (t < 0.96) {
-      /* round-over onto the end face */
-      const u = (t - 0.88) / 0.08;
-      shape = 1.17 - 0.035 * u * u;
-    } else {
-      /* flat end face, pulled in slightly */
-      shape = 1.135 * (1 - 0.15 * ((t - 0.96) / 0.04));
-    }
-    pts.push(new THREE.Vector2(Math.max(r * shape, 0.3), t * len));
-  }
-  pts.push(new THREE.Vector2(0.0001, len));
-  return pts;
-}
-
-const capLen2 = capLen * 1.15;
-for (const sgn of [-1, 1]) {
-  /* Rotate the geometry itself (rather than the mesh) so the normals used for
-     the shading are already in world orientation: +Y is up, -X is toward the
-     key light. */
-  const capGeo = new THREE.LatheGeometry(capProfile(rollerR, capLen2), 96);
-  capGeo.rotateZ(sgn > 0 ? -Math.PI / 2 : Math.PI / 2);
-  shadeByNormal(capGeo, BONE);
-  const cap = new THREE.Mesh(capGeo, knobMat);
-  cap.position.set(sgn * (rollerLen / 2 - rollerR * 0.02), rollerY, rollerZ);
-  cap.castShadow = true;
-  cap.receiveShadow = true;
-  scene.add(cap);
-}
 
 /* shadow is added in CSS via drop-shadow; the bake keeps a transparent background */
 
 /* ============ camera: near-orthographic, like a museum plate ============ */
 const topB  = SILK_TOP + rodR * 3.2;
-const botB  = rollerY - rollerR * 1.55;
+/*
+ * With the 地杆 gone the frame is bounded by the sheet itself. A hair of
+ * extra room below keeps the bottom edge from sitting on the pixel boundary,
+ * where the WebP's soft alpha would get clipped.
+ */
+const botB  = SILK_BOT - silkW * 0.012;
 const spanH = topB - botB;
-const totalW = silkW + 2 * (capLen + rollerR * 0.7);
+const totalW = silkW;
 
 /* pad the tight bounds so the object never touches the frame edge */
 const padY = spanH * 0.045;

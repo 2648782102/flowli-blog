@@ -91,7 +91,7 @@ html:root {
  */
 html:root {
     --home-column: 52rem;
-    --home-gutter: 2rem;
+    --wall-edge: 2rem;
     --wall-height: 0px;
 }
 
@@ -102,18 +102,29 @@ html:root {
          * the column then grows with the viewport and stops at 60rem.
          */
         --home-column: clamp(44rem, 100vw - 68rem, 60rem);
-        --home-gutter: clamp(1.25rem, 2.2vw, 4rem);
         /*
-         * One shared height for both scrolls, so their lower rollers line up
-         * on the same horizontal; each mount then keeps its own aspect ratio.
+         * The scrolls live in the free strip between the column and the
+         * screen edge, and are centred in it rather than pushed up against
+         * the column — that is what makes them read as hung on the wall
+         * instead of crowding the text. --wall-edge is the least margin
+         * kept at the screen edge.
+         */
+        --home-free: calc((100vw - var(--home-column)) / 2);
+        --wall-edge: clamp(1rem, 1.6vw, 3rem);
+        --wall-gap: clamp(1.5rem, 3vw, 4rem);
+        /*
+         * One shared height for both scrolls, so their lower edges line up on
+         * the same horizontal; each mount then keeps its own aspect ratio.
          * The height is the smallest of: a fraction of the column, ~62% of
-         * the viewport, and whatever still fits in the free gutter (×1.45
-         * converts the widest mount's width — ≈0.69 w/h — back into height).
+         * the viewport, and whatever is left of the free strip once the edge
+         * margin and a comfortable gap off the column are both taken out.
+         * 0.61 is the wider mount's width/height (900×1475), so the scroll
+         * never intrudes on the text.
          */
         --wall-height: min(
-            calc(var(--home-column) * 0.66),
+            calc(var(--home-column) * 0.62),
             62vh,
-            calc(((100vw - var(--home-column)) / 2 - var(--home-gutter) - clamp(1.5rem, 3.2vw, 6rem)) * 1.45)
+            calc((var(--home-free) - var(--wall-edge) - var(--wall-gap)) / 0.61)
         );
     }
 }

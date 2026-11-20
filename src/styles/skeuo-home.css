@@ -68,12 +68,19 @@
         height: var(--wall-height);
     }
 
+    /*
+     * The two mounts have different aspect ratios, so their rendered widths
+     * differ and no single calc can centre both in the free strip. Pinning
+     * each to its own screen edge with --wall-edge as the margin pushes them
+     * as far out as the strip allows, and keeps the left and right margins
+     * identical — the reading that matters when they flank a page.
+     */
     #content-wrapper .home-composition > .wall-art--left {
-        right: calc(50% + (var(--home-column) / 2) + var(--home-gutter));
+        left: var(--wall-edge);
     }
 
     #content-wrapper .home-composition > .wall-art--right {
-        left: calc(50% + (var(--home-column) / 2) + var(--home-gutter));
+        right: var(--wall-edge);
     }
 
     /* Below ~1400px the gutters are tight: captions would wrap, so show the
