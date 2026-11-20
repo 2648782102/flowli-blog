@@ -44,7 +44,7 @@
 }
 
 #archive-index .archive-row:hover {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
+    background: var(--mat-surface) !important;
     box-shadow: var(--shadow-raised) !important;
 }
 
@@ -79,7 +79,7 @@
 
 #editorial-sidebar-rail #categories-middle button:hover,
 #editorial-sidebar-rail #tags-middle a:hover {
-    background: linear-gradient(180deg, var(--mat-surface-raised), var(--mat-surface)) !important;
+    background: var(--mat-surface) !important;
     box-shadow: var(--shadow-raised) !important;
 }
 

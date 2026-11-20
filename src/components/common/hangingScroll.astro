@@ -28,8 +28,10 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
     /*
      * A physically rendered hanging scroll, baked from a Three.js scene.
      * The silk damask and painting are a public-domain museum photograph of
-     * the real mount; the rods, knobs and curvature are rendered geometry
-     * lit from the upper left. The page only displays a transparent WebP.
+     * the real mount. The sheet and its silk-wrapped 天杆 are drawn unlit —
+     * the photograph already carries gallery light — so only curvature
+     * shading is multiplied in. There is deliberately no 地杆. The page only
+     * displays a transparent WebP; depth comes from the shadows below.
      */
     .hanging-scroll {
         position: relative;

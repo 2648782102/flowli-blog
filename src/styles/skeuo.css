@@ -237,25 +237,6 @@ html:root.dark .scroll-edge {
         0 6px 18px -6px rgb(0 0 0 / 0.45) !important;
 }
 
-/*
- * The sheet's left edge curls under. The curl is a baked, tileable material
- * (lit crown, shadowed cut edge, cast shadow) so it never reads as a bar.
- */
-.scroll-edge::before {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    inset: 0 auto 0 -0.05rem;
-    width: clamp(2.1rem, 4.4vw, 2.6rem);
-    background: url("/flowli-blog/assets/scroll/curl-left-light.png") left top / 100% 480px repeat-y;
-    opacity: 0.96;
-    pointer-events: none;
-}
-
-html:root.dark .scroll-edge::before {
-    background-image: url("/flowli-blog/assets/scroll/curl-left-dark.png");
-}
-
 .scroll-edge > * {
     position: relative;
     z-index: 1;
@@ -391,9 +372,8 @@ html:root {
     }
 }
 
-@media (prefers-contrast: more) {
-    :is(.mat-paper, .mat-enamel, .mat-float, .mat-metal) {
-        outline: 1px solid currentColor;
-        outline-offset: -1px;
-    }
-}
+/*
+ * The high-contrast rule lives in skeuo-materials.css, next to the selectors
+ * that actually assign material. It used to target the .mat-* utility classes
+ * here, but no markup uses them, so it never applied.
+ */

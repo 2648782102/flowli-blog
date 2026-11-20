@@ -172,7 +172,7 @@ onMount(() => {
 
     .menu__item:hover {
         background-color: var(--enamel, #f3f1ec);
-        background-image: linear-gradient(180deg, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.15));
+        background-image: none;
         box-shadow: var(--lift-1, none);
         color: var(--ink);
     }
@@ -204,14 +204,6 @@ onMount(() => {
             rgb(255 255 255 / 0) 2.5rem
         );
         outline-color: rgb(255 255 255 / 0.09);
-    }
-
-    :global(html:root.dark) .menu__item:hover {
-        background-image: linear-gradient(
-            180deg,
-            rgb(255 255 255 / 0.09),
-            rgb(255 255 255 / 0.02)
-        );
     }
 
     @keyframes menu-settle {

@@ -50,7 +50,7 @@
     height: 1.65rem;
     border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
     border-radius: 0.4rem;
-    background: linear-gradient(180deg, #fff, #e5e9ef);
+    background: var(--enamel);
     color: var(--accent, #2b4a72);
     font-family: var(--editorial-serif, serif);
     font-size: 0.95rem;
@@ -107,7 +107,8 @@
 
 .site-header__link.is-active {
     color: var(--ink);
-    background: linear-gradient(180deg, #dfe4ea, #eef1f5);
+    /* Pressed into the rail: a veil of the local ink, not a filled pill. */
+    background: color-mix(in srgb, var(--ink) 9%, transparent);
     box-shadow:
         0 1px 2px rgb(0 0 0 / 0.14) inset,
         0 -1px 0 rgb(255 255 255 / 0.7) inset;
@@ -389,13 +390,25 @@ html:root.dark .site-header {
 }
 
 html:root.dark .site-header__mark {
-    background: linear-gradient(180deg, #3a444f, #2a323b);
+    background: var(--enamel);
     border-color: rgb(255 255 255 / 0.14);
     color: rgb(180 205 235);
 }
 
+/*
+ * High contrast lives here rather than in skeuo-materials.css: this file
+ * loads after it, so a rule of equal specificity would lose on source order.
+ * --hc-edge is set by the prefers-contrast block in skeuo-materials.css.
+ */
+@media (prefers-contrast: more) {
+    .site-header,
+    html:root.dark .site-header {
+        border-bottom-color: var(--hc-edge);
+    }
+}
+
 html:root.dark .site-header__link.is-active {
-    background: linear-gradient(180deg, #171d24, #242c35);
+    background: rgb(0 0 0 / 0.34);
     box-shadow:
         0 1px 3px rgb(0 0 0 / 0.6) inset,
         0 -1px 0 rgb(255 255 255 / 0.05) inset;

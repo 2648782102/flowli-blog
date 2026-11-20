@@ -1,8 +1,13 @@
 /*
- * Generates the paper scroll-edge assets used by .scroll-edge:
- *   paper-{light,dark}.png     neutral, tileable sheet texture
+ * Generates the paper assets under public/assets/scroll/:
+ *   paper-{light,dark}.png     neutral, tileable sheet texture — used by
+ *                              .scroll-edge
  *   curl-left-{light,dark}.png tileable left-edge curl (lit crest, cut edge,
- *                              fold line, cast shadow on the flat sheet)
+ *                              fold line, cast shadow on the flat sheet).
+ *                              No longer referenced: the curl read as a grey
+ *                              bar in dark mode, so .scroll-edge is now a
+ *                              flat sheet with no rolled edge. Kept so the
+ *                              material stays reproducible if it returns.
  *
  * The hanging scrolls on the homepage no longer use CSS material textures;
  * they are physically rendered and baked by scripts/bake-scroll/.
