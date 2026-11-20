@@ -121,10 +121,15 @@ body {
 }
 
 /* ---------- 5. Single-column pages ---------- */
-#swup-container[data-layout="home"] #content-wrapper,
+#swup-container[data-layout="home"] #content-wrapper {
+    width: 100%;
+    max-width: var(--home-column);
+    margin-inline: auto;
+}
+
 #swup-container[data-layout="reading"] #content-wrapper {
     width: 100%;
-    max-width: 52rem;
+    max-width: 46rem;
     margin-inline: auto;
 }
 

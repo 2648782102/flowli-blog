@@ -54,7 +54,7 @@
 }
 
 #swup-container[data-layout="home"] #content-wrapper {
-    max-width: 52rem;
+    max-width: var(--home-column);
     margin-inline: auto;
 }
 
