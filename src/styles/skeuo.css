@@ -83,8 +83,8 @@ html:root {
      * #f2ecd7 is L* 93.4 against the paper's 95.5 — a 2-level step, enough to
      * catch the cast shadow, not enough to read as a different material.
      */
-    --desk: #eee9d6;
-    --desk-deep: #e4dec7;
+    --desk: #ede9df;
+    --desk-deep: #e2ddd1;
 
     /*
      * Paper: warm ivory stock, the dominant material.
@@ -104,8 +104,8 @@ html:root {
      * The texture tile multiplies this by ~0.993, so it renders around
      * #f7f1dd — the palette value, minus a hair for the tooth.
      */
-    --paper-stock: #f7f3e4;
-    --paper-stock-warm: #f3edda;
+    --paper-stock: #f7f3e9;
+    --paper-stock-warm: #f1ede1;
     --paper-fibre: rgb(120 100 70 / 0.016);
 
     /*
@@ -118,8 +118,8 @@ html:root {
      * into the same family — still the cooler end, no longer a different
      * colour — at R−B 15.
      */
-    --enamel: #f5f1df;
-    --enamel-deep: #e8e2cc;
+    --enamel: #f5f1e7;
+    --enamel-deep: #e7e2d6;
 
     /* Metal: brushed aluminium for the header rail. */
     --metal-hi: #f4f6f8;
