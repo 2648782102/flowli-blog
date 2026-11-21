@@ -78,13 +78,13 @@ html:root {
      * to separate two planes, which is technically correct but reads as grey
      * board with white paper on it — and that is the "wrong" feeling.
      *
-     * So: desk returns to the paper's value and hue, slightly warmer and two
-     * levels down so the sheet still separates without going grey. #f4f1e8 is
-     * L* 95.6 against the paper's 98.6 — a 3-level step, enough to catch the
-     * cast shadow, not enough to read as a different material.
+     * So: desk returns to the paper's value and hue, slightly warmer and a
+     * level or two down so the sheet still separates without going grey.
+     * #f2ecd7 is L* 93.4 against the paper's 95.5 — a 2-level step, enough to
+     * catch the cast shadow, not enough to read as a different material.
      */
-    --desk: #f4f1e8;
-    --desk-deep: #eae6db;
+    --desk: #f2ecd7;
+    --desk-deep: #e9e1c8;
 
     /*
      * Paper: warm ivory stock, the dominant material.
@@ -95,16 +95,31 @@ html:root {
      * which lost the warmth and, together with the darker desk, produced the
      * "grey board with white cards" look.
      *
-     * The texture tile multiplies this value by ~0.993, so it renders around
-     * #f5f3ee — the palette value, minus a hair for the tooth.
+     * Warmth, not brightness, is what makes this read as paper. #f6f4ef had
+     * R−B of 7 — technically ivory, but at 96 L* it is close enough to white
+     * that the tint stops registering. #f8f2df keeps the same value (L* 95.5)
+     * and raises the tint to R−B 25, which is the "warm yellow paper" the
+     * page is supposed to be.
+     *
+     * The texture tile multiplies this by ~0.993, so it renders around
+     * #f7f1dd — the palette value, minus a hair for the tooth.
      */
-    --paper-stock: #f6f4ef;
-    --paper-stock-warm: #f1eee5;
+    --paper-stock: #f8f2df;
+    --paper-stock-warm: #f4ecd5;
     --paper-fibre: rgb(120 100 70 / 0.016);
 
-    /* Enamel: coated panels — smooth, slightly cool, high specular. */
-    --enamel: #f3f1ec;
-    --enamel-deep: #e6e4de;
+    /*
+     * Enamel: coated panels — smooth, high specular.
+     *
+     * Kept slightly *cooler* than the paper on purpose: a coated panel next to
+     * matte stock should read as a different finish, and a small hue shift is
+     * the cheapest way to say that. But it was #f3f1ec (R−B 7) against a now
+     * much warmer sheet, which read as a cold grey card on warm paper. Toned
+     * into the same family — still the cooler end, no longer a different
+     * colour — at R−B 15.
+     */
+    --enamel: #f6f0e0;
+    --enamel-deep: #ebe4d2;
 
     /* Metal: brushed aluminium for the header rail. */
     --metal-hi: #f4f6f8;
