@@ -12,7 +12,6 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"new-post": "node scripts/new-post.js",
-		"bake:scroll": "node scripts/bake-scroll/bake.mjs",
 		"visual:baseline": "node scripts/visual-check.mjs --update",
 		"visual:check": "node scripts/visual-check.mjs"
 	},
