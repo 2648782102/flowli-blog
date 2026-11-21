@@ -26,69 +26,12 @@
     max-width: 62ch;
 }
 
-/*
- * Study wall: two mounted ink scrolls flank the reading column.
- * Both scrolls share one height and keep their own aspect ratio (the two
- * source mounts differ), so they read as a matched pair hanging on the wall.
- * Height, column and gutter all come from the same tokens in theme.css:
- * each scroll is a fixed fraction of the reading column, so the composition
- * looks identical at 1080p, 1440p and 4K. They are pinned to the viewport and
- * stay put while the column scrolls; below 1240px the side gutters are too
- * narrow and they hide.
- */
-.wall-art {
-    display: none;
-}
-
-@media (min-width: 1240px) {
-    /* The column centres itself; the scrolls are pinned to the viewport. */
-    #swup-container[data-layout="home"] #content-wrapper {
-        max-width: none;
-    }
-
-    /* Column width comes from one token shared by every home rule. */
-    #content-wrapper .home-composition {
-        position: relative;
-        max-width: var(--home-column);
-        margin-inline: auto;
-    }
-
-    #content-wrapper .home-composition > .wall-art {
-        display: block;
-        position: fixed;
-        top: clamp(6rem, 9vh, 7.5rem);
-        margin: 0;
-        pointer-events: none;
-    }
-
-    #content-wrapper .home-composition > .wall-art img {
-        display: block;
-        width: auto;
-        height: var(--wall-height);
-    }
-
-    /*
-     * The two mounts have different aspect ratios, so their rendered widths
-     * differ and no single calc can centre both in the free strip. Each is
-     * offset from its own screen edge by --wall-edge + --wall-pull, which
-     * keeps the left and right margins identical while holding the pair back
-     * off the bezel instead of pressing against it.
-     */
-    #content-wrapper .home-composition > .wall-art--left {
-        left: calc(var(--wall-edge) + var(--wall-pull));
-    }
-
-    #content-wrapper .home-composition > .wall-art--right {
-        right: calc(var(--wall-edge) + var(--wall-pull));
-    }
-
-    /* Below ~1400px the gutters are tight: captions would wrap, so show the
-       museum credit on hover instead of stacking it into three lines. */
-    @media (max-width: 1439px) {
-        #content-wrapper .home-composition > .wall-art .hanging-scroll__credit {
-            display: none;
-        }
-    }
+/* The reading column is one element on the desk now: no flanking mounts, so
+   the column keeps its own max-width at every width. */
+#content-wrapper .home-composition {
+    position: relative;
+    max-width: var(--home-column);
+    margin-inline: auto;
 }
 
 

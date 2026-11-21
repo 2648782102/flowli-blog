@@ -130,28 +130,6 @@ const MATERIAL_CHECKS = [
         })()`,
     },
     {
-        name: "fixed wall scrolls are not trapped by an animated ancestor",
-        // An animated `filter` on #content-wrapper made it a containing block
-        // for position:fixed and the scrolls landed on the article text.
-        js: `(() => {
-            const art = document.querySelector(".wall-art");
-            if (!art) return null;
-            let el = art.parentElement;
-            while (el && el !== document.body) {
-                for (const pseudo of [null, "::before", "::after"]) {
-                    const cs = getComputedStyle(el, pseudo);
-                    if (cs.animationName !== "none" || cs.filter !== "none" || cs.transform !== "none") {
-                        return "ancestor " + el.className.split(" ")[0] + " has " +
-                            [cs.animationName !== "none" && "animation", cs.filter !== "none" && "filter", cs.transform !== "none" && "transform"]
-                                .filter(Boolean).join("+");
-                    }
-                }
-                el = el.parentElement;
-            }
-            return null;
-        })()`,
-    },
-    {
         name: "reduced motion actually stops scroll-linked effects",
         reducedMotion: true,
         /*
@@ -172,26 +150,6 @@ const MATERIAL_CHECKS = [
             if (cs.animationName !== "none") return "still animating: " + cs.animationName;
             const rest = cs.getPropertyValue("--sheet-catch").trim();
             if (rest !== "1") return "--sheet-catch is " + rest + ", should rest at 1";
-            return null;
-        })()`,
-    },
-    {
-        name: "above-the-fold art is not lazy-loaded",
-        /*
-         * Both wall scrolls are visible at ≥1240px and are the heaviest images
-         * on the page. They shipped `loading="lazy"`, which makes the browser
-         * defer the request until layout is known — precisely the case where
-         * lazy is worse than eager. Measured, the right-hand mount started
-         * loading at 1191ms simply because it sits late in the document.
-         *
-         * A screenshot cannot catch this (the image eventually arrives), so it
-         * needs asserting on the attribute.
-         */
-        js: `(() => {
-            const arts = [...document.querySelectorAll(".hanging-scroll__art img")];
-            if (!arts.length) return null;
-            const lazy = arts.filter((a) => a.loading === "lazy");
-            if (lazy.length) return lazy.length + " of " + arts.length + " wall images still loading=lazy";
             return null;
         })()`,
     },

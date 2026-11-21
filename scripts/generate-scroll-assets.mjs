@@ -9,9 +9,6 @@
  *                              flat sheet with no rolled edge. Kept so the
  *                              material stays reproducible if it returns.
  *
- * The hanging scrolls on the homepage no longer use CSS material textures;
- * they are physically rendered and baked by scripts/bake-scroll/.
- *
  * Rendered deterministically so the material stays stable across machines.
  * Run with: node scripts/generate-scroll-assets.mjs
  */
