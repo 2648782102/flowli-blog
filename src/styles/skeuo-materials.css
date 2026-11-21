@@ -629,3 +629,79 @@ html:root.dark .flowli-footer {
         outline-offset: -1px;
     }
 }
+
+/* ==========================================================================
+   Forced colours (Windows high-contrast themes)
+   ==========================================================================
+
+   Under `forced-colors: active` the browser replaces every author colour with
+   the system palette. Measured with the media feature emulated: desk, paper,
+   header and cards all resolve to `rgb(255, 255, 255)` with zero borders. The
+   entire material system — the thing this site is built on — collapses into
+   one white page, and none of the elevation cues survive.
+
+   `prefers-contrast: more` above does not help here: it is a different media
+   feature, and a normal-contrast user on a forced-colours theme never matches
+   it.
+
+   The fix is the one the platform asks for: stop trying to paint, and let
+   system colours carry structure. Keep the *shapes* — the 1px cut edges, the
+   hairlines between rows — and express them as `CanvasText` borders, which the
+   UA maps to the user's chosen foreground. Depth is lost, which is correct:
+   in this mode legibility beats tactility, and the edges are what make a
+   stack of sheets readable at all.
+   ========================================================================== */
+@media (forced-colors: active) {
+    /*
+     * Nothing here should draw its own material. `forced-color-adjust: none`
+     * is deliberately *not* used — opting out of the system palette to keep
+     * the paper texture would give a user who asked for high contrast the
+     * exact opposite.
+     */
+    .site-header,
+    .scroll-edge,
+    .btn-card,
+    .btn-regular,
+    .menu-card,
+    .album-card,
+    .skill-card,
+    .project-card,
+    .timeline-card,
+    .moment-item,
+    #post-container,
+    #content-wrapper > .card-base,
+    #content-wrapper > .onload-animation-up > .card-base,
+    #translate-panel,
+    #search-panel,
+    #light-dark-panel > .card-base {
+        border: 1px solid CanvasText;
+    }
+
+    /*
+     * Recesses are the one place where direction matters more than colour: a
+     * code block or a quote must still read as *inside* the sheet. A dashed
+     * edge at the same colour says "this boundary is not a raised object"
+     * without needing a second colour to be available.
+     */
+    #post-container :is(pre, .expressive-code, blockquote, table),
+    #post-container .license-container {
+        border: 1px dashed CanvasText;
+    }
+
+    /* The pressed/raised distinction was carried by shadow and translate;
+       under forced colours keep the translate (it survives) and drop the
+       shadow, which the UA discards anyway. */
+    .site-header {
+        border-width: 0 0 1px;
+    }
+
+    /*
+     * The featured CTA loses its fill in this mode (the UA flattens every
+     * background to the canvas colour), so it stops reading as a button and
+     * starts reading as a link. An explicit border restores the affordance;
+     * LinkText keeps the colour the user has already told their OS is legible.
+     */
+    .featured-cta {
+        border: 1px solid LinkText;
+    }
+}

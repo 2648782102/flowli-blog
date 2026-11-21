@@ -205,6 +205,33 @@ const MATERIAL_CHECKS = [
         })()`,
     },
     {
+        name: "forced-colours mode keeps surfaces distinguishable",
+        /*
+         * In forced-colours mode the UA replaces every author colour with the
+         * system palette, and this site's whole design is colour-coded depth.
+         * Measured before the fix: desk, paper, header and every card resolved
+         * to rgb(255,255,255) with zero borders — one undifferentiated white
+         * page.
+         *
+         * Structure has to be carried by borders instead. This asserts the two
+         * things that make the page navigable there: the sheet has a visible
+         * edge, and the header rail is separated from the content.
+         */
+        forcedColors: true,
+        js: `(() => {
+            const plate = document.querySelector(".featured-plate, #post-container");
+            const header = document.querySelector(".site-header");
+            if (!plate) return "no sheet surface";
+            const p = getComputedStyle(plate);
+            if (parseFloat(p.borderTopWidth) === 0) return "sheet has no edge in forced-colours mode";
+            if (header) {
+                const h = getComputedStyle(header);
+                if (parseFloat(h.borderBottomWidth) === 0) return "header has no separator in forced-colours mode";
+            }
+            return null;
+        })()`,
+    },
+    {
         name: "surface ladder is monotonic and separated",
         /*
          * The material system only works if the four planes read as four
@@ -444,7 +471,7 @@ function connect(wsUrl) {
  * the same page with the freeze still applied, and only the *behavioural*
  * checks (transition duration) temporarily clear it.
  */
-async function loadState(url, theme) {
+async function loadState(url, theme, extraFeatures = []) {
     const target = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/new?about:blank`, { method: "PUT" })).json();
     const tab = connect(target.webSocketDebuggerUrl);
     await tab.ready;
@@ -456,6 +483,7 @@ async function loadState(url, theme) {
             { name: "prefers-color-scheme", value: theme },
             /* Pin motion so a reviewer's OS setting cannot change the baseline. */
             { name: "prefers-reduced-motion", value: "reduce" },
+            ...extraFeatures,
         ],
     });
     /*
@@ -510,10 +538,21 @@ async function closeTab(targetId) {
     }
 }
 
-async function assertMaterials(tab, checks) {
-    /* Behavioural checks need motion on; structural ones do not care. */
+async function assertMaterials(tab, checks, extraFeatures = []) {
+    /*
+     * Union with the features the page was loaded under.
+     *
+     * `setEmulatedMedia` replaces the whole feature list rather than merging,
+     * so the previous version of this function silently dropped
+     * `forced-colors` and then asserted forced-colours behaviour on a page
+     * that was no longer in that mode — the check failed while the CSS was
+     * correct. Pass through whatever the caller set.
+     */
     await tab.send("Emulation.setEmulatedMedia", {
-        features: [{ name: "prefers-reduced-motion", value: "no-preference" }],
+        features: [
+            { name: "prefers-reduced-motion", value: "no-preference" },
+            ...extraFeatures,
+        ],
     });
     const failures = [];
     for (const check of checks) {
@@ -617,7 +656,9 @@ async function main() {
             for (const state of STATES) {
                 const name = `${state.name}-${theme}.webp`;
                 const target = path.join(runDir, name);
-                const checks = MATERIAL_CHECKS.filter((c) => !c.only || c.only.includes(theme));
+                const checks = MATERIAL_CHECKS.filter(
+                    (c) => (!c.only || c.only.includes(theme)) && !c.forcedColors,
+                );
                 const url = `http://127.0.0.1:${PORT}${PREFIX}${state.path}`;
 
                 const { tab, targetId } = await loadState(url, theme);
@@ -681,6 +722,34 @@ async function main() {
                     console.log(`  ok       ${name}  ${pct}%`);
                 }
             }
+        }
+
+        /*
+         * Forced-colours pass.
+         *
+         * No screenshot comparison: the system palette is the point, so pixel
+         * output legitimately differs between platforms and would make a
+         * meaningless baseline. What must hold is that structure survives.
+         */
+        const forcedChecks = MATERIAL_CHECKS.filter((c) => c.forcedColors);
+        if (forcedChecks.length) {
+            const { tab, targetId } = await loadState(
+                `http://127.0.0.1:${PORT}${PREFIX}/`,
+                "light",
+                [{ name: "forced-colors", value: "active" }],
+            );
+            try {
+                for (const failure of await assertMaterials(tab, forcedChecks, [
+                    { name: "forced-colors", value: "active" },
+                ])) {
+                    console.log(`  ASSERT   forced-colours  ${failure}`);
+                    failed++;
+                }
+            } finally {
+                tab.ws.close();
+                await closeTab(targetId);
+            }
+            if (failed === 0) console.log("  ok       forced-colours  structure preserved");
         }
     } finally {
         proc.kill();
