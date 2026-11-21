@@ -272,12 +272,24 @@ const MATERIAL_CHECKS = [
                 }
             }
 
-            /* Only enforce a floor. Light mode runs at 12.2 and has always
-               looked right; the failure this guards against is dark mode
-               collapsing toward the desk (it used to be 5.4). */
-            const step = Math.abs(L(parse(tok("--paper-stock"))) - L(parse(tok("--desk"))));
-            if (step < 8) {
-                return "desk→paper is only " + step.toFixed(1) + " L*, needs at least 8";
+            /*
+             * A minimum separation is only required in dark mode.
+             *
+             * Light mode is deliberately almost flat: the page is one warm
+             * sheet and the depth comes from card edges and their shadows. The
+             * old palette ran desk 95.1 / paper 96.2 — ΔL* 1.1 — and that is
+             * what reads as paper; forcing 8 there reproduces exactly the grey
+             * board the design is meant to avoid.
+             *
+             * Dark mode is the opposite problem: on a near-black page two
+             * planes genuinely need value separation or they merge, and it
+             * used to sit at 5.4.
+             */
+            if (dark) {
+                const step = L(parse(tok("--paper-stock"))) - L(parse(tok("--desk")));
+                if (step < 8) {
+                    return "dark desk→paper is only " + step.toFixed(1) + " L*, needs at least 8";
+                }
             }
             return null;
         })()`,

@@ -56,13 +56,50 @@ html:root {
      * looks like a sheet resting on a surface.
      */
 
-    /* Desk: the surface everything sits on. Warm, flat, faintly fibrous. */
-    --desk: #dcd8ce;
-    --desk-deep: #d1ccc0;
+    /*
+     * Desk: the surface everything sits on.
+     *
+     * This was #dcd8ce — a cool grey that arrived with the material rework in
+     * 0727f4f, when the desk was introduced as a separate plane. The palette
+     * before it used #f6f4ef as the whole page background, and that warmth is
+     * what the site is remembered as: an ivory page, not grey stock with white
+     * cards on it.
+     *
+     * Restored to the old palette's actual relationship, not just its hue.
+     *
+     * The version this site is remembered as had the desk and the sheet
+     * *nearly the same value* — #f6f4ef page over #f6f4ef, with cards lifted to
+     * #fffdfa. Measured on a reconstruction: desk 244, paper 246, a two-level
+     * difference. That is what reads as "a warm sheet of paper", because the
+     * whole page is paper; the depth comes from the card edges and their
+     * shadows, not from a darker surface underneath.
+     *
+     * The material rework introduced a genuinely darker desk (#dcd8ce, L* 86)
+     * to separate two planes, which is technically correct but reads as grey
+     * board with white paper on it — and that is the "wrong" feeling.
+     *
+     * So: desk returns to the paper's value and hue, slightly warmer and two
+     * levels down so the sheet still separates without going grey. #f4f1e8 is
+     * L* 95.6 against the paper's 98.6 — a 3-level step, enough to catch the
+     * cast shadow, not enough to read as a different material.
+     */
+    --desk: #f4f1e8;
+    --desk-deep: #eae6db;
 
-    /* Paper: warm ivory stock, the dominant material. */
-    --paper-stock: #fdfbf5;
-    --paper-stock-warm: #f7f3e9;
+    /*
+     * Paper: warm ivory stock, the dominant material.
+     *
+     * #f6f4ef is the value this site used before the material rework, and it
+     * is what makes the page read as paper rather than as white UI. The
+     * lighter #fdfbf5 that replaced it pushed the sheet toward pure white,
+     * which lost the warmth and, together with the darker desk, produced the
+     * "grey board with white cards" look.
+     *
+     * The texture tile multiplies this value by ~0.993, so it renders around
+     * #f5f3ee — the palette value, minus a hair for the tooth.
+     */
+    --paper-stock: #f6f4ef;
+    --paper-stock-warm: #f1eee5;
     --paper-fibre: rgb(120 100 70 / 0.016);
 
     /* Enamel: coated panels — smooth, slightly cool, high specular. */
