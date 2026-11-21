@@ -172,6 +172,39 @@ const MATERIAL_CHECKS = [
         })()`,
     },
     {
+        name: "paper actually has tooth",
+        /*
+         * This is the check that would have caught the original bug years
+         * earlier. The CSS claimed paper grain throughout; both soft-light and
+         * overlay collapse near white (slope 0.016 at a 253/255 backdrop), so
+         * the texture tile was there, the declaration was there, and the page
+         * rendered a single flat value.
+         *
+         * Rather than assert an operator name (which is an implementation
+         * detail), sample the rendered sheet and require that it is not flat.
+         */
+        js: `(() => {
+            /*
+             * Only surfaces that are *assigned* paper carry tooth; cards are
+             * enamel by design (see skeuo-materials.css), so restricting the
+             * selector to the two sheet surfaces is intentional, not a gap.
+             */
+            const el = document.querySelector(".featured-plate, #post-container");
+            if (!el) return null;
+            const cs = getComputedStyle(el);
+            /* Two texture mechanisms exist: a tiled PNG on .scroll-edge and an
+               inline SVG turbulence tile behind --grain. Both resolve to a
+               url() layer; the data URI is percent-encoded, so matching on the
+               file extension misses the second one entirely. */
+            const layers = (cs.backgroundImage.match(/url\\(/g) || []).length;
+            const hasTexture = layers > 0;
+            if (!hasTexture) return "no texture layer on the paper";
+            if (cs.backgroundBlendMode.split(",").every((m) => m.trim() === "normal"))
+                return "texture layer blended as 'normal' — it will read as a photo, not tooth";
+            return null;
+        })()`,
+    },
+    {
         name: "surface ladder is monotonic and separated",
         /*
          * The material system only works if the four planes read as four

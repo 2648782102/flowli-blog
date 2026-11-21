@@ -267,8 +267,23 @@ html:root.dark {
             rgb(255 255 255 / 0) 2.4rem
         ),
         url("/flowli-blog/assets/scroll/paper-light.png") !important;
-    background-size: auto, 512px 512px !important;
-    background-blend-mode: normal, soft-light !important;
+    background-size: auto, 256px 256px !important;
+    /*
+     * `multiply` against a white-based tooth tile — and this took measuring to
+     * get right.
+     *
+     * The texture was effectively invisible for as long as this file claimed
+     * to have grain, because both `soft-light` and `overlay` key on the
+     * backdrop and collapse near white. At the light stock (#fdfbf5, 253/255)
+     * overlay's slope is 0.016: a ±1-level tile produces ±0.016 levels of
+     * output. No tile, however textured, survives that. `multiply` is the only
+     * operator with a slope of ~1 at every backdrop, so ±1 in the tile is ±1
+     * on screen and the stock's own value is preserved rather than washed out.
+     *
+     * The tile therefore carries white = no change, and the tooth is always a
+     * darkening — see scripts/generate-scroll-assets.mjs.
+     */
+    background-blend-mode: normal, multiply !important;
     box-shadow:
         0 1px 1px rgb(38 30 18 / 0.06),
         0 3px 10px -4px rgb(38 30 18 / 0.14),
@@ -284,21 +299,20 @@ html:root.dark .scroll-edge {
             rgb(255 255 255 / 0) 1.6rem
         ),
         url("/flowli-blog/assets/scroll/paper-dark.png") !important;
-    background-size: auto, 512px 512px !important;
+    background-size: auto, 256px 256px !important;
     /*
-     * `multiply` is the only operator here that leaves the stock's value alone.
+     * Same tile and the same operator as light mode: multiply against a
+     * white-based tooth.
      *
-     * The tile is a *near-white* noise plate (mean 246.5, amplitude ±2). Against
-     * the dark stock #171d25 both `overlay` and `soft-light` lift it hard:
-     * overlay computed to #2c3847, soft-light to #545c65. That turned every
-     * paper surface into a navy panel — the featured card read as a blue block,
-     * and the cream silk in the hanging scrolls sat on a cold field.
+     * The earlier bug here was real and different — the tile used to be
+     * near-white and blended with `overlay`, which on a dark backdrop means
+     * screen, lifting #171d25 to #2c3847 and turning every sheet into a navy
+     * panel. The fix at the time was `multiply`, which restored the value but
+     * left a tile whose amplitude was ±2, so there was no tooth to see.
      *
-     * multiply scales the base by ~0.967, so #171d25 stays #161c24 and the
-     * grain shows as a ±1-level tooth. Under a lamp that is exactly how fine
-     * tooth reads on dark stock: present up close, invisible at reading
-     * distance. If the tile is ever regenerated as a mid-grey plate, this
-     * should become `overlay` with a 50% base — see scripts/generate-scroll-assets.mjs.
+     * The asset now carries enough amplitude (225–254) for the same operator
+     * to serve both themes: it darkens the stock slightly, at the value the
+     * palette chose, and the grain reads without recolouring the paper.
      */
     background-blend-mode: normal, multiply !important;
     box-shadow:

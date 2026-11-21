@@ -62,9 +62,35 @@ function noise(w, h, gx, gy, seed) {
   return out;
 }
 
-/** Neutral luminance texture: works with any theme colour. */
+/**
+ * Paper tooth: a white-based tile consumed through `multiply`.
+ *
+ * The operator matters more than the tile here, and this is easy to get wrong.
+ * `overlay` keys on the *backdrop*: at a backdrop of 253/255 its slope is
+ * 0.016, so a ±1-level tile produces ±0.016 levels of output — the texture
+ * mathematically disappears. `soft-light` behaves the same way near white.
+ * That is why every paper surface in this project rendered as one flat value
+ * while the CSS claimed to have grain.
+ *
+ * `multiply` has a slope of ~1 at every backdrop, so ±1 in the tile is ±1 on
+ * screen, and the whole thing scales the base colour rather than washing it
+ * toward white. The tile is therefore white-based: 255 means "no change",
+ * and the tooth is always a darkening.
+ */
 async function paper(name, seed, tooth) {
-  const S = 512;
+  /*
+   * 256px, not 512px.
+   *
+   * Tooth is high-frequency noise: mean absolute step between neighbouring
+   * pixels is ~0.9, so PNG's filters find almost nothing to exploit and a
+   * 512px tile of it costs 111KB — for a texture that is meant to be felt, not
+   * seen. At 256px the same tooth tiles twice as often, which is invisible at
+   * this amplitude, and the file drops to roughly a quarter of the size.
+   *
+   * The lattice counts below are halved to match, so the noise keeps the same
+   * spatial frequency rather than becoming coarser.
+   */
+  const S = 256;
   const n1 = noise(S, S, 24, 24, seed + 1);
   const n2 = noise(S, S, 96, 96, seed + 2);
   const n3 = noise(S, S, 256, 256, seed + 3);
@@ -88,7 +114,16 @@ async function paper(name, seed, tooth) {
     for (let x = 0; x < S; x++) {
       const i = y * S + x;
       const t = ((n1[i] - 0.5) * 1.4 + (n2[i] - 0.5) * 0.7 + (n3[i] - 0.5) * 0.35) * tooth;
-      const v = clamp(247 + t - (fibers.get(i) || 0));
+      /*
+       * Tooth depth.
+       *
+       * `multiply` can only darken, so the tile is white-based and the noise
+       * is folded through `abs`: every deviation becomes a small shadow, which
+       * is what tooth actually is under a raking light. The result is a tile
+       * spanning 225–254 (σ ≈ 3) — enough to read on both paper values,
+       * nowhere near the sandpaper end of the scale.
+       */
+      const v = clamp(255 - Math.abs(t - (fibers.get(i) || 0)) * 14);
       buf[i * 4] = v;
       buf[i * 4 + 1] = v;
       buf[i * 4 + 2] = v;
