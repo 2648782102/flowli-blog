@@ -202,11 +202,23 @@ async function main() {
     console.log(`📦 发现 ${allIcons.size} 个唯一图标`);
 
     const iconsMap = new Map();
+    const missing = [];
     for (const icon of allIcons) {
         const svg = getIconSvg(icon);
         if (svg) {
             iconsMap.set(icon, svg);
+        } else {
+            missing.push(icon);
         }
+    }
+
+    /*
+     * 图标组件在构建期找不到图标会直接抛错（见 icon.astro）。
+     * 这里提前把缺失项报出来，省得等到渲染某一页才失败。
+     */
+    if (missing.length > 0) {
+        console.error(`❌ 以下图标无法从本地图标集解析：\n  ${missing.join("\n  ")}`);
+        process.exit(1);
     }
 
     const outputDir = dirname(OUTPUT_FILE);

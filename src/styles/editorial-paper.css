@@ -87,7 +87,16 @@
     flex-direction: column;
     min-width: 0;
     padding-bottom: 0;
-    transition: opacity 180ms ease;
+    /*
+     * No transition here — deliberately.
+     *
+     * A `transition: opacity 180ms ease` on the ID selector beat the class
+     * rule in transition.css that declares the leaving motion
+     * (`.transition-leaving { transition: translate …, opacity … }`), so
+     * `translate` had no transition at all and the whole sheet jumped 8×16px
+     * in a single frame; only the fade moved. Owning the motion in one place
+     * (`transition.css`, keyed off Swup's classes) keeps the two from competing.
+     */
 }
 
 #swup-container {
@@ -132,16 +141,16 @@
     grid-row: 1;
 }
 
-/* Page transition hooks */
-html.is-changing #swup-container,
-html.is-changing #editorial-sidebar-rail {
-    opacity: 1;
-}
-
-html.is-changing #content-wrapper,
-html.is-changing #content-wrapper > * {
-    animation: none;
-}
+/*
+ * Page-motion hooks live in transition.css now.
+ *
+ * This block used to force `opacity: 1` on #swup-container during every
+ * `is-changing` window (killing the enter fade) and cancel animations on
+ * #content-wrapper and its children. Both were patches over the transition
+ * rules that could not run because this file's ID selectors outranked them.
+ * With the motion owned in one place they are no longer needed — and they
+ * were actively harmful: the `opacity: 1` beat Swup's own fade.
+ */
 
 /* Sidebar widget mechanics (collapse handled by widgetLayout). */
 #sidebar-sticky {

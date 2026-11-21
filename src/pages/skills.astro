@@ -14,7 +14,6 @@ import {
 } from "@utils/skills";
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
-import IconifyLoader from "@components/common/iconifyLoader.astro";
 import SkillCard from "@components/data/skillCard.astro";
 import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
@@ -69,13 +68,9 @@ const getCategoryText = (category: string) => {
     }
 };
 
-// 收集所有技能图标用于预加载
-const allIcons = skillsData.map((skill) => skill.icon).filter(Boolean);
 ---
 
 <GridLayout title={title} description={subtitle}>
-    <!-- 图标加载器，预加载所有技能图标 -->
-    <IconifyLoader preloadIcons={allIcons} />
     <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full">
             <BackwardButton currentPath={Astro.url.pathname} />
@@ -224,21 +219,3 @@ const allIcons = skillsData.map((skill) => skill.icon).filter(Boolean);
     </div>
 </GridLayout>
 
-<script>
-    // 确保图标库已加载，触发技能卡片的图标渲染
-    if (typeof window !== 'undefined' && window.__iconifyLoader) {
-        window.__iconifyLoader.onLoad(() => {
-            document.querySelectorAll('.skill-card').forEach(card => {
-                card.dispatchEvent(new CustomEvent('iconify-ready'));
-            });
-        });
-        window.__iconifyLoader.load().catch(console.error);
-    }
-
-    // 处理页面从 bfcache 恢复（前进/后退导航）
-    window.addEventListener('pageshow', (event) => {
-        if (event.persisted && window.__iconifyLoader) {
-            setTimeout(() => window.__iconifyLoader.load().catch(console.error), 100);
-        }
-    });
-</script>

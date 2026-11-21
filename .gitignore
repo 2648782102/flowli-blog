@@ -26,3 +26,7 @@ pnpm-debug.log*
 # local visual QA tooling
 /design/tools/
 /design/screenshots/local*/
+/design/screenshots/local-profile/
+
+# stylus check scratch files (the checker used to leave these behind)
+*.tmp.styl

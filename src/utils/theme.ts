@@ -41,29 +41,57 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE, force = false) {
     if (!force && !needsThemeChange && !needsCodeThemeUpdate) {
         return;
     }
-    // 只在需要主题切换时添加过渡保护
-    if (needsThemeChange) {
-        document.documentElement.classList.add("is-theme-transitioning");
-    }
-    // 使用 requestAnimationFrame 确保在下一帧执行，避免闪屏
-    requestAnimationFrame(() => {
-        // 应用主题变化
+    /*
+     * Changing the theme is the lights being moved.
+     *
+     * The page is one desk under one lamp, so all of its materials change
+     * together — there is no partial state worth showing. The previous
+     * approach froze every transition with `is-theme-transitioning`, flipped
+     * the classes in one frame, and unfroze: correct, but it threw away the
+     * one moment where the material system could prove it is a single scene.
+     *
+     * A view transition does the same thing as one cross-fade of the whole
+     * document, which is exactly the gesture: the same room, relit. Browsers
+     * without it fall back to the freeze path.
+     */
+    const apply = () => {
         if (needsThemeChange) {
-            if (targetIsDark) {
-                document.documentElement.classList.add("dark");
-            } else {
-                document.documentElement.classList.remove("dark");
-            }
+            document.documentElement.classList.toggle("dark", targetIsDark);
         }
         // Set the theme for Expressive Code based on current mode
         document.documentElement.setAttribute("data-theme", targetTheme);
-        // 在下一帧快速移除保护类，使用微任务确保DOM更新完成
-        if (needsThemeChange) {
-            // 使用 requestAnimationFrame 确保在下一帧移除过渡保护类
+    };
+
+    if (!needsThemeChange) {
+        requestAnimationFrame(apply);
+        return;
+    }
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canTransition = typeof document.startViewTransition === "function" && !reduced;
+
+    if (!canTransition) {
+        /* No view transitions (or motion is unwanted): keep the freeze, so the
+           palette swaps in one paint instead of cross-fading per element. */
+        document.documentElement.classList.add("is-theme-transitioning");
+        requestAnimationFrame(() => {
+            apply();
             requestAnimationFrame(() => {
                 document.documentElement.classList.remove("is-theme-transitioning");
             });
-        }
+        });
+        return;
+    }
+
+    /*
+     * `is-relighting` lets CSS pause decorative motion (the scroll-linked
+     * catch) for the duration of the change: a snapshot of a page that is
+     * itself moving cross-fades badly.
+     */
+    document.documentElement.classList.add("is-relighting");
+    const transition = document.startViewTransition(apply);
+    transition.finished.finally(() => {
+        document.documentElement.classList.remove("is-relighting");
     });
 }
 

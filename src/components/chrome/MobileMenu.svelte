@@ -96,7 +96,7 @@ onMount(() => {
         background: transparent;
         color: var(--ink);
         cursor: pointer;
-        transition: background-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+        transition: background-color var(--motion-touch), box-shadow var(--motion-touch), translate var(--motion-touch);
     }
 
     .menu__toggle:hover {
@@ -105,7 +105,7 @@ onMount(() => {
     }
 
     .menu__toggle:active {
-        transform: translateY(1px);
+        translate: 0 1px;
         box-shadow: 0 1px 2px rgb(38 30 18 / 0.2) inset;
     }
 
@@ -165,9 +165,9 @@ onMount(() => {
         text-decoration: none;
         transition:
             background-color 140ms ease,
-            box-shadow 140ms ease,
-            color 140ms ease,
-            transform 140ms ease;
+            box-shadow var(--motion-touch),
+            color var(--motion-touch),
+            translate var(--motion-touch);
     }
 
     .menu__item:hover {
@@ -178,7 +178,7 @@ onMount(() => {
     }
 
     .menu__item:active {
-        transform: translateY(1px);
+        translate: 0 1px;
         box-shadow: var(--sink-1, none);
     }
 
@@ -191,7 +191,7 @@ onMount(() => {
     }
 
     .menu__item.is-active:hover {
-        transform: none;
+        translate: none;
         background-color: var(--well, #f4f0e6);
         box-shadow: var(--sink-1, none);
     }
@@ -206,14 +206,20 @@ onMount(() => {
         outline-color: rgb(255 255 255 / 0.09);
     }
 
+    /*
+     * The panel is set down, not thrown: it arrives already in place with a
+     * small settle of the shadow, rather than sliding in from above. Sliding
+     * a floating panel contradicts the material rule that a panel is *lifted*
+     * off the desk — it should appear above the surface, not travel across it.
+     */
     @keyframes menu-settle {
         from {
             opacity: 0;
-            transform: translateY(-6px);
+            translate: 0 -3px;
         }
         to {
             opacity: 1;
-            transform: translateY(0);
+            translate: none;
         }
     }
 

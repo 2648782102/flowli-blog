@@ -1,0 +1,173 @@
+/*
+ * Motion effects.
+ *
+ * Two effects, both driven by the platform rather than by script, and both
+ * built out of the material vocabulary in skeuo.css:
+ *
+ *   1. A sheet's lit edge dims as it leaves the top of the desk.
+ *      On a real desk under one light, a page lying further from the lamp
+ *      catches less. Because the page scrolls under the lamp, the catch along
+ *      its top edge should weaken as the page rises out of the light — and
+ *      come back when it is scrolled back down.
+ *
+ *   2. A sheet arriving on the page settles into place instead of appearing.
+ *      Not a fade-up of the whole block: the container must not move, or text
+ *      jumps on every navigation. Only the sheet's edge shadow deepens and
+ *      relaxes, the way a lifted page does when it is set down.
+ *
+ * Both are `animation-timeline` driven. With no timeline support — or with
+ * reduced motion requested — the @supports / media guards leave the page
+ * exactly as it was. Nothing here is load-bearing for layout or contrast.
+ */
+
+/* ==========================================================================
+   1. Lit edge vs. distance from the light
+   ========================================================================== */
+
+/*
+ * The material itself already reads `var(--sheet-catch)` on the alpha of its
+ * top lit band (skeuo-materials.css). This file only owns the *timeline* that
+ * moves that number, so the paper has exactly one definition.
+ *
+ * `@property` (declared next to the material tokens in skeuo.css) is what
+ * makes the number interpolable; without it a custom property animates as a
+ * stepped string and the catch would pop between two values.
+ */
+@keyframes sheet-catch {
+    from {
+        --sheet-catch: 1;
+    }
+    to {
+        --sheet-catch: 0.4;
+    }
+}
+
+@supports (animation-timeline: view()) {
+    /*
+     * Only sheets taller than the viewport actually travel past the light.
+     * Short cards stay wholly inside it and hold a constant catch — animating
+     * those would make every card pulse as the page moves.
+     *
+     * `entry` starts when the sheet's top edge comes into view and `exit`
+     * ends when its bottom edge leaves, so the catch is full while the sheet
+     * sits under the lamp and weakest as it is scrolled away from it.
+     */
+    #post-container,
+    .featured-plate.scroll-edge {
+        animation: sheet-catch linear both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+    }
+}
+
+/* ==========================================================================
+   2. A sheet being set down
+   ========================================================================== */
+
+/*
+ * Swup already moves the container. This adds the part that belongs to the
+ * object: the sheet sits a little heavy for a moment, then its shadow relaxes
+ * to the resting elevation.
+ *
+ * It runs on the sheet, never on #content-wrapper. An animated `filter` on an
+ * ancestor makes that ancestor a containing block for `position: fixed`
+ * descendants — and #content-wrapper contains the two wall scrolls, which are
+ * pinned to the viewport. The first version did exactly that and the scrolls
+ * jumped out of the page gutters and sat on top of the article text.
+ *
+ * `box-shadow` has no such side effect, so the effect is expressed as the
+ * contact shadow of the sheet settling, and it is applied only to sheets that
+ * stand alone on a page (article and featured plate).
+ */
+@keyframes sheet-settle {
+    from {
+        box-shadow:
+            0 2px 5px rgb(38 30 18 / 0.16),
+            0 20px 44px -18px rgb(38 30 18 / 0.30);
+    }
+    to {
+        box-shadow: var(--lift-2);
+    }
+}
+
+/*
+ * Both motions live on the same element, so they have to be declared in ONE
+ * `animation` shorthand. Written as two separate rules, whichever came last
+ * won outright: the settle silently replaced the scroll-linked catch, and the
+ * catch (the more important effect) never ran. Measured before the fix:
+ * `animation-name` was `sheet-settle` on the article sheet with
+ * `animation-timeline: auto`.
+ *
+ * Order here is state → modifier: the one-shot settle, then the scroll-linked
+ * catch, with the timeline list matched by position (`auto` for the settle,
+ * `view()` for the catch).
+ */
+@media (prefers-reduced-motion: no-preference) {
+    #post-container,
+    .featured-plate {
+        animation: sheet-settle 260ms var(--ease-settle) both;
+    }
+}
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        #post-container,
+        .featured-plate {
+            animation:
+                sheet-settle 260ms var(--ease-settle) both,
+                sheet-catch linear both;
+            animation-timeline: auto, view();
+            animation-range: normal, entry 0% exit 100%;
+        }
+    }
+}
+
+/*
+ * Drop both when motion is reduced, and while the lights are being moved: the
+ * page keeps the static material treatment from skeuo-materials.css, which is
+ * the resting state and already correct.
+ */
+@media (prefers-reduced-motion: reduce) {
+    #post-container,
+    .featured-plate {
+        animation: none;
+        --sheet-catch: 1;
+    }
+}
+
+html.is-relighting #post-container,
+html.is-relighting .featured-plate {
+    animation: none;
+    --sheet-catch: 1;
+}
+
+/* ==========================================================================
+   3. Relighting: the theme switch as one gesture
+   ========================================================================== */
+
+/*
+ * A theme switch is not a per-element colour change — it is the lamp moving.
+ * `applyThemeToDocument` hands the class flip to `startViewTransition`, and
+ * these rules decide what that cross-fade looks like.
+ *
+ * The default `::view-transition` is a plain 250ms dissolve. Slowing it to
+ * 320ms and easing it like the rest of the material system (`--ease-settle`)
+ * makes it read as the room dimming rather than as a UI flicker.
+ *
+ * Deliberately no per-element `view-transition-name`: naming surfaces would
+ * animate each card independently, and the point is that everything relights
+ * at once. The whole document is one object here.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 320ms;
+    animation-timing-function: var(--ease-settle);
+}
+
+/* Reduced motion: skip the dissolve entirely, let the swap be instant. */
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
+}

@@ -71,19 +71,25 @@ html:root.dark body {
 
 .site-header {
     background-color: var(--metal-mid);
+    /*
+     * Flat body, one narrow catch under the top edge, one horizontal brush
+     * direction. The rail used to carry a full-height hi → mid → lo ramp; on a
+     * 56px strip that reads as chrome tubing rather than a brushed plate, and
+     * it is the same recipe the button and card rework removed. Height comes
+     * from the rim and the contact shadow, as with every other material.
+     */
     background-image:
         linear-gradient(
             180deg,
-            rgb(255 255 255 / 0.75) 0,
+            rgb(255 255 255 / 0.7) 0,
             rgb(255 255 255 / 0.10) 1px,
-            rgb(255 255 255 / 0) 8px
+            rgb(255 255 255 / 0) 6px
         ),
         repeating-linear-gradient(
             90deg,
-            rgb(255 255 255 / 0.045) 0 1px,
-            rgb(0 0 0 / 0.014) 1px 2px
-        ),
-        linear-gradient(180deg, var(--metal-hi) 0%, var(--metal-mid) 62%, var(--metal-lo) 100%);
+            rgb(255 255 255 / 0.05) 0 1px,
+            rgb(0 0 0 / 0.016) 1px 2px
+        );
     border-bottom: 1px solid rgb(38 30 18 / 0.16);
     box-shadow:
         0 1px 0 rgb(255 255 255 / 0.5) inset,
@@ -100,14 +106,13 @@ html:root.dark .site-header {
         linear-gradient(
             180deg,
             rgb(255 255 255 / 0.10) 0,
-            rgb(255 255 255 / 0) 8px
+            rgb(255 255 255 / 0) 6px
         ),
         repeating-linear-gradient(
             90deg,
             rgb(255 255 255 / 0.025) 0 1px,
             rgb(0 0 0 / 0.02) 1px 2px
-        ),
-        linear-gradient(180deg, var(--metal-hi) 0%, var(--metal-mid) 60%, var(--metal-lo) 100%);
+        );
     border-bottom-color: rgb(0 0 0 / 0.55);
     box-shadow:
         0 1px 0 rgb(255 255 255 / 0.10) inset,
@@ -168,12 +173,16 @@ html:root.dark .site-header__link.is-active {
     /*
      * Four layers, in order: the lit top edge, real paper tooth, a faint
      * directional fibre, then the stock colour underneath.
+     *
+     * The lit edge is scaled by --sheet-catch (1 by default). Tall sheets that
+     * scroll past the viewport's light dim it; see motion.css. Everything else
+     * simply multiplies by 1 and is unaffected.
      */
     background-image:
         linear-gradient(
             180deg,
-            rgb(255 255 255 / 0.72) 0,
-            rgb(255 255 255 / 0.16) 2px,
+            rgb(255 255 255 / calc(0.72 * var(--sheet-catch))) 0,
+            rgb(255 255 255 / calc(0.16 * var(--sheet-catch))) 2px,
             rgb(255 255 255 / 0) 2.75rem
         ),
         var(--grain),
@@ -205,8 +214,8 @@ html:root.dark #content-wrapper > .card-base {
     background-image:
         linear-gradient(
             180deg,
-            rgb(255 255 255 / 0.055) 0,
-            rgb(255 255 255 / 0.02) 2px,
+            rgb(255 255 255 / calc(0.055 * var(--sheet-catch))) 0,
+            rgb(255 255 255 / calc(0.02 * var(--sheet-catch))) 2px,
             rgb(255 255 255 / 0) 1.5rem
         ),
         var(--grain),
@@ -323,20 +332,29 @@ html:root.dark .moment-item::after {
     border: 0;
     border-radius: var(--r-md);
     box-shadow: var(--lift-1);
+    /*
+     * Asymmetric on purpose: going down is a push (fast, linear-ish), coming
+     * back up is a lift (slower, decelerating). A single shared duration makes
+     * a button feel like a toggle rather than a spring.
+     */
     transition:
-        box-shadow 120ms ease,
-        transform 120ms ease,
-        color 120ms ease;
+        box-shadow var(--motion-press),
+        translate var(--motion-press),
+        color var(--motion-press);
 }
 
 .btn-card:hover,
 .btn-regular:hover {
     box-shadow: var(--lift-2);
+    transition:
+        box-shadow var(--motion-touch) var(--ease-settle),
+        translate var(--motion-touch) var(--ease-settle),
+        color var(--motion-touch) var(--ease-settle);
 }
 
 .btn-card:active,
 .btn-regular:active {
-    transform: translateY(1px);
+    translate: 0 1px;
     box-shadow: var(--sink-1);
 }
 
@@ -418,10 +436,10 @@ html:root.dark #light-dark-panel > .card-base {
     text-decoration: none;
     cursor: pointer;
     transition:
-        background-color 140ms ease,
-        box-shadow 140ms ease,
-        color 140ms ease,
-        transform 140ms ease;
+        background-color var(--motion-touch),
+        box-shadow var(--motion-touch),
+        color var(--motion-touch),
+        translate var(--motion-touch);
 }
 
 #translate-panel button:hover,
@@ -435,7 +453,7 @@ html:root.dark #light-dark-panel > .card-base {
 #translate-panel button:active,
 #light-dark-panel button:active,
 #search-panel a:active {
-    transform: translateY(1px);
+    translate: 0 1px;
     box-shadow: var(--sink-1);
 }
 
@@ -451,7 +469,7 @@ html:root.dark #light-dark-panel > .card-base {
 
 #translate-panel button.current-theme-btn:hover,
 #light-dark-panel button.current-theme-btn:hover {
-    transform: none;
+    translate: none;
     background-color: var(--well);
     box-shadow: var(--sink-1);
 }
@@ -489,15 +507,15 @@ html:root.dark #light-dark-panel > .card-base {
 #translate-panel-wrapper,
 #light-dark-panel {
     transition:
-        opacity 160ms ease,
-        transform 200ms cubic-bezier(0.22, 0.61, 0.36, 1);
+        opacity var(--motion-touch),
+        translate var(--motion-settle) var(--ease-settle);
 }
 
 #translate-panel-wrapper.float-panel-closed,
 #light-dark-panel.float-panel-closed,
 #search-panel.float-panel-closed {
     opacity: 0;
-    transform: translateY(-6px);
+    translate: 0 -6px;
     pointer-events: none;
 }
 
@@ -505,7 +523,7 @@ html:root.dark #light-dark-panel > .card-base {
 #light-dark-panel:not(.float-panel-closed),
 #search-panel:not(.float-panel-closed) {
     opacity: 1;
-    transform: translateY(0);
+    translate: none;
 }
 
 /* ==========================================================================

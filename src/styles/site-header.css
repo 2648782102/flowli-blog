@@ -9,11 +9,19 @@
     top: 0;
     z-index: 50;
     width: 100%;
-    background: color-mix(in srgb, var(--mat-metal-a, #e9edf2) 92%, transparent);
-    border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-    box-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    /*
+     * Structure only — no material here.
+     *
+     * This rule used to declare `background:` and `backdrop-filter: blur(12px)`,
+     * a leftover from the liquid-glass layer. Because this file loads after
+     * skeuo-materials.css and the selectors have equal specificity, the
+     * shorthand reset the brushed-metal `background-image` to `none` and the
+     * blur re-added the frosted pane the material layer had explicitly turned
+     * off. The rail therefore rendered as a flat translucent slab, not metal.
+     *
+     * The rail's material is assigned once, in skeuo-materials.css (`.site-header`
+     * and `html:root.dark .site-header`).
+     */
 }
 
 .site-header__inner {
@@ -91,7 +99,7 @@
     line-height: 1;
     text-decoration: none;
     white-space: nowrap;
-    transition: color 140ms ease, background-color 140ms ease;
+    transition: color var(--motion-touch), background-color var(--motion-touch);
 }
 
 .site-header__link:hover {
@@ -101,7 +109,7 @@
 }
 
 .site-header__link:active {
-    transform: translateY(1px);
+    translate: 0 1px;
     box-shadow: 0 1px 3px rgb(38 30 18 / 0.18) inset;
 }
 
@@ -167,7 +175,7 @@
     background: transparent;
     color: var(--ink);
     cursor: pointer;
-    transition: background-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+    transition: background-color var(--motion-touch), box-shadow var(--motion-touch), translate var(--motion-touch);
 }
 
 .site-header__tool [data-header-trigger]:hover {
@@ -176,7 +184,7 @@
 }
 
 .site-header__tool [data-header-trigger]:active {
-    transform: translateY(1px);
+    translate: 0 1px;
     box-shadow: 0 1px 2px rgb(38 30 18 / 0.2) inset;
 }
 
@@ -219,7 +227,7 @@
     overflow: hidden;
     cursor: text;
     transition: width 220ms cubic-bezier(0.22, 0.61, 0.36, 1),
-        background-color 160ms ease, box-shadow 160ms ease;
+        background-color var(--motion-touch), box-shadow var(--motion-touch);
 }
 
 .site-header__tool--search #search-bar:hover,
@@ -256,7 +264,7 @@
     font-size: 0.85rem;
     outline: 0;
     opacity: 0;
-    transition: opacity 160ms ease;
+    transition: opacity var(--motion-touch);
 }
 
 .site-header__tool--search #search-bar:hover #search-input-desktop,
@@ -383,12 +391,6 @@
 }
 
 /* ---- Dark theme ---- */
-html:root.dark .site-header {
-    background: color-mix(in srgb, var(--mat-metal-a, #2b333d) 94%, transparent);
-    border-bottom-color: rgb(255 255 255 / 0.08);
-    box-shadow: 0 1px 0 rgb(255 255 255 / 0.05) inset;
-}
-
 html:root.dark .site-header__mark {
     background: var(--enamel);
     border-color: rgb(255 255 255 / 0.14);

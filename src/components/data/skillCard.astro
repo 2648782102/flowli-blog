@@ -163,7 +163,6 @@ const getExperienceText = (experience: Props["skill"]["experience"]) => {
                         icon={skill.icon}
                         class={sizeClasses.iconText}
                         color={skillColor}
-                        loading="eager"
                     />
                 </div>
             )}
@@ -232,17 +231,3 @@ const getExperienceText = (experience: Props["skill"]["experience"]) => {
     </div>
 </div>
 
-<script>
-    // 监听图标加载完成事件
-    document.addEventListener('DOMContentLoaded', () => {
-        const skillCard = document.currentScript?.parentElement;
-        if (skillCard) {
-            skillCard.classList.add('skill-card');
-            // 监听图标准备就绪事件
-            skillCard.addEventListener('iconify-ready', () => {
-                // 图标加载完成，可以执行额外的初始化逻辑
-                skillCard.classList.add('icons-loaded');
-            });
-        }
-    });
-</script>

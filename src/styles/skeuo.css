@@ -17,6 +17,23 @@
  * near the top edge, and the shadow is dark and local.
  */
 
+/*
+ * The strength of a sheet's lit top edge, as a plain number.
+ *
+ * Declared here, with the material tokens, so it is part of the material
+ * vocabulary rather than an animation detail: 1 is a page sitting under the
+ * lamp, 0.4 is the same page further from it. motion.css moves it with a
+ * scroll timeline; any surface that reads it keeps working when it is 1.
+ *
+ * Only a typed property can be interpolated. As a plain custom property the
+ * value would step between keyframes and the catch would pop.
+ */
+@property --sheet-catch {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 1;
+}
+
 html:root {
     color-scheme: light;
 
@@ -112,6 +129,23 @@ html:root {
     --r-md: 0.375rem;
     --r-lg: 0.5rem;
 
+    /* ---------- Motion ----------
+       Each elevation step gets a duration and a curve, because how fast a
+       thing moves is a property of how heavy it is. These are the only
+       timings surfaces may use; see "Interaction" at the bottom of this file.
+
+         press  — a key travelling 1px into its socket
+         touch  — a small object acknowledging a pointer
+         settle — a sheet changing elevation
+    */
+    /* Values come from src/constants/transitions.ts via base.astro; the
+       fallbacks only matter if that injection is ever removed. */
+    --motion-press: var(--transition-duration-press, 100ms);
+    --motion-touch: var(--transition-duration-touch, 140ms);
+    --motion-settle: var(--transition-duration-settle, 300ms);
+    --ease-settle: var(--transition-ease-settle, cubic-bezier(0.22, 0.61, 0.36, 1));
+    --ease-lift: var(--transition-ease-lift, cubic-bezier(0.34, 1.32, 0.64, 1));
+
     /* ---------- Legacy aliases ----------
        Older rules reference these names; keep them pointing at the new
        materials so nothing silently falls back to a sticker gradient. */
@@ -144,19 +178,40 @@ html:root.dark {
     --desk: #101114;
     --desk-deep: #0a0b0d;
 
-    --paper-stock: #171d25;
-    --paper-stock-warm: #1a2028;
+    /*
+     * Dark mode used to put only ΔL* 5.4 between desk and paper, while light
+     * mode has 12.2. The design doc asks for 8–10: below that, two planes stop
+     * reading as two planes and the article sheet melts into the desk, which
+     * no amount of shadow can rescue — the page just looked flat.
+     *
+     * Now ΔL* ≈ 9.0, keeping the same cool-blue hue family. The stock is a
+     * lighter value of the same colour, not a different colour, so the palette
+     * stays one palette.
+     */
+    --paper-stock: #1c2430;
+    --paper-stock-warm: #1e2632;
     --paper-fibre: rgb(255 255 255 / 0.014);
 
-    --enamel: #1e252e;
-    --enamel-deep: #171d25;
+    /*
+     * Enamel is the layer *above* paper (cards on a sheet, controls in a
+     * panel), so it needs its own step. It used to sit below the new stock
+     * value, which made every card disappear into the page it was placed on.
+     */
+    --enamel: #232c39;
+    --enamel-deep: #1c2430;
 
     --metal-hi: #2f3843;
     --metal-mid: #262e38;
     --metal-lo: #1a2029;
 
-    --well: #11161c;
-    --well-deep: #0d1217;
+    /*
+     * Wells are cut into whatever contains them, so they only need to read as
+     * *deeper than paper* — not as a hole to the desk. Tracking the new stock
+     * value keeps code blocks and quotes inside the sheet instead of looking
+     * punched through it.
+     */
+    --well: #19212b;
+    --well-deep: #151c25;
 
     --foil: #8db6e8;
     --foil-lit: #a8c8ee;
@@ -230,8 +285,22 @@ html:root.dark .scroll-edge {
         ),
         url("/flowli-blog/assets/scroll/paper-dark.png") !important;
     background-size: auto, 512px 512px !important;
-    background-blend-mode: normal, overlay !important;
-    background-size: auto, 512px 512px !important;
+    /*
+     * `multiply` is the only operator here that leaves the stock's value alone.
+     *
+     * The tile is a *near-white* noise plate (mean 246.5, amplitude ±2). Against
+     * the dark stock #171d25 both `overlay` and `soft-light` lift it hard:
+     * overlay computed to #2c3847, soft-light to #545c65. That turned every
+     * paper surface into a navy panel — the featured card read as a blue block,
+     * and the cream silk in the hanging scrolls sat on a cold field.
+     *
+     * multiply scales the base by ~0.967, so #171d25 stays #161c24 and the
+     * grain shows as a ±1-level tooth. Under a lamp that is exactly how fine
+     * tooth reads on dark stock: present up close, invisible at reading
+     * distance. If the tile is ever regenerated as a mid-grey plate, this
+     * should become `overlay` with a 50% base — see scripts/generate-scroll-assets.mjs.
+     */
+    background-blend-mode: normal, multiply !important;
     box-shadow:
         0 1px 2px rgb(0 0 0 / 0.35),
         0 6px 18px -6px rgb(0 0 0 / 0.45) !important;
@@ -353,12 +422,12 @@ html:root {
 
 .mat-press {
     transition:
-        box-shadow 110ms ease,
-        transform 110ms ease;
+        box-shadow var(--motion-press) var(--ease-settle),
+        translate var(--motion-press) var(--ease-settle);
 }
 
 .mat-press:active {
-    transform: translateY(1px);
+    translate: 0 1px;
     box-shadow: var(--sink-1);
 }
 
@@ -368,7 +437,7 @@ html:root {
     }
 
     .mat-press:active {
-        transform: none;
+        translate: none;
     }
 }
 
@@ -377,3 +446,80 @@ html:root {
  * that actually assign material. It used to target the .mat-* utility classes
  * here, but no markup uses them, so it never applied.
  */
+
+/* ==========================================================================
+   Interaction: what elevation *does*
+   ==========================================================================
+
+   The tokens at the top of this file describe how high a surface sits. This
+   block describes how it behaves when touched, so every object on the desk
+   answers the pointer the same way:
+
+     resting  → lift-N
+     hover    → one step up, over --motion-touch
+     pressed  → a millimetre into the surface, over --motion-press
+     released → back to hover level, decelerating
+
+   Before this, 30 hover rules existed and exactly one of them moved anything;
+   six had an :active state. Colour and shadow changed, but nothing was ever
+   *picked up*. That silence is most of why the page read as a picture of
+   paper rather than as paper.
+
+   The selectors here are the ones skeuo-materials.css assigns material to:
+   that file decides what each part of the page is made of, this is the shared
+   physics for it. Travel distances stay with the owning rule, since a 32px
+   key and a full-width row should not move the same amount.
+   ========================================================================== */
+
+:is(.btn-card, .btn-regular, .featured-cta, .site-header__link,
+   .menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item) {
+    transition:
+        box-shadow var(--motion-touch) var(--ease-settle),
+        translate var(--motion-touch) var(--ease-settle);
+}
+
+/* Small objects lift a pixel; sheets lift two. The shadow carries the depth —
+   the translate only stops the change from looking printed on. */
+:is(.btn-card, .btn-regular, .featured-cta, .site-header__link):hover {
+    translate: 0 -1px;
+}
+
+:is(.menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item):hover {
+    translate: 0 -2px;
+}
+
+/*
+ * Release: the only state that decelerates into place instead of pushing.
+ * Scoped to items that have just been lifted or pressed, so an untouched
+ * element never carries a 300ms hover-out curve.
+ */
+:is(.btn-card, .btn-regular, .featured-cta, .site-header__link,
+   .menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item):hover:not(:active) {
+    transition:
+        box-shadow var(--motion-touch) var(--ease-settle),
+        translate var(--motion-settle) var(--ease-lift);
+}
+
+/*
+ * Releasing is the tell. Going down is a push; coming back up overshoots a
+ * fraction of a pixel and settles — the only cue that separates "a key on a
+ * panel" from "a colour that changed".
+ */
+:is(.btn-card, .btn-regular, .featured-cta, .site-header__link,
+   .menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item):active {
+    translate: 0 1px;
+    box-shadow: var(--sink-1);
+    transition:
+        box-shadow var(--motion-press) var(--ease-settle),
+        translate var(--motion-press) var(--ease-settle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Keep the depth cue, drop the travel: shadow only, no overshoot.
+       Removing the response entirely reads as broken rather than calm. */
+    :is(.btn-card, .btn-regular, .featured-cta, .site-header__link,
+       .menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item) {
+        translate: none !important;
+        transition: box-shadow var(--motion-press) linear !important;
+    }
+}

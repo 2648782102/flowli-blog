@@ -1,55 +1,52 @@
-/* Page transition animations with Swup - Enhanced version inspired by yukina */
-
-/* 主要内容区域的过渡动画 - 参考yukina的侧滑效果 */
-.transition-main {
+/*
+ * Page transition — the sheet is lifted, moved, and re-laid.
+ *
+ * Swup 4 drives this by toggling classes on <html> and then *waiting* for the
+ * elements matched by `animationSelector` to settle. @swup/astro derives that
+ * selector from `animationClass` as `[class*="transition-swup-"]`, which here
+ * matches exactly one element: `#swup-container` in layouts/grid.astro.
+ *
+ * Two things followed from that, and both were broken before this rewrite:
+ *
+ *  1. The transition has to be declared on #swup-container itself. It was not
+ *     — editorial-paper.css transitioned #content-wrapper (its child) instead,
+ *     and its ID selector outranked the class rule here, so `translate`
+ *     snapped to its final value in one frame. Measured: at t=3ms the wrapper
+ *     was already at -8px/-16px with `animation-name: none`, and Swup dropped
+ *     `is-leaving` after 61ms because it saw nothing to wait for.
+ *
+ *  2. `transition: none !important` must never be set for the whole
+ *     `is-changing` window. That is precisely when Swup measures. A previous
+ *     rule did exactly that, so the leave animation could not exist.
+ *
+ * #content-wrapper and the sidebar rail both live inside #swup-container, so
+ * animating the container moves the whole content area as one object — which
+ * is the point: a sheet of paper leaving a desk, not a box sliding over it.
+ */
+.transition-swup-fade {
     transition:
         opacity var(--transition-duration-medium) var(--transition-ease-page-in),
         translate var(--transition-duration-medium) var(--transition-ease-page-in);
 }
 
-/* 离开动画 - 内容向右上滑出并淡出 */
-.transition-leaving {
-    transition:
-        translate var(--transition-duration-medium) var(--transition-ease-page-out),
-        opacity var(--transition-duration-medium) var(--transition-ease-page-out);
+/* Promote only while a visit is in flight, then let the layer go. */
+html.is-changing .transition-swup-fade {
+    will-change: opacity, translate;
 }
 
-html.is-changing .transition-main {
-    transition:
-        opacity var(--transition-duration-medium) var(--transition-ease-page-in),
-        translate var(--transition-duration-medium) var(--transition-ease-page-in);
-}
-
-html.is-leaving .transition-main {
+/* Leaving: the sheet slides back and up, out from under the light. */
+html.is-animating.is-leaving .transition-swup-fade:not(.pause-swup-transition) {
+    opacity: 0;
+    translate: -0.5rem -1rem;
     transition:
         opacity var(--transition-duration-medium) var(--transition-ease-page-out),
         translate var(--transition-duration-medium) var(--transition-ease-page-out);
 }
 
-/* 进入动画 - 从右下角轻微滑入，模仿yukina效果 */
-html.is-animating .transition-main {
+/* Entering: same gesture mirrored, so a round trip reads as one sheet. */
+html.is-animating:not(.is-leaving) .transition-swup-fade:not(.pause-swup-transition) {
     opacity: 0;
     translate: 0.5rem 1.5rem;
-}
-
-/* 离开动画 - 向左上角滑出 */
-html.is-animating.is-leaving .transition-leaving {
-    translate: -0.5rem -1rem;
-    opacity: 0;
-}
-
-/* Swup fade 动画 - 只作用于透明度，避免内容整体上下滑动 */
-html.is-changing .transition-swup-fade {
-    transition: none !important;
-    opacity: 1 !important;
-}
-
-html.is-animating .transition-swup-fade:not(.pause-swup-transition) {
-    opacity: 1 !important;
-}
-
-html.is-animating .transition-swup-fade:not(.pause-swup-transition) {
-    opacity: 0;
 }
 
 /* 暂停 Swup 过渡动画，用于特定页面切换场景 */
@@ -58,116 +55,39 @@ html.is-animating .transition-swup-fade:not(.pause-swup-transition) {
     opacity: 1 !important;
 }
 
-/* 淡入动画 */
-@keyframes fade-in-up {
-    from {
-        opacity: 0;
-        translate: 0 1.5rem;
-    }
-    to {
-        opacity: 1;
-        translate: 0 0;
-    }
-}
-@keyframes fade-in-down {
-    from {
-        opacity: 0;
-        translate: 0 -1.5rem;
-    }
-    to {
-        opacity: 1;
-        translate: 0 0;
-    }
-}
-/* 淡出动画 */
-@keyframes fade-out-down {
-    from {
-        opacity: 1;
-        translate: 0 0;
-    }
-    to {
-        opacity: 0;
-        translate: 0 -1.5rem;
-    }
-}
+/*
+ * `.onload-animation-up` is a *marker*, not an animation.
+ *
+ * Five rules in the material layer key off it (`#content-wrapper >
+ * .onload-animation-up`, `#> .card-base`, the meta strip, the license block),
+ * and layouts/grid.astro plus post pages put it on wrappers. Nothing ever
+ * animated it: the keyframes that would have (fade-in-up / -down / -out-down)
+ * had no `animation:` declaration anywhere, so the class was only ever a
+ * selector hook. It is kept for that reason and the dead keyframes are gone.
+ *
+ * Page-level motion lives in `.transition-swup-fade` above.
+ */
 
-/* 特殊元素的动画 */
-.transition-slide-in {
-    opacity: 0;
-    translate: 8px 20px;
-    transition: all var(--transition-duration-medium) var(--transition-ease-page-in);
-}
-.transition-slide-in.active {
-    opacity: 1;
-    translate: 0 0;
-}
-
-/* 卡片动画 */
-.card-animation {
-    opacity: 0;
-    translate: 10px 30px;
-    scale: 0.98;
-    transition: all var(--transition-duration-medium) var(--transition-ease-page-in);
-}
-.card-animation.visible {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-}
-
-/* 导航动画 */
-.nav-animation {
-    opacity: 0;
-    translate: -20px 0;
-    transition: all var(--transition-duration-medium) var(--transition-ease-page-in);
-}
-.nav-animation.loaded {
-    opacity: 1;
-    translate: 0 0;
-}
-
-/* 性能优化 */
-.transition-main,
-.transition-leaving,
-.onload-animation-up,
-.onload-animation-down,
-.transition-slide-in,
-.card-animation {
-    backface-visibility: hidden;
-    -webkit-font-smoothing: antialiased;
-}
-
-/* 响应式调整 */
+/* 响应式调整：小屏位移更短，否则入场看起来像整块跳了一下 */
 @media (max-width: 768px) {
-    html.is-animating .transition-main {
+    html.is-animating:not(.is-leaving) .transition-swup-fade:not(.pause-swup-transition) {
         translate: 0.3rem 1rem;
     }
 
-    html.is-animating.is-leaving .transition-leaving {
+    html.is-animating.is-leaving .transition-swup-fade:not(.pause-swup-transition) {
         translate: -0.3rem -0.8rem;
-    }
-
-    .transition-slide-in {
-        translate: 5px 15px;
-    }
-
-    .card-animation {
-        translate: 6px 20px;
-        scale: 0.99;
     }
 }
 
-/* 减少动画的用户偏好设置 */
+/* 减少动画的用户偏好设置：页面直接换页，不做位移与淡入 */
 @media (prefers-reduced-motion: reduce) {
-    .transition-main,
-    .transition-leaving,
-    .onload-animation-up,
-    .onload-animation-down,
-    .transition-slide-in,
-    .card-animation,
-    .nav-animation {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+    .transition-swup-fade,
+    .transition-swup-fade:not(.pause-swup-transition),
+    html.is-animating.is-leaving .transition-swup-fade:not(.pause-swup-transition),
+    html.is-animating:not(.is-leaving) .transition-swup-fade:not(.pause-swup-transition) {
+        animation: none !important;
+        transition: none !important;
+        translate: none !important;
+        opacity: 1 !important;
     }
 }

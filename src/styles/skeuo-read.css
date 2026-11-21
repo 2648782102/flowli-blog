@@ -136,7 +136,7 @@
 /* Table of contents as a service panel. */
 #editorial-sidebar-rail table-of-contents a {
     border-radius: 0.3rem;
-    transition: background-color 130ms ease, box-shadow 130ms ease;
+    transition: background-color var(--motion-touch), box-shadow var(--motion-touch);
 }
 
 #editorial-sidebar-rail table-of-contents a:hover {

@@ -145,8 +145,17 @@ html:root.dark {
 
     --paper: #0b0f15;
     --paper-deep: #080b10;
-    --surface: #1a2431;
-    --surface-muted: #212c3a;
+    /*
+     * Palette values track the material ladder in skeuo.css. Dark mode used to
+     * keep desk and paper almost the same value (ΔL* 5.4); the material tokens
+     * now separate them (ΔL* ~9), and these structural aliases have to follow
+     * or every card sourced from --surface drops back to the old, flatter
+     * level and the sheet loses its raised children.
+     *
+     *   desk 5.1 → well 12.4 → paper 14.0 → surface 15.5 → muted 20.5
+     */
+    --surface: #1e2733;
+    --surface-muted: #29333f;
 
     --ink: #edf1f6;
     --ink-soft: #aab7c5;
@@ -182,13 +191,19 @@ html:root.dark {
     --inline-code-color: var(--accent);
     --selection-bg: rgb(143 180 226 / 0.24);
     --codeblock-selection: rgb(143 180 226 / 0.26);
-    --codeblock-bg: #0d1319;
-    --codeblock-topbar-bg: #151d25;
+    --codeblock-bg: #171f29;
+    --codeblock-topbar-bg: #1f2933;
     --license-block-bg: var(--surface-muted);
     --link-underline: rgb(143 180 226 / 0.36);
     --link-hover: rgb(234 238 243 / 0.06);
     --link-active: rgb(234 238 243 / 0.10);
-    --float-panel-bg: #161d26;
+    /*
+     * A panel is lifted *off* the desk and sits above the paper, so it has to
+     * be the brightest step, not a value darker than the sheet it floats over.
+     * It used to be #161d26 (L* 10.5) against a paper of L* 14 — the panel
+     * read as a hole rather than a card.
+     */
+    --float-panel-bg: #262f3c;
     --toc-item-active: var(--accent);
     --paper-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
 

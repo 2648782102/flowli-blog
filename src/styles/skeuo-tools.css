@@ -28,7 +28,7 @@
     box-shadow:
         inset 0 1px 0 rgb(255 255 255 / 0.7),
         var(--lift-1) !important;
-    transition: box-shadow 150ms ease, transform 150ms ease;
+    transition: box-shadow var(--motion-touch), translate var(--motion-touch);
 }
 
 html:root.dark #content-wrapper .skill-card,
@@ -113,7 +113,7 @@ html:root.dark #content-wrapper .bg-linear-to-br {
 #content-wrapper .timeline-card a[target="_blank"] {
     border-radius: 0.35rem !important;
     box-shadow: var(--shadow-raised);
-    transition: box-shadow 130ms ease;
+    transition: box-shadow var(--motion-touch);
 }
 
 #content-wrapper .timeline-card a[target="_blank"]:hover {

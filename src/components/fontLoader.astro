@@ -28,10 +28,28 @@ const finalFontFamily = customFontFamily ? `${customFontFamily}, ${fallbacks}` :
         if (fontSrc.includes('fonts.googleapis.com') && !fontSrc.includes('display=')) {
             fontSrc += (fontSrc.includes('?') ? '&' : '?') + 'display=swap';
         }
+        /*
+         * 这里曾经是 <link rel="preload" as="style"> + <link rel="stylesheet">。
+         * 两个中文字体族（Noto Serif SC / Noto Sans SC）的 CSS 合计约 212KB，
+         * 是首屏唯一真正阻塞渲染的请求，而其中绝大部分是未被使用的字重与
+         * unicode 区间声明。
+         *
+         * 改成 media="print" + onload 切换：浏览器以低优先级、非阻塞的方式
+         * 取回样式，字体本身仍然是 font-display: swap。首屏先用系统字体
+         * 排好（fallback 已包含 PingFang SC 等），字体到位后自动替换。
+         * noscript 里保留同步版本，禁用 JS 时行为不变。
+         */
         return (
             <>
-                <link rel="preload" href={fontSrc} as="style" />
-                <link rel="stylesheet" href={fontSrc} />
+                <link
+                    rel="stylesheet"
+                    href={fontSrc}
+                    media="print"
+                    onload="this.media='all'"
+                />
+                <noscript>
+                    <link rel="stylesheet" href={fontSrc} />
+                </noscript>
             </>
         );
     } else if (font.src) {

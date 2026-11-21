@@ -1,7 +1,14 @@
 ---
 /**
- * Astro 图标组件 - 优先使用构建时内联 SVG
- * 如果静态数据中不存在，则回退到运行时 iconify-icon (不推荐)
+ * Astro 图标组件 - 构建时内联 SVG
+ *
+ * 图标数据来自 scripts/generate-icons.js 生成的 @utils/icons。该脚本会扫描
+ * src 下的 .astro/.svelte/.json，所以内容文件里写的图标也会被收录。
+ *
+ * 以前这里会回退到运行时 <iconify-icon>，由 iconifyLoader 逐个请求
+ * api.iconify.design。那意味着任何一次图标 API 波动都会让图标空白，
+ * 而且技能页会多发二十多个请求——即使图标早已内联进 HTML。
+ * 现在缺失就是构建期错误：立刻暴露，而不是上线后静默变成空白。
  */
 import { getIconSvg, hasIcon } from "@utils/icons";
 
@@ -12,7 +19,6 @@ export interface Props {
     style?: string;
     size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
     color?: string;
-    loading?: "lazy" | "eager";
 }
 
 const {
@@ -21,7 +27,6 @@ const {
     style = "",
     size = "md",
     color,
-    loading = "lazy",
 } = Astro.props;
 
 // 尺寸映射
@@ -39,28 +44,22 @@ const colorStyle = color ? `color: ${color};` : "";
 const combinedStyle = `${colorStyle}${style}`;
 const combinedClass = `${sizeClass} ${className}`.trim();
 
+if (!hasIcon(icon)) {
+    throw new Error(
+        `Icon "${icon}" is not in the build-time icon table. ` +
+        `Add it to the markup (or content JSON) and re-run scripts/generate-icons.js.`,
+    );
+}
+
 const staticSvg = getIconSvg(icon);
-const isStatic = hasIcon(icon);
 ---
 
-{isStatic ? (
-    <span
-        class={`inline-flex items-center justify-center inline-icon ${combinedClass}`}
-        style={combinedStyle}
-        aria-hidden="true"
-        set:html={staticSvg}
-    />
-) : (
-    <span
-        class={`inline-flex items-center justify-center ${combinedClass}`}
-        style={combinedStyle}
-    >
-        <iconify-icon
-            icon={icon}
-            loading={loading}
-        ></iconify-icon>
-    </span>
-)}
+<span
+    class={`inline-flex items-center justify-center inline-icon ${combinedClass}`}
+    style={combinedStyle}
+    aria-hidden="true"
+    set:html={staticSvg}
+/>
 
 <style is:global>
     .inline-icon svg {

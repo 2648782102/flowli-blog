@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const stylus = require('stylus');
 
 // Recursively list files under a directory
 function walk(dir) {
@@ -25,21 +25,27 @@ if (!fs.existsSync(srcDir)) {
 const files = walk(srcDir);
 
 const styleBlockRe = /<style[^>]*lang=["']stylus["'][^>]*>([\s\S]*?)<\/style>/ig;
-const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-const outNull = process.platform === 'win32' ? 'nul' : '/dev/null';
-
 let failed = false;
 
 function compileStylusContent(content, tmpPath) {
-  fs.writeFileSync(tmpPath, content, 'utf8');
+  /*
+   * Compile in-process instead of shelling out to the stylus CLI.
+   *
+   * The old version wrote a .tmp.styl next to the source and ran
+   * `stylus <tmp> -o /dev/null`. On macOS the CLI treats the output argument
+   * as a directory and calls mkdir('/dev/null'), which fails with EEXIST — so
+   * every run reported a bogus error and, worse, left `.tmp.styl` files in
+   * src/styles/ because the failure path deliberately kept the temp file.
+   *
+   * Passing `filename` to the renderer keeps @import resolution working
+   * (variables.styl is imported by markdown-extend.styl) with no temp file at
+   * all.
+   */
   try {
-    execSync(`${npxCmd} stylus "${tmpPath}" -o ${outNull}`, { stdio: 'pipe' });
-    fs.unlinkSync(tmpPath);
+    stylus.render(content, { filename: tmpPath });
     return { ok: true };
   } catch (err) {
-    const msg = err.stderr ? err.stderr.toString() : err.message;
-    // keep temp file for debugging
-    return { ok: false, error: msg };
+    return { ok: false, error: err.message || String(err) };
   }
 }
 

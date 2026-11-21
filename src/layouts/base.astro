@@ -1,6 +1,4 @@
 ---
-import "katex/dist/katex.css";
-
 import { siteConfig, profileConfig } from "@/config";
 import { getAnalyticsConfig } from "@utils/analytics";
 import type { Favicon } from "@/types/config";
@@ -32,16 +30,20 @@ import {
     TRANSITION_DURATION_SLOWER,
     TRANSITION_DURATION_LONG,
     TRANSITION_DURATION_VERY_SLOW,
+    TRANSITION_DURATION_PRESS,
+    TRANSITION_DURATION_TOUCH,
+    TRANSITION_DURATION_SETTLE,
     EASE_DEFAULT,
     EASE_PAGE_IN,
     EASE_PAGE_OUT,
+    EASE_SETTLE,
+    EASE_LIFT,
 } from "@constants/transitions";
 import { url } from "@utils/url";
 import FontLoader from "@components/fontLoader.astro";
 import ConfigCarrier from "@components/configCarrier.astro";
 import SiteHeader from "@components/chrome/SiteHeader.astro";
 import Footer from "@components/footer.astro";
-import "@styles/fancybox.css";
 import "@styles/editorial-paper.css";
 import "../styles/theme.css";
 import "../styles/skeuo.css";
@@ -53,6 +55,7 @@ import "../styles/skeuo-tools.css";
 import "../styles/skeuo-layout.css";
 import "../styles/site-layout.css";
 import "../styles/site-header.css";
+import "../styles/motion.css";
 
 
 interface Props {
@@ -104,7 +107,6 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
         <!-- Resource Preconnect -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="preconnect" href="https://code.iconify.design">
         <!-- Font Loader -->
         <FontLoader />
         <!-- title -->
@@ -243,6 +245,12 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
     'transition-ease-default': EASE_DEFAULT,
     'transition-ease-page-in': EASE_PAGE_IN,
     'transition-ease-page-out': EASE_PAGE_OUT,
+    /* Material motion: see TRANSITION_DURATION_PRESS/TOUCH/SETTLE above. */
+    'transition-duration-press': `${TRANSITION_DURATION_PRESS}ms`,
+    'transition-duration-touch': `${TRANSITION_DURATION_TOUCH}ms`,
+    'transition-duration-settle': `${TRANSITION_DURATION_SETTLE}ms`,
+    'transition-ease-settle': EASE_SETTLE,
+    'transition-ease-lift': EASE_LIFT,
 }}>
 @reference "../styles/main.css";
 @layer components {
@@ -261,8 +269,12 @@ const { enabled: analyticsEnabled, code: analyticsCode } = getAnalyticsConfig();
 <script>
 import { initTheme } from "@utils/theme";
 import { initMarkdownActions } from "@/utils/markdown";
-import { initFancybox, cleanupFancybox } from "@utils/fancybox";
+import { armFancybox, cleanupFancybox } from "@utils/fancybox";
 import { loadAndInitTranslate } from "@utils/language";
+import { url } from "@utils/url";
+
+// 与 <link> 在文章页里用的路径保持同源，Swup 切换时按需补上/移除。
+const katexHref = url("/katex/katex.min.css");
 
 const canGoBackWithinSite = () => {
     return window.history.length > 1 && window.history.state?.flowliBlogHasPreviousPage === true;
@@ -349,6 +361,23 @@ const setup = () => {
         history: { action: string; popstate: boolean };
     }) => {
         document.body.classList.toggle('is-home', document.querySelector('#swup-container')?.getAttribute('data-layout') === 'home');
+        /*
+         * KaTeX 的样式表只在含公式的文章里条件渲染。Swup 替换内容时会合并
+         * 新页面的 <head>，但旧的 <link> 不会被移除，于是从公式文章跳到
+         * 普通页面会残留样式。这里以「当前页面是否真的有 .katex 元素」为准：
+         * 有就确保样式表存在，没有就删掉，避免跨页污染。
+         */
+        const hasRenderedMath = !!document.querySelector(".katex");
+        const katexLink = document.querySelector('link[data-katex]');
+        if (hasRenderedMath && !katexLink) {
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = katexHref;
+            link.setAttribute("data-katex", "");
+            document.head.appendChild(link);
+        } else if (!hasRenderedMath && katexLink) {
+            katexLink.remove();
+        }
         if (!visit.history.popstate && visit.history.action === "push" && visit.from.url !== visit.to.url) {
             window.history.replaceState({
                 ...window.history.state,
@@ -370,10 +399,10 @@ const setup = () => {
                 document.dispatchEvent(pageLoadedEvent);
             }
         }, 300);
-        // Initialize Fancybox
-        initFancybox();
+        // 灯箱：只挂「点击才加载」的监听，库本身推迟到第一次点击。
+        armFancybox();
     });
-    initFancybox();
+    armFancybox();
     window.swup.hooks.on("content:replace", () => {
             cleanupFancybox();
         },

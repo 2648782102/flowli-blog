@@ -10,10 +10,6 @@ declare global {
         swup: any;
         semifullScrollHandler: (() => void) | null;
         closeAnnouncement: () => void;
-        __iconifyLoader: {
-            load: () => Promise<void>;
-            onLoad: (callback: () => void) => void;
-        };
         pagefind: {
             search: (query: string) => Promise<{
                 results: Array<{

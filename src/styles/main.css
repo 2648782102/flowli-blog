@@ -7,7 +7,6 @@
 
 @plugin '@tailwindcss/typography';
 
-
 @theme {
     --breakpoint-sm: 512px;
     --breakpoint-md: 768px;
@@ -23,7 +22,6 @@
 
 
 @custom-variant dark (&:is(.dark *));
-
 
 /*
     The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -45,9 +43,16 @@
 
 
 @utility is-theme-transitioning {
-    /* 主题过渡保护类 - 临时禁用所有过渡动画 */
+    /*
+     * 主题过渡保护类：只在浏览器不支持 view transition 时使用
+     * （见 src/utils/theme.ts）。目标是「一次成色的换色」而不是逐元素渐变。
+     * 子元素上的 backdrop-filter 也要一起关掉，否则模糊层会在换色的那一帧
+     * 继续按旧背景取样，出现一块没跟着变色的区域。
+     */
     & * {
     transition: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     }
     & *::before {
     transition: none !important;
@@ -55,106 +60,8 @@
     & *::after {
     transition: none !important;
     }
-
-    /* 波浪效果精确同步处理 */
-    & svg use {
-    /* 禁用过渡但保持动画 */
-    transition: none;
-    /* 强制立即继承页面背景色 */
-    fill: currentColor;
-    }
-
-    /* 导航栏主题切换保护 - 完全禁用过渡以确保性能 */
-
-    /* 导航栏相关浮动面板的过渡禁用 */
-    & .dropdown-content {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & .float-panel {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & #nav-menu-panel {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & #translate-panel {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-    & #search-panel {
-    transition: none !important;
-    backdrop-filter: none !important;
-    }
-
-    /* 波浪容器的颜色传递 */
-    & #header-waves {
-    /* 设置当前颜色为页面背景色，供SVG继承 */
-    color: var(--page-bg);
-    /* 确保与页面在同一合成层 */
-    isolation: isolate;
-    /* 优化渲染性能 - 移除 strict containment 改用 none */
-    contain: none;
-    /* GPU层合成 */
-    translate: 0 0 0;
-    /* 确保没有背景色 */
-    background: transparent;
-    }
-
-    & #header-waves use {
-    /* 保持动画连续性 */
-    will-change: transform;
-    /* GPU优化 */
-    translate: 0 0 0;
-    }
 }
 
-@utility wallpaper-transparent {
-    /* 全屏壁纸模式下的半透明效果 */
-    & .card-base {
-    @apply bg-(--card-bg-transparent);
-    }
-
-    & .float-panel {
-    @apply bg-(--card-bg-transparent);
-    }
-
-
-    & .btn-card {
-    @apply bg-(--card-bg-transparent);
-    }
-
-    & ~ * .music-player .mini-player {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    & ~ * .music-player .expanded-player {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    & ~ * .music-player .playlist-panel {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    & body .music-player .mini-player {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    & body .music-player .expanded-player {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    & body .music-player .playlist-panel {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-}
 
 @utility dropdown-content {
     /* 导航栏相关浮动面板的过渡禁用 */
@@ -170,20 +77,11 @@
     transition: none !important;
     backdrop-filter: none !important;
     }
-
-    .wallpaper-transparent & {
-    @apply bg-(--card-bg-transparent);
-    }
     @apply top-21 rounded-(--radius-large) overflow-hidden bg-(--float-panel-bg) transition-colors duration-150 shadow-xl dark:shadow-none;
 }
 
 @utility card-base {
     @apply rounded-(--radius-large) overflow-hidden bg-(--card-bg) transition-colors duration-150;
-
-    /* 全屏壁纸模式下的半透明效果 */
-    .wallpaper-transparent & {
-    @apply bg-(--card-bg-transparent);
-    }
 }
 
 @utility card-base-transparent {
@@ -191,9 +89,6 @@
 }
 
 @utility btn-card {
-    .wallpaper-transparent & {
-    @apply bg-(--card-bg-transparent);
-    }
     @apply transition-colors duration-150 flex items-center justify-center bg-(--card-bg) hover:bg-(--btn-card-bg-hover)
         active:bg-(--btn-card-bg-active);
     &.disabled {
@@ -201,73 +96,6 @@
     }
 }
 
-@utility music-player {
-    .wallpaper-transparent ~ * & .mini-player {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    .wallpaper-transparent ~ * & .expanded-player {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    .wallpaper-transparent ~ * & .playlist-panel {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    body.wallpaper-transparent & .mini-player {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    body.wallpaper-transparent & .expanded-player {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    body.wallpaper-transparent & .playlist-panel {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-}
-
-@utility mini-player {
-    .wallpaper-transparent ~ * .music-player & {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    body.wallpaper-transparent .music-player & {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-}
-
-@utility expanded-player {
-    .wallpaper-transparent ~ * .music-player & {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    body.wallpaper-transparent .music-player & {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-}
-
-@utility playlist-panel {
-    .wallpaper-transparent ~ * .music-player & {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-
-    body.wallpaper-transparent .music-player & {
-    background-color: var(--card-bg-transparent) !important;
-    backdrop-filter: blur(8px) !important;
-    }
-}
 
 @utility card-shadow {
     @apply drop-shadow-sm;
@@ -537,37 +365,14 @@
     display: none; /* Chrome, Safari and Opera */
     }
 
-    /* 页面顶部渐变高光效果 */
-    .top-gradient-highlight {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 180px;
-    background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.5) 0%,
-        rgba(255, 255, 255, 0.3) 30%,
-        rgba(255, 255, 255, 0.15) 60%,
-        rgba(255, 255, 255, 0.05) 80%,
-        transparent 100%
-    );
-    pointer-events: none;
-    z-index: 20;
-    transition: all var(--transition-duration-medium) var(--transition-ease-default);
-    }
-
-    /* 暗色主题下的渐变高光效果 */
-    :root.dark .top-gradient-highlight {
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.5) 0%,
-        rgba(0, 0, 0, 0.3) 30%,
-        rgba(0, 0, 0, 0.15) 60%,
-        rgba(0, 0, 0, 0.05) 80%,
-        transparent 100%
-    );
-    }
+    /*
+     * The old `.top-gradient-highlight` block lived here: a fixed 180px white
+     * gradient washed over the top of every page. It has no markup anywhere
+     * (removed with the liquid-glass layer) and it contradicted the current
+     * rule that a surface is a flat body plus one narrow catch — a full-width
+     * white wash is exactly the "printed gradient" the material file warns
+     * about. The lit edge of the header rail does that job now.
+     */
 }
 
 @layer components {

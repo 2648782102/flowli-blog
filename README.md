@@ -28,11 +28,21 @@ pnpm install
 pnpm dev
 ```
 
+改动材质、动画或配色后，跑一次视觉回归（固定 4 个页面 × 亮/暗两套主题）：
+
+```sh
+pnpm build
+pnpm visual:check     # 与基线比对，差异图输出到 design/screenshots/local/
+pnpm visual:baseline  # 确认改动是有意的，刷新基线
+```
+
+除像素比对外，脚本还会断言几条容易静默失效的材质规则（头部必须是拉丝金属、深色纸不能被纹理抬亮、页面过渡必须挂在 Swup 测量的元素上）。细节见 `docs/skeuomorphic-design.md`。
+
 ## 项目结构
 
 - `src/pages`：静态页面与 RSS/Atom/Sitemap 等端点。
 - `src/components`：导航、卡片、侧栏与交互组件。
-- `src/styles`：拟物材质系统（`skeuo-*.css`）、藏蓝调色板与各模块样式。
+- `src/styles`：拟物材质系统（`skeuo-*.css`）、动效与特效（`motion.css`）、藏蓝调色板与各模块样式。
 - `src/content`：文章、作品、技能、时间线和页面正文。
 - `public/favicon`：站点图标、浏览器标签图标与 PWA manifest。
 

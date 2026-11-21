@@ -140,3 +140,75 @@ node scripts/bake-scroll/bake.mjs
 - 材质优先走 CSS 变量；`rgb()` 形式的亮边与阴影仍有硬编码，改色时优先补 token，而不是继续堆数值
 - 动画与按压反馈尊重 `prefers-reduced-motion`
 - `prefers-contrast: more` 下给实际赋材质的选择器加一圈内描边（`--hc-edge`，亮色 62% 墨、暗色 55% 白）：纸页、按钮、浮层、页脚徽记、代码块/引用/表格、版权卡。头部下沿的覆盖写在 `site-header.css`，因为它在 `skeuo-materials.css` 之后加载
+
+## 运动：材质的时间维度
+
+材质不只描述「多高」，也描述「多重」。抬得高的东西落得慢，压在纸上的键回弹快，这两件事必须来自同一套数值，否则动起来就会露馅：静止时是纸，一动就成了控件。
+
+### 三档时长
+
+定义在 `src/constants/transitions.ts`，经 `base.astro` 注入为 CSS 变量，`skeuo.css` 再用 `--motion-*` 暴露给样式：
+
+| 令牌 | 值 | 用在哪 |
+| --- | --- | --- |
+| `--motion-press` | 100ms | 按下：键向槽里走 1px |
+| `--motion-touch` | 140ms | 悬停：小物件回应指针 |
+| `--motion-settle` | 300ms | 沉降：纸页改变高度 |
+
+只有三档。之前有七种几乎相同的悬停时长（120/130/140/150/160/180/220ms），肉眼分不出来，每写一条新规则还得猜一个。
+
+### 缓动
+
+- `--ease-settle`（`cubic-bezier(0.22, 0.61, 0.36, 1)`）：减速入位。东西被放下时是先慢后停，不是线性到位
+- `--ease-lift`（`cubic-bezier(0.34, 1.32, 0.64, 1)`）：带一点过冲，用于「被抬起又放下」的面板
+
+### 交互配方
+
+`skeuo.css` 末尾的 Interaction 段给材质选择器统一了行为，不再逐条手写：
+
+| 状态 | 小物件（按键、导航项、CTA） | 整张纸（卡片、作品、时间线） |
+| --- | --- | --- |
+| 静置 | `--lift-1` | `--lift-2` |
+| 悬停 | 抬起 1px + `--lift-2` | 抬起 2px + `--lift-3` |
+| 按下 | 下压 1px + `--sink-1` | 下压 1px + `--sink-1` |
+
+位移只负责让变化不像印上去的，深度始终由阴影承担。`prefers-reduced-motion: reduce` 下保留阴影、去掉位移：直接无视反馈会显得坏掉，比不动更糟。
+
+## 特效：两处，都很克制
+
+`src/styles/motion.css` 只有两个效果，都用平台能力驱动，没有滚动监听脚本。
+
+### 1. 纸页受光随位置变化
+
+桌面只有一盏灯。纸页往滚出灯光，顶部受光带就该变弱，滚回来又恢复。
+
+- `@property --sheet-catch`（`skeuo.css`）把受光强度声明成可插值的数字，默认 `1`
+- 材质层用 `calc(0.72 * var(--sheet-catch))` 缩放受光带的 alpha，材质的定义仍然只有一处
+- `motion.css` 用 `animation-timeline: view()` 驱动它：`entry 0% → exit 100%`，从 1 降到 0.4
+
+只作用于高于视口的纸页（文章页、精选卡）。矮卡片整块都在灯下，给它加动画只会让页面滚动时到处闪。
+
+### 2. 换主题 = 挪灯
+
+站点是一个场景，换主题不是逐元素变色，而是同一间屋子重新打光。`applyThemeToDocument` 把 class 翻转交给 `document.startViewTransition`，`motion.css` 给 `::view-transition-old/new(root)` 设 320ms + `--ease-settle`。不支持视图过渡或用户要求减少动效时，回退到原来的「冻结过渡 → 单帧换色」路径。
+
+刻意不给单个元素起 `view-transition-name`：那样每张卡片会各自淡入淡出，而这里要的是整间屋子一起亮起来。
+
+### 材质陷阱备忘
+
+- **纸纹的混合模式**：`paper-{light,dark}.png` 是接近白色的噪声板（均值 246.5，幅度 ±2）。叠在深色纸 `#171d25` 上，`overlay` 会抬到 `#2c3847`，`soft-light` 更高到 `#545c65`，整张卡会读成藏蓝面板。只有 `multiply` 保留底色（`#161c24`）。如果以后把纹样重做成中灰板，这里才应该改回 `overlay`
+- **给祖先加动画要小心 `position: fixed`**：给 `#content-wrapper` 加 `filter` 动画会让它成为 fixed 后代的包含块，首页两侧挂画会掉到正文上。沉降动画因此只作用于纸页本身的 `box-shadow`
+- **同一元素上的两段动画必须写进同一条 `animation` 简写**：分成两条规则，后写的会把前面的整个覆盖（滚动受光带曾被沉降动画悄悄顶掉）
+- **不要用 ID 选择器接管页面过渡**：Swup 通过 `[class*="transition-swup-"]` 找要等待的元素，并在 `is-changing` 期间测量。`#content-wrapper` 上的 ID 规则会压过类规则，让位移没有过渡；`is-changing` 期间写 `transition: none` 会让 Swup 直接跳过动画
+
+## 视觉回归检查
+
+```sh
+pnpm build
+pnpm visual:check          # 与基线比较，输出差异图到 design/screenshots/local/
+pnpm visual:baseline       # 变更是有意的，刷新基线
+```
+
+固定 4 个页面 × 亮/暗两套主题（首页、文章、归档、作品），1440×1000，冻结动效偏好后截图做像素比较；随后在同一个标签页里跑一组结构化断言：头部必须是拉丝金属而不是毛玻璃、深色纸不能被纹理抬亮、`#swup-container` 必须带过渡、挂画祖先不能有动画、真实点击必须进入 Swup 的动画阶段。
+
+这套检查来自三次真实回归——它们都「看起来还行」，靠肉眼漏掉了。基线在 `design/screenshots/baseline/`，需要提交；`local/` 与临时 profile 已被 `.gitignore` 忽略。基线用无损 WebP 存（与 PNG 逐像素相同，体积约为 60%，8 张图共约 3MB）；需要原生 PNG 时，脚本里把 `webp()` 换回 `toFile(*.png)` 即可。

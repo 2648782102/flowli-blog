@@ -40,7 +40,7 @@
     border-radius: 0.4rem !important;
     background: transparent !important;
     box-shadow: none;
-    transition: box-shadow 130ms ease, background-color 130ms ease;
+    transition: box-shadow var(--motion-touch), background-color var(--motion-touch);
 }
 
 #archive-index .archive-row:hover {
@@ -74,7 +74,7 @@
 #editorial-sidebar-rail #categories-middle button,
 #editorial-sidebar-rail #tags-middle a {
     border-radius: 0.35rem !important;
-    transition: box-shadow 130ms ease, background-color 130ms ease;
+    transition: box-shadow var(--motion-touch), background-color var(--motion-touch);
 }
 
 #editorial-sidebar-rail #categories-middle button:hover,

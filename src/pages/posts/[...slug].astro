@@ -63,6 +63,19 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(entry);
 
+/*
+ * KaTeX 的样式表约 28KB，另有十几套字体。它不该成为全站共享 CSS 的一部分：
+ * 站点绝大多数文章没有公式，却在为它付首屏成本。
+ *
+ * remark-math/rehype-katex 仍然在构建期处理内容，所以这里只需要在页面上
+ * 判断是否真的渲染出了 .katex，再决定要不要链样式表。产物由
+ * scripts/build-with-pagefind.cjs 从 node_modules 复制到 dist/katex/。
+ */
+const rawBody = entry.body ?? "";
+const hasMath =
+    /\$\$[\s\S]+?\$\$/.test(rawBody) ||
+    /(^|[^\\$])\$[^$\n]+?\$/.test(rawBody);
+
 // 处理加密逻辑
 let isEncrypted = !!(entry.data.encrypted && entry.data.password);
 
@@ -125,6 +138,14 @@ const jsonLd = {
         type="application/ld+json"
         set:html={JSON.stringify(jsonLd)}
     />
+    {hasMath && (
+        <link
+            slot="head"
+            rel="stylesheet"
+            href={url("/katex/katex.min.css")}
+            data-katex
+        />
+    )}
     <div
         class="flex w-full rounded-(--radius-large) overflow-hidden relative mb-4"
     >
