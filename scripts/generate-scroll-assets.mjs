@@ -19,6 +19,21 @@ import sharp from "sharp";
 const OUT = path.resolve("public/assets/scroll");
 fs.mkdirSync(OUT, { recursive: true });
 
+/*
+ * How far the finished tile is lifted before quantising.
+ *
+ * The tooth only subtracts, so without this the tile's mean is ~250/255 and
+ * `multiply` darkens every sheet by ~1.9% — measured 6.8 levels of luminance
+ * on the light paper, which flattened the "paper under a lamp" quality.
+ *
+ * +4 brings the mean to ~253/255 (0.7% darkening, ~2 levels) while keeping the
+ * full tooth depth: the sheet returns to the value the palette chose, and the
+ * grain is untouched. Raising the paper token instead was tried and rejected —
+ * #fdfbf5 is already at 253 on the red channel, so it could not absorb the 2%
+ * without going cold (#fffffa lost the warm ivory).
+ */
+const PAPER_TILE_ELEVATION = 4;
+
 function rng(seed) {
   let s = seed >>> 0;
   return () => {
@@ -120,7 +135,20 @@ async function paper(name, seed, tooth) {
        * spanning 225–254 (σ ≈ 3) — enough to read on both paper values,
        * nowhere near the sandpaper end of the scale.
        */
-      const v = clamp(255 - Math.abs(t - (fibers.get(i) || 0)) * 14);
+      /*
+       * Mean-preserving tooth.
+       *
+       * A plain `255 - |deviation| * k` only ever subtracts, so the tile's mean
+       * sits below 255 and `multiply` darkens the whole sheet by that ratio.
+       * Measured: mean 250/255 = 0.9806, which cost the light paper 6.8 levels
+       * of luminance — enough that the "paper catching light" quality was gone.
+       *
+       * Add the offset back so the mean is 255: the tooth keeps its shape and
+       * depth, but the sheet stays at the value the palette chose. The
+       * brightest pixels clip at 255, which is exactly "no change" under
+       * multiply, so the clipping is harmless rather than lossy.
+       */
+      const v = clamp(255 - Math.abs(t - (fibers.get(i) || 0)) * 14 + PAPER_TILE_ELEVATION);
       buf[i * 4] = v;
       buf[i * 4 + 1] = v;
       buf[i * 4 + 2] = v;

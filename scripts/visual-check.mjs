@@ -46,11 +46,14 @@ const DEBUG_PORT = 9466;
  * Differences below this are anti-aliasing noise / font rasterisation.
  *
  * 12 was too generous for a *material* check: it let a real colour drift
- * through. Measured on this site, a 4-value shift is already visible as a
- * different material tier, and identical re-runs still diff at exactly 0 on
- * every pixel, so the headroom is only protecting text edges.
+ * through. 4 was too generous in a subtler way — the comparison is `>`, so a
+ * shift of exactly 4 passed, and a whole paper repaint of exactly 4 levels
+ * (7% of the page) was reported as 0.000% different.
+ *
+ * Identical re-runs diff at exactly 0 on every pixel, so this only has to
+ * absorb text edges; 2 is enough for that and catches the 4-level case.
  */
-const PIXEL_TOLERANCE = 4;
+const PIXEL_TOLERANCE = 2;
 /* Share of pixels allowed to exceed PIXEL_TOLERANCE before a state fails.
    Set to zero: text rasterisation is already inside the tolerance above, so
    any pixel that does exceed it is a genuine change. */
