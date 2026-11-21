@@ -17,11 +17,11 @@ html:root {
     /*
      * Darkened from #7b8794. This tier was already under-contrast on the old
      * paper (3.54:1 against #fdfbf5, below the 4.5 minimum for body text), and
-     * warming the sheet to #f8f2df cost it another 0.27. #616c75 clears 4.5:1
-     * on all three light surfaces (paper 4.80, desk 4.54, card 4.81) while
-     * staying visibly lighter than --ink-soft (7.02:1), so the hierarchy holds.
+     * warming the sheet has cost it further since. #5d6870 clears 4.5:1 on all
+     * three light surfaces (paper 5.00, desk 4.57, card 4.87) while staying
+     * visibly lighter than --ink-soft (6.90:1), so the hierarchy holds.
      */
-    --ink-faint: #616c75;
+    --ink-faint: #5d6870;
 
     --accent: #2b4a72;
     --accent-warm: #a4643c;
