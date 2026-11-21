@@ -132,19 +132,48 @@
 
 `scripts/generate-scroll-assets.mjs` 仍会生成 `curl-left-*.png`，但页面已不引用；保留脚本是为了素材可再生、需要时能回退。
 
-## 首页两侧不再放挂画
+## 首页两侧：挂画换成墨笔诗句
 
 首页原来在正文列两侧固定两幅 3D 烘焙的立轴。这套东西已整体移除：组件、
 离线烘焙脚本（含 1.3 MB 的 Three.js vendor 副本）、四～五档 WebP 素材和
-`bake:scroll` 脚本都删掉了，包体省下约 3 MB。
+`bake:scroll` 脚本都删掉了，包体省下约 3 MB。`--wall-height` / `--wall-edge`
+/ `--wall-pull` / `--wall-gap` 这些只为挂画推导尺寸的 token 也一并删除；
+`--home-column` 保留，它仍是正文栏宽的来源。
 
-留下来的只有一件事：`--home-column` 仍然是首页之外的正文栏宽来源，和挂画
-无关。`--wall-height` / `--wall-edge` / `--wall-pull` / `--wall-gap` 这些
-为挂画推导尺寸的 token 已一并删除。
+空出来的墙现在是一副竖排对联：右行「还如果熟自然红」，左行「莫问如何修种」，
+取自宋·张伯端《西江月》其四。右手先读，和立轴对联的挂法一致。不再画立轴
+之后，三处旧硬伤（深色主题下透明混合长灰晕、`sizes` 按 `vw` 估算与实际画幅
+不符、小屏隐藏却仍预载）也随之消失，但换成了下面这些文字特有的约束。
 
-如果将来要重新引入，需要重做而不是恢复旧代码：原来的三处硬伤是深色主题
-下透明混合长灰晕、`sizes` 按 `vw` 估算与实际画幅不符、以及小屏隐藏却仍预载。
-这三条都只在真实视口下才暴露，代价是每次都要重测 1240–3840 的整条曲线。
+这是 `src/components/home/wallCouplet.astro`，只在首页渲染，`>= 1240px`
+才有位置。它不占文档流：`.home-composition` 本身就是
+`position: relative` 且宽度等于 `--home-column`，诗句容器绝对定位在它内部，
+两行再用 `left: calc(100% + …)` / `right: calc(100% + …)` 向外偏移，所以
+间距跟着栏宽走，而不是另算一套视口公式。
+
+字体是志莽行书（Zhi Mang Xing，SIL OFL 1.1）按现有十二个字切的子集，4.4 KB，
+放在 `src/assets/fonts/brush-poem.woff2`，由 Vite 指纹化。完整 CJK 字面有
+4 MB；用衬线体斜着排则会读成一个转过的标题，不是写上去的字。改诗句后跑
+`pnpm font:couplet` 重新切，脚本会把新的 `unicode-range` 打出来——组件里那份
+必须同步，否则漏掉的字会掉回衬线体。授权原文在 `public/assets/fonts/OFL.txt`。
+
+几处踩过的坑，改这个组件前值得知道：
+
+- **不能当 flex 子项。** 首页 `.home-composition` 是 `flex; gap: 2.5rem`，
+  诗句直接塞进去会占一行，整页下移 40px。
+- **不能用 `<p>`。** `#content-wrapper p` 用 ID 级选择器设了正文色和 1.85
+  行高，且写在组件样式之前，会静默覆盖组件自己的墨色和行高。改用 `<span>`。
+- **必须 `white-space: nowrap`。** 竖排加绝对定位时，收缩宽度按零高度父级
+  计算，七个字会折成七列——实测宽 179px。
+- **字距靠 `letter-spacing`。** 竖排下它沿行推进，正是字与字的呼吸；行高管的是
+  列宽。0.06em 时相邻字会叠，0.22em 才分开。
+- **`font-display: block`。** 用 `swap` 会先排衬线再跳成行书，静态的墙面出现
+  这种回流很像故障；4.4 KB 值得短暂空白。
+- **`@font-face` 里不能用 `var()`。** 它不在元素树内，自定义属性不会继承进
+  描述符；用相对路径交给 Vite 处理。
+- **墨色按主题分别给。** 同一个 `color-mix` 比例在亮色下是吸进纸里的墨，
+  在深色下会亮过正文：58% 在亮色桌面约 3.8:1，在深色桌面却是 6.1:1。所以
+  比例是 token（`--couplet-ink`：亮色 58%、深色 44%），而不是写死在组件里。
 
 ## 组件现状
 
@@ -155,6 +184,7 @@
 | 按钮 | `.btn-card`、`.btn-regular`（`skeuo-materials.css`） |
 | 浮层（搜索、翻译、主题） | `skeuo-materials.css` 中的 `#search-panel`、`#translate-panel`、`#light-dark-panel` |
 | 归档 / 工具页 | `skeuo-archive.css`、`skeuo-tools.css` |
+| 首页两侧诗句 | `src/components/home/wallCouplet.astro` |
 
 交互组件是 Svelte 5，按需自己上材质。项目**没有**引入 Bits UI，也没有独立的 Switch 组件——主题切换是一个菜单（`src/components/navbar/lightDarkSwitch.svelte`）。
 

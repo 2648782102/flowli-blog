@@ -9,6 +9,7 @@ import { getPostUrl } from "@utils/url";
 import GridLayout from "@layouts/grid.astro";
 import { pathsEqual, url } from "@utils/url";
 import { Icon } from "astro-icon/components";
+import WallCouplet from "@components/home/wallCouplet.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const allBlogPosts = await getSortedPosts();
@@ -26,6 +27,7 @@ const formatDate = (value: Date | string) =>
 <GridLayout>
     {isHomePage && (
         <div class="home-composition">
+            <WallCouplet />
             <header class="intro-block">
                 <p class="intro-kicker">独立写作 / 前端工程 / 工具观察</p>
                 <h1 id="home-opening-title">把好奇心写下来<span>。</span></h1>

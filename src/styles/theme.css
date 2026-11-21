@@ -97,6 +97,18 @@ html:root {
  */
 html:root {
     --home-column: 52rem;
+    /* Wall couplet: the brushed lines either side of the column. Only the
+       character size is a token; placement comes from `--home-column` because
+       the lines are anchored to the column, not to the viewport. */
+    --couplet-size: 1.35rem;
+    /*
+     * Ink density, not a fixed colour: the line is the page ink mixed into the
+     * desk, so one number controls how far it recedes in each theme. 58% lands
+     * at 3.8:1 on the light desk, which reads as ink absorbed into paper. The
+     * same value in dark mode gives 6.1:1 — brighter than body copy — because
+     * light-on-dark gains contrast faster; 44% brings it back to ~4.1:1.
+     */
+    --couplet-ink: 58%;
 }
 
 @media (min-width: 1240px) {
@@ -106,6 +118,10 @@ html:root {
          * the column then grows with the viewport and stops at 60rem.
          */
         --home-column: clamp(44rem, 100vw - 68rem, 60rem);
+        /* Big enough to read as brushwork on a wall rather than a caption:
+           ~26px at 1440, ~35px at 1920, ~46px by 2560. The 1792px root-size
+           ramp then scales it again so 4K does not shrink it to a caption. */
+        --couplet-size: clamp(1.6rem, 1.8vw, 2.6rem);
     }
 }
 
@@ -122,6 +138,8 @@ html:root {
 
 html:root.dark {
     color-scheme: dark;
+
+    --couplet-ink: 44%;
 
     --paper: #0b0f15;
     --paper-deep: #080b10;
