@@ -937,6 +937,9 @@ h4 {
     *,
     *::before,
     *::after {
+        /* `animation-name: none` for the same reason as editorial-paper.css:
+           a 0.01ms duration does not stop a scroll-driven animation. */
+        animation-name: none !important;
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
     }

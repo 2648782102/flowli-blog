@@ -309,6 +309,18 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
     *,
     *::before,
     *::after {
+        /*
+         * `animation-name: none`, not a 0.01ms duration.
+         *
+         * Shortening the duration is the usual snippet, and it is wrong for
+         * scroll-driven animations: `animation-timeline: view()` keeps
+         * progress tied to scroll position regardless of duration, so the
+         * sheet's lit edge kept dimming as the page scrolled even with the
+         * duration at 1e-05s. Measured: --sheet-catch was still 0.69 on a
+         * reduced-motion page. Removing the animation is the only declaration
+         * that actually stops it.
+         */
+        animation-name: none !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;

@@ -152,6 +152,30 @@ const MATERIAL_CHECKS = [
         })()`,
     },
     {
+        name: "reduced motion actually stops scroll-linked effects",
+        reducedMotion: true,
+        /*
+         * The classic snippet, `animation-duration: 0.01ms`, does not stop a
+         * scroll-driven animation: `animation-timeline: view()` ties progress
+         * to scroll position, not to time, so the sheet kept dimming as the
+         * page scrolled on a reduced-motion page (--sheet-catch measured 0.69
+         * while the duration was already 1e-05s).
+         *
+         * Assert the end state rather than the declaration: nothing animating,
+         * and the catch resting at full strength.
+         */
+        js: `(() => {
+            if (!matchMedia("(prefers-reduced-motion: reduce)").matches) return "probe ran without reduce";
+            const el = document.querySelector(".featured-plate, #post-container");
+            if (!el) return null;
+            const cs = getComputedStyle(el);
+            if (cs.animationName !== "none") return "still animating: " + cs.animationName;
+            const rest = cs.getPropertyValue("--sheet-catch").trim();
+            if (rest !== "1") return "--sheet-catch is " + rest + ", should rest at 1";
+            return null;
+        })()`,
+    },
+    {
         name: "above-the-fold art is not lazy-loaded",
         /*
          * Both wall scrolls are visible at ≥1240px and are the heaviest images
@@ -657,7 +681,7 @@ async function main() {
                 const name = `${state.name}-${theme}.webp`;
                 const target = path.join(runDir, name);
                 const checks = MATERIAL_CHECKS.filter(
-                    (c) => (!c.only || c.only.includes(theme)) && !c.forcedColors,
+                    (c) => (!c.only || c.only.includes(theme)) && !c.forcedColors && !c.reducedMotion,
                 );
                 const url = `http://127.0.0.1:${PORT}${PREFIX}${state.path}`;
 
@@ -750,6 +774,36 @@ async function main() {
                 await closeTab(targetId);
             }
             if (failed === 0) console.log("  ok       forced-colours  structure preserved");
+        }
+
+        /*
+         * Reduced-motion pass. Runs on its own page load with the preference
+         * actually set: assertMaterials turns motion *on* for the behavioural
+         * checks, so these have to be measured before that happens.
+         */
+        const reducedChecks = MATERIAL_CHECKS.filter((c) => c.reducedMotion);
+        if (reducedChecks.length) {
+            const { tab, targetId } = await loadState(`http://127.0.0.1:${PORT}${PREFIX}/`, "light");
+            try {
+                const failures = [];
+                for (const check of reducedChecks) {
+                    const res = await tab.send("Runtime.evaluate", {
+                        expression: check.js,
+                        returnByValue: true,
+                        awaitPromise: true,
+                    });
+                    const value = res.result?.result?.value ?? res.result?.result?.description;
+                    if (value) failures.push(`${check.name}: ${value}`);
+                }
+                for (const failure of failures) {
+                    console.log(`  ASSERT   reduced-motion  ${failure}`);
+                    failed++;
+                }
+                if (!failures.length) console.log("  ok       reduced-motion  motion is actually off");
+            } finally {
+                tab.ws.close();
+                await closeTab(targetId);
+            }
         }
     } finally {
         proc.kill();

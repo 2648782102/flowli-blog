@@ -225,6 +225,7 @@ node scripts/bake-scroll/bake.mjs
   结论是：纸纹必须走 `multiply`（各底色下斜率都约 1），并且纹理板要**以白色为基准**——`multiply` 只能变暗，白色即"无变化"。现在的板是 224–254，σ≈3，实际效果是 ±3 级的细齿加偶发纤维痕，放大可见、阅读距离几乎无感。
 - **给祖先加动画要小心 `position: fixed`**：给 `#content-wrapper` 加 `filter` 动画会让它成为 fixed 后代的包含块，首页两侧挂画会掉到正文上。沉降动画因此只作用于纸页本身的 `box-shadow`
 - **同一元素上的两段动画必须写进同一条 `animation` 简写**：分成两条规则，后写的会把前面的整个覆盖（滚动受光带曾被沉降动画悄悄顶掉）
+- **`animation-duration: 0.01ms` 关不掉滚动驱动动画**：`animation-timeline: view()` 的进度绑在滚动位置上，与时长无关。实测在减少动效页面里 `--sheet-catch` 依然是 0.69、动画名仍是 `sheet-catch`（时长已经是 1e-05s）。要真的停掉，必须写 `animation-name: none`
 - **不要用 ID 选择器接管页面过渡**：Swup 通过 `[class*="transition-swup-"]` 找要等待的元素，并在 `is-changing` 期间测量。`#content-wrapper` 上的 ID 规则会压过类规则，让位移没有过渡；`is-changing` 期间写 `transition: none` 会让 Swup 直接跳过动画
 
 ## 视觉回归检查
