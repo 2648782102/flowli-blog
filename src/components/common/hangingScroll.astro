@@ -5,9 +5,28 @@ interface Props {
     alt: string;
     credit?: string;
     class?: string;
+    /**
+     * `eager` for the homepage pair, which is the largest thing on screen.
+     *
+     * These were `loading="lazy"` — and measured, the scroll is the LCP
+     * element (279KB of image, painted at 100ms only because it happens to be
+     * first in the DOM). Lazy-loading the largest above-the-fold image makes
+     * the browser defer the request until layout is known, which is the one
+     * case where `lazy` is strictly worse than `eager`.
+     */
+    loading?: "eager" | "lazy";
+    fetchpriority?: "high" | "auto" | "low";
 }
 
-const { src, srcset, alt, credit, class: className } = Astro.props;
+const {
+    src,
+    srcset,
+    alt,
+    credit,
+    class: className,
+    loading = "lazy",
+    fetchpriority = "auto",
+} = Astro.props;
 ---
 
 <figure class:list={["hanging-scroll", className]}>
@@ -17,7 +36,8 @@ const { src, srcset, alt, credit, class: className } = Astro.props;
             srcset={srcset}
             sizes="(min-width: 1240px) 24vw, 0px"
             alt={alt}
-            loading="lazy"
+            loading={loading}
+            fetchpriority={fetchpriority}
             decoding="async"
         />
     </div>

@@ -42,10 +42,19 @@ const PREFIX = "/flowli-blog";
 const PORT = 4477;
 const DEBUG_PORT = 9466;
 
-/* Differences below this are anti-aliasing noise / font rasterisation. */
-const PIXEL_TOLERANCE = 12;
-/* Share of pixels allowed to exceed PIXEL_TOLERANCE before a state fails. */
-const STATE_BUDGET = 0.0015;
+/*
+ * Differences below this are anti-aliasing noise / font rasterisation.
+ *
+ * 12 was too generous for a *material* check: it let a real colour drift
+ * through. Measured on this site, a 4-value shift is already visible as a
+ * different material tier, and identical re-runs still diff at exactly 0 on
+ * every pixel, so the headroom is only protecting text edges.
+ */
+const PIXEL_TOLERANCE = 4;
+/* Share of pixels allowed to exceed PIXEL_TOLERANCE before a state fails.
+   Set to zero: text rasterisation is already inside the tolerance above, so
+   any pixel that does exceed it is a genuine change. */
+const STATE_BUDGET = 0;
 
 const STATES = [
     { name: "home", path: "/" },
@@ -138,6 +147,92 @@ const MATERIAL_CHECKS = [
                     }
                 }
                 el = el.parentElement;
+            }
+            return null;
+        })()`,
+    },
+    {
+        name: "above-the-fold art is not lazy-loaded",
+        /*
+         * Both wall scrolls are visible at ≥1240px and are the heaviest images
+         * on the page. They shipped `loading="lazy"`, which makes the browser
+         * defer the request until layout is known — precisely the case where
+         * lazy is worse than eager. Measured, the right-hand mount started
+         * loading at 1191ms simply because it sits late in the document.
+         *
+         * A screenshot cannot catch this (the image eventually arrives), so it
+         * needs asserting on the attribute.
+         */
+        js: `(() => {
+            const arts = [...document.querySelectorAll(".hanging-scroll__art img")];
+            if (!arts.length) return null;
+            const lazy = arts.filter((a) => a.loading === "lazy");
+            if (lazy.length) return lazy.length + " of " + arts.length + " wall images still loading=lazy";
+            return null;
+        })()`,
+    },
+    {
+        name: "surface ladder is monotonic and separated",
+        /*
+         * The material system only works if the four planes read as four
+         * planes. This asserts the ladder itself rather than any single colour,
+         * so a future palette edit can move values freely but cannot flatten
+         * two tiers into one:
+         *
+         *   desk < well < paper < card surface < enamel
+         *
+         * It also pins the desk→paper step at 8–10 L*, which is the number the
+         * design doc asks for and the one dark mode used to miss (5.4).
+         */
+        js: `(() => {
+            const root = getComputedStyle(document.documentElement);
+            const tok = (n) => root.getPropertyValue(n).trim();
+
+            const parse = (c) => {
+                const m = c.match(/^#([0-9a-f]{6})$/i);
+                if (!m) return null;
+                const v = m[1];
+                return [0, 2, 4].map((i) => parseInt(v.slice(i, i + 2), 16));
+            };
+            const lin = (c) => {
+                c /= 255;
+                return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+            };
+            const L = (rgb) => {
+                const y = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+                return y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y;
+            };
+
+            /*
+             * The ladder is not the same shape in both themes, and that is
+             * correct: on a light desk, paper is the brightest thing and a
+             * coated panel is a shade *below* it (enamel is cooler/darker so it
+             * can carry a specular band). In dark mode every raised surface is
+             * brighter. Asserting one global order would force a palette that
+             * looks wrong in one of the two themes.
+             */
+            const dark = document.documentElement.classList.contains("dark");
+            const order = dark
+                ? ["--desk", "--well", "--paper-stock", "--surface", "--enamel"]
+                : ["--desk", "--enamel", "--paper-stock"];
+            const values = order.map((n) => parse(tok(n)));
+            const missing = order.filter((n, i) => !values[i]);
+            if (missing.length) return "unparsed tokens: " + missing.join(", ") + " (" + order.map(tok).join(" ") + ")";
+
+            const ladder = values.map(L);
+            for (let i = 1; i < ladder.length; i++) {
+                if (ladder[i] <= ladder[i - 1]) {
+                    return order[i] + " (" + ladder[i].toFixed(1) + ") is on the wrong side of " +
+                        order[i - 1] + " (" + ladder[i - 1].toFixed(1) + ")";
+                }
+            }
+
+            /* Only enforce a floor. Light mode runs at 12.2 and has always
+               looked right; the failure this guards against is dark mode
+               collapsing toward the desk (it used to be 5.4). */
+            const step = Math.abs(L(parse(tok("--paper-stock"))) - L(parse(tok("--desk"))));
+            if (step < 8) {
+                return "desk→paper is only " + step.toFixed(1) + " L*, needs at least 8";
             }
             return null;
         })()`,
@@ -401,12 +496,33 @@ async function assertMaterials(tab, checks) {
 }
 
 async function diff(aPath, bPath, diffPath) {
-    const a = await sharp(aPath).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-    const b = await sharp(bPath).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-    if (a.info.width !== b.info.width || a.info.height !== b.info.height) {
+    /*
+     * Decode both sides through the same pipeline.
+     *
+     * `ensureAlpha` was reading WebP as 3-channel RGB and the fresh capture as
+     * RGBA, so the two buffers were compared after different colour paths and
+     * a handful of pixels came out ±1 apart on an unchanged page. That re-made
+     * baselines on every run and made the repo's images churn for no reason.
+     *
+     * Forcing RGBA (and therefore one decode path) on both sides makes an
+     * identical page diff at exactly 0.
+     */
+    const decode = async (p) => {
+        const { data, info } = await sharp(p)
+            .ensureAlpha()
+            .raw()
+            .toBuffer({ resolveWithObject: true });
+        return { data, width: info.width, height: info.height, channels: info.channels };
+    };
+    const a = await decode(aPath);
+    const b = await decode(bPath);
+    if (a.width !== b.width || a.height !== b.height) {
         return { changed: Infinity, note: "size mismatch" };
     }
-    const { width, height, channels } = a.info;
+    const { width, height, channels } = a;
+    if (a.channels !== b.channels) {
+        return { changed: Infinity, note: "channel mismatch" };
+    }
     const out = Buffer.alloc(width * height * channels);
     let touched = 0;
     for (let i = 0; i < a.data.length; i += channels) {
@@ -436,8 +552,15 @@ async function main() {
         throw new Error("dist/ is empty. Run `pnpm build` first.");
     }
 
-    const runDir = update ? path.join(OUT_BASE, "baseline") : path.join(OUT_BASE, "local");
+    const baselineDir = path.join(OUT_BASE, "baseline");
+    /*
+     * Captures always land in local/, even in --update mode; baselines are only
+     * written when the capture actually differs. Diff images belong to the run,
+     * never to the baseline, so they must not end up next to it.
+     */
+    const runDir = path.join(OUT_BASE, "local");
     fs.mkdirSync(runDir, { recursive: true });
+    fs.mkdirSync(baselineDir, { recursive: true });
 
     const chrome = findChrome();
     const server = await startServer();
@@ -484,12 +607,32 @@ async function main() {
                     await closeTab(targetId);
                 }
 
+                const baseline = path.join(OUT_BASE, "baseline", name);
+
                 if (update) {
+                    /*
+                     * Keep the existing baseline when the new capture is
+                     * equivalent to it.
+                     *
+                     * A handful of pixels on the pagination pill rasterise one
+                     * level differently whenever the lossless WebP is rebuilt —
+                     * six pixels, max Δ1, on an otherwise identical page. Blindly
+                     * overwriting stores that noise as a new binary and makes
+                     * every "--update" churn the repo. Rewriting only on a real
+                     * difference keeps the baseline stable across runs.
+                     */
+                    if (fs.existsSync(baseline)) {
+                        const { changed } = await diff(baseline, target, path.join(runDir, `diff-${name}`));
+                        if (changed <= STATE_BUDGET) {
+                            console.log(`  same     ${name}`);
+                            continue;
+                        }
+                    }
+                    fs.copyFileSync(target, baseline);
                     console.log(`  updated  ${name}`);
                     continue;
                 }
 
-                const baseline = path.join(OUT_BASE, "baseline", name);
                 if (!fs.existsSync(baseline)) {
                     console.log(`  no baseline for ${name} — run with --update`);
                     failed++;

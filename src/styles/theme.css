@@ -159,7 +159,14 @@ html:root.dark {
 
     --ink: #edf1f6;
     --ink-soft: #aab7c5;
-    --ink-faint: #77869a;
+    /*
+     * Raised from #77869a: lightening the dark paper (so the sheet separates
+     * from the desk) cost this tier 0.36 of contrast, taking meta text from
+     * 4.57:1 to 4.21:1 — under the 4.5 minimum. At this value it is 4.68:1 on
+     * paper and 4.51:1 on a card, so the palette change does not quietly make
+     * captions and dates harder to read.
+     */
+    --ink-faint: #7e8ea3;
 
     --accent: #8db6e8;
     --accent-warm: #d3a377;
@@ -191,8 +198,16 @@ html:root.dark {
     --inline-code-color: var(--accent);
     --selection-bg: rgb(143 180 226 / 0.24);
     --codeblock-selection: rgb(143 180 226 / 0.26);
-    --codeblock-bg: #171f29;
-    --codeblock-topbar-bg: #1f2933;
+    /*
+     * Code stays the *deep* well, deliberately below --well. A blockquote or a
+     * table is a shallow slot cut into the sheet; a code block is the deepest
+     * recess on the page, and its syntax palette is tuned for a near-black
+     * backdrop. Raising it to match --well made it read as a raised panel and
+     * flattened the hierarchy — so the ladder intentionally has a step below
+     * `well` that only code uses.
+     */
+    --codeblock-bg: #151c25;
+    --codeblock-topbar-bg: #1a222c;
     --license-block-bg: var(--surface-muted);
     --link-underline: rgb(143 180 226 / 0.36);
     --link-hover: rgb(234 238 243 / 0.06);

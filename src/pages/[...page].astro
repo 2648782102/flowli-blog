@@ -19,6 +19,12 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+/*
+ * Only the first page of the home feed has the wall art. `isHomePage` is true
+ * for every paginated page of `/`, so the condition has to include the page
+ * number or later pages would preload two images they never render.
+ */
+const showsWallArt = isHomePage && page.currentPage === 1;
 const latestPost = page.data[0];
 const remainingPosts = page.data.slice(1);
 const formatDate = (value: Date | string) =>
@@ -26,6 +32,43 @@ const formatDate = (value: Date | string) =>
 ---
 
 <GridLayout>
+    {showsWallArt && (
+        <Fragment slot="head">
+            {/*
+             * Both wall scrolls are above the fold at ≥1240px, and they are by
+             * far the heaviest things on the page (270KB and 190KB of image).
+             *
+             * The left one is the LCP element. The right one is worse than that
+             * suggests: it sits near the end of the document, so the parser
+             * only discovers it after the whole feed list. Measured on a
+             * throttled profile, the left mount started at 97ms and the right
+             * one at 1191ms — a second of blank wall on the right while the
+             * left was already painted. Preloading both from the head removes
+             * that asymmetry, which is far more noticeable than any individual
+             * image being a few ms late.
+             *
+             * `imagesrcset`/`imagesizes` mirror each <img> exactly, so the
+             * preload picks the same candidate the layout will (480w at DPR 1,
+             * 900w at DPR 2); without them the browser would fetch the 900w
+             * file and then fetch the 480w one as well.
+             */}
+            <link
+                rel="preload"
+                as="image"
+                href={assetUrl("/assets/art/scroll-wanghui.webp")}
+                imagesrcset={`${assetUrl("/assets/art/scroll-wanghui-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-wanghui.webp")} 900w`}
+                imagesizes="(min-width: 1240px) 24vw, 0px"
+                fetchpriority="high"
+            />
+            <link
+                rel="preload"
+                as="image"
+                href={assetUrl("/assets/art/scroll-morikage.webp")}
+                imagesrcset={`${assetUrl("/assets/art/scroll-morikage-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-morikage.webp")} 900w`}
+                imagesizes="(min-width: 1240px) 24vw, 0px"
+            />
+        </Fragment>
+    )}
     {isHomePage && (
         <div class="home-composition">
             <div class="wall-art wall-art--left">
@@ -34,6 +77,8 @@ const formatDate = (value: Date | string) =>
                     srcset={`${assetUrl("/assets/art/scroll-wanghui-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-wanghui.webp")} 900w`}
                     alt="王翚《山水》立轴，层叠山峦与林间村舍"
                     credit="Wang Hui, 1693 · The Met · CC0"
+                    loading="eager"
+                    fetchpriority="high"
                 />
             </div>
 
@@ -82,6 +127,7 @@ const formatDate = (value: Date | string) =>
                     srcset={`${assetUrl("/assets/art/scroll-morikage-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-morikage.webp")} 900w`}
                     alt="久隅守景《山水》立轴，孤峰与江上帆船"
                     credit="Kusumi Morikage, 17c · The Met · CC0"
+                    loading="eager"
                 />
             </div>
         </div>
