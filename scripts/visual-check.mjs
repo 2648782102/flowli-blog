@@ -66,6 +66,22 @@ const THEMES = ["light", "dark"];
 const VIEWPORT = { width: 1440, height: 1000, deviceScaleFactor: 1 };
 
 /*
+ * The screenshot matrix pins one viewport because pixel diffs need
+ * determinism. The wall-scroll slot, though, is the one thing that changes
+ * meaningfully with width — it is the axis the old `24vw` got wrong — so the
+ * scroll assertions are also run at the breakpoints where `sizes` switches.
+ * These runs only execute assertions; nothing is captured, so they do not
+ * need a baseline.
+ */
+const SCROLL_VIEWPORTS = [
+    { width: 1280, height: 900, deviceScaleFactor: 1 },
+    { width: 1440, height: 900, deviceScaleFactor: 2 },
+    { width: 1920, height: 1080, deviceScaleFactor: 2 },
+    { width: 2560, height: 1440, deviceScaleFactor: 2 },
+    { width: 3840, height: 2160, deviceScaleFactor: 2 },
+];
+
+/*
  * Material assertions.
  *
  * Pixels catch regressions but not *why*; these pin the values that the two
@@ -176,22 +192,26 @@ const MATERIAL_CHECKS = [
         })()`,
     },
     {
-        name: "above-the-fold art is not lazy-loaded",
+        name: "above-the-fold art is not deferred",
         /*
          * Both wall scrolls are visible at ≥1240px and are the heaviest images
-         * on the page. They shipped `loading="lazy"`, which makes the browser
-         * defer the request until layout is known — precisely the case where
-         * lazy is worse than eager. Measured, the right-hand mount started
-         * loading at 1191ms simply because it sits late in the document.
+         * on the page, so nothing may push their requests back.
          *
-         * A screenshot cannot catch this (the image eventually arrives), so it
-         * needs asserting on the attribute.
+         * This used to assert `loading !== "lazy"`, on the theory that lazy
+         * defers until layout is known. Measured, it does not: with
+         * `fetchpriority="high"` the request starts immediately either way
+         * (same bytes, same LCP), while `eager` costs a phone 53 KB for two
+         * images that are `display:none` below 1240px. So the attribute alone
+         * is the wrong thing to pin — what has to hold is that the image is
+         * not deferred and not competing at low priority.
          */
         js: `(() => {
             const arts = [...document.querySelectorAll(".hanging-scroll__art img")];
             if (!arts.length) return null;
-            const lazy = arts.filter((a) => a.loading === "lazy");
-            if (lazy.length) return lazy.length + " of " + arts.length + " wall images still loading=lazy";
+            const deferred = arts.filter((a) => a.loading === "lazy" && a.fetchPriority !== "high");
+            if (deferred.length) {
+                return deferred.length + " of " + arts.length + " wall images are lazy at default priority";
+            }
             return null;
         })()`,
     },
@@ -377,6 +397,62 @@ const MATERIAL_CHECKS = [
             return null;
         })()`,
     },
+    {
+        /* The mounts ship at five widths because the slot is not a fixed
+         * fraction of the viewport; `sizes` used to say 24vw, which asked for
+         * 384px at 1600 and pushed a 2× display onto the 900px original for a
+         * 268px mount. Measured widths per breakpoint are the fix, so assert
+         * the declared slot stays within 20% of the painted one. */
+        name: "wall scrolls declare the slot they actually paint",
+        viewports: "scroll",
+        only: ["light"],
+        js: `(() => {
+            const imgs = [...document.querySelectorAll(".hanging-scroll img")];
+            if (!imgs.length) return null;
+            for (const img of imgs) {
+                const painted = img.getBoundingClientRect().width;
+                if (painted < 1) continue;
+                const sizes = img.getAttribute("sizes") || "";
+                /* Resolve the sizes list the way the browser does: the first
+                   entry whose media condition matches wins. A bare length
+                   only counts if it is non-zero; the 0px entry is the
+                   deliberate "hidden below 1240px" fallback. */
+                let declared = null;
+                for (const part of sizes.split(",").map((s) => s.trim())) {
+                    const m = part.match(/^(?:\\(([^)]+)\\)\\s*)?(.+)$/);
+                    if (!m) continue;
+                    if (m[1] && !matchMedia(m[1]).matches) continue;
+                    if (declared === null) declared = m[2];
+                }
+                const px = declared?.endsWith("px") ? parseFloat(declared) : null;
+                if (!px) continue;
+                if (Math.abs(px - painted) / painted > 0.2) {
+                    return "declares " + px + "px for a " + Math.round(painted) + "px mount";
+                }
+            }
+            return null;
+        })()`,
+    },
+    {
+        /* A 2× display must not fall back to the 900px original unless the
+         * mount is actually that large: above 3200 CSS px the slot reaches
+         * ~550px. Below that, one step over the requested width is enough. */
+        name: "wall scrolls request the nearest step, not the original",
+        viewports: "scroll",
+        only: ["light"],
+        js: `(() => {
+            const img = document.querySelector(".hanging-scroll img");
+            if (!img) return null;
+            const painted = img.getBoundingClientRect().width;
+            if (painted < 1) return null;
+            const need = painted * devicePixelRatio;
+            if (need > 760) return null; /* 4K territory: 900 is correct there */
+            const picked = Number((img.currentSrc.match(/-(\\d+)\\.webp$/) || [])[1]);
+            if (!picked) return "currentSrc has no width step: " + img.currentSrc;
+            if (picked === 900) return "picked the 900px original for a " + Math.round(need) + "px slot";
+            return null;
+        })()`,
+    },
 ];
 
 const MIME = {
@@ -495,13 +571,13 @@ function connect(wsUrl) {
  * the same page with the freeze still applied, and only the *behavioural*
  * checks (transition duration) temporarily clear it.
  */
-async function loadState(url, theme, extraFeatures = []) {
+async function loadState(url, theme, extraFeatures = [], viewport = VIEWPORT) {
     const target = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/new?about:blank`, { method: "PUT" })).json();
     const tab = connect(target.webSocketDebuggerUrl);
     await tab.ready;
     await tab.send("Page.enable");
     await tab.send("Runtime.enable");
-    await tab.send("Emulation.setDeviceMetricsOverride", { ...VIEWPORT, mobile: false });
+    await tab.send("Emulation.setDeviceMetricsOverride", { ...viewport, mobile: false });
     await tab.send("Emulation.setEmulatedMedia", {
         features: [
             { name: "prefers-color-scheme", value: theme },
@@ -680,8 +756,15 @@ async function main() {
             for (const state of STATES) {
                 const name = `${state.name}-${theme}.webp`;
                 const target = path.join(runDir, name);
+                /* Viewport-specific checks run in the scroll sweep below, once
+                   per breakpoint, rather than being repeated at the single
+                   pinned screenshot size. */
                 const checks = MATERIAL_CHECKS.filter(
-                    (c) => (!c.only || c.only.includes(theme)) && !c.forcedColors && !c.reducedMotion,
+                    (c) =>
+                        (!c.only || c.only.includes(theme)) &&
+                        !c.forcedColors &&
+                        !c.reducedMotion &&
+                        !c.viewports,
                 );
                 const url = `http://127.0.0.1:${PORT}${PREFIX}${state.path}`;
 
@@ -803,6 +886,34 @@ async function main() {
             } finally {
                 tab.ws.close();
                 await closeTab(targetId);
+            }
+        }
+
+        /*
+         * The scroll assertions depend on the viewport, so run them at every
+         * breakpoint where `sizes` switches. Light theme only: the slot is a
+         * layout measurement, not a palette one.
+         */
+        if (!update) {
+            const scrollChecks = MATERIAL_CHECKS.filter((c) => c.viewports === "scroll");
+            const url = `http://127.0.0.1:${PORT}${PREFIX}/`;
+            for (const viewport of SCROLL_VIEWPORTS) {
+                const { tab, targetId } = await loadState(url, "light", [], viewport);
+                try {
+                    const failures = await assertMaterials(tab, scrollChecks);
+                    const label = `${viewport.width}×${viewport.height}@${viewport.deviceScaleFactor}x`;
+                    if (failures.length) {
+                        for (const failure of failures) {
+                            console.log(`  ASSERT   home-light.webp ${label}  ${failure}`);
+                        }
+                        failed += failures.length;
+                    } else {
+                        console.log(`  ok       wall scrolls ${label}`);
+                    }
+                } finally {
+                    tab.ws.close();
+                    await closeTab(targetId);
+                }
             }
         }
     } finally {

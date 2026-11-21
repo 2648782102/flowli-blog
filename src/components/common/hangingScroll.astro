@@ -5,28 +5,47 @@ interface Props {
     alt: string;
     credit?: string;
     class?: string;
-    /**
-     * `eager` for the homepage pair, which is the largest thing on screen.
-     *
-     * These were `loading="lazy"` — and measured, the scroll is the LCP
-     * element (279KB of image, painted at 100ms only because it happens to be
-     * first in the DOM). Lazy-loading the largest above-the-fold image makes
-     * the browser defer the request until layout is known, which is the one
-     * case where `lazy` is strictly worse than `eager`.
+    /*
+     * `fetchpriority` is what gives the homepage pair its head start; it is
+     * honoured on a lazy image as soon as the element is in the viewport, so
+     * the LCP still lands at ~100ms without an eager request on phones where
+     * the mounts are hidden.
      */
-    loading?: "eager" | "lazy";
     fetchpriority?: "high" | "auto" | "low";
 }
 
-const {
-    src,
-    srcset,
-    alt,
-    credit,
-    class: className,
-    loading = "lazy",
-    fetchpriority = "auto",
-} = Astro.props;
+const { src, srcset, alt, credit, class: className, fetchpriority = "auto" } = Astro.props;
+
+/*
+ * The slot is not a fixed fraction of the viewport: --wall-height is
+ * min(column × 0.62, 62vh, gutter), so a vw-based `sizes` is wrong at both
+ * ends of the desktop range. Measured mount widths, at 1×:
+ *
+ *   1240 → 172px   1280 → 218px   1440–1919 → 268px
+ *   1920 → 317px   2560 → 436px   3840 → 549px
+ *
+ * The old `24vw` asked for 384px at 1600 (a 268px mount) and 19vw still
+ * over-declared by 15% at 1920, so a 2× display landed on the 900px
+ * original either way. Below 1240px the mounts are display:none.
+ */
+const SIZES = [
+    "(min-width: 3440px) 550px",
+    "(min-width: 2560px) 440px",
+    "(min-width: 2048px) 400px",
+    "(min-width: 1920px) 320px",
+    "(min-width: 1440px) 270px",
+    "(min-width: 1240px) 260px",
+    "0px",
+].join(", ");
+
+/*
+ * The mounts are the LCP element, so they carry `fetchpriority="high"`. The
+ * image is `lazy` regardless: below 1240px `.wall-art` is `display:none`, and
+ * an eager img still downloads its `src` fallback there — 52 KB on a phone
+ * for an image that is never painted, because `media` on an img does not stop
+ * the request. A lazy image inside a hidden element is never fetched, and
+ * measured locally both settings paint the LCP at 88–100 ms.
+ */
 ---
 
 <figure class:list={["hanging-scroll", className]}>
@@ -34,9 +53,9 @@ const {
         <img
             src={src}
             srcset={srcset}
-            sizes="(min-width: 1240px) 24vw, 0px"
+            sizes={SIZES}
             alt={alt}
-            loading={loading}
+            loading="lazy"
             fetchpriority={fetchpriority}
             decoding="async"
         />

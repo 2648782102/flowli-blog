@@ -27,6 +27,35 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 const showsWallArt = isHomePage && page.currentPage === 1;
 const latestPost = page.data[0];
 const remainingPosts = page.data.slice(1);
+
+/*
+ * One definition for both the preload and the <img>, because the two drifting
+ * apart is exactly how a preloaded step gets thrown away and re-fetched. The
+ * widths are the measured mount widths per breakpoint; see
+ * components/common/hangingScroll.astro for the measurements.
+ */
+const HANGING_SCROLL_SIZES = [
+    "(min-width: 3440px) 550px",
+    "(min-width: 2560px) 440px",
+    "(min-width: 2048px) 400px",
+    "(min-width: 1920px) 320px",
+    "(min-width: 1440px) 270px",
+    "(min-width: 1240px) 260px",
+    "0px",
+].join(", ");
+
+const hangingScroll = (name: string, fallbackWidth: number) => ({
+    src: `/assets/art/scroll-${name}-${fallbackWidth}.webp`,
+    srcset: [350, 480, 640, 880, 900]
+        .map((width) => `${assetUrl(`/assets/art/scroll-${name}-${width}.webp`)} ${width}w`)
+        .join(", "),
+    sizes: HANGING_SCROLL_SIZES,
+});
+
+const HANGING_SCROLL = {
+    wanghui: hangingScroll("wanghui", 640),
+    morikage: hangingScroll("morikage", 640),
+};
 const formatDate = (value: Date | string) =>
     new Date(value).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
 ---
@@ -47,25 +76,27 @@ const formatDate = (value: Date | string) =>
              * that asymmetry, which is far more noticeable than any individual
              * image being a few ms late.
              *
-             * `imagesrcset`/`imagesizes` mirror each <img> exactly, so the
-             * preload picks the same candidate the layout will (480w at DPR 1,
-             * 900w at DPR 2); without them the browser would fetch the 900w
-             * file and then fetch the 480w one as well.
+             * `imagesizes` and `imagesrcset` are taken from the same
+             * HANGING_SCROLL constant the <img> below uses, so the preload
+             * picks the exact candidate the layout will. When they drift the
+             * browser fetches one step for the preload and another for the
+             * image itself — the duplicate download this comment used to
+             * describe.
              */}
             <link
                 rel="preload"
                 as="image"
-                href={assetUrl("/assets/art/scroll-wanghui.webp")}
-                imagesrcset={`${assetUrl("/assets/art/scroll-wanghui-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-wanghui.webp")} 900w`}
-                imagesizes="(min-width: 1240px) 24vw, 0px"
+                href={assetUrl(HANGING_SCROLL.wanghui.src)}
+                imagesrcset={HANGING_SCROLL.wanghui.srcset}
+                imagesizes={HANGING_SCROLL.wanghui.sizes}
                 fetchpriority="high"
             />
             <link
                 rel="preload"
                 as="image"
-                href={assetUrl("/assets/art/scroll-morikage.webp")}
-                imagesrcset={`${assetUrl("/assets/art/scroll-morikage-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-morikage.webp")} 900w`}
-                imagesizes="(min-width: 1240px) 24vw, 0px"
+                href={assetUrl(HANGING_SCROLL.morikage.src)}
+                imagesrcset={HANGING_SCROLL.morikage.srcset}
+                imagesizes={HANGING_SCROLL.morikage.sizes}
             />
         </Fragment>
     )}
@@ -73,11 +104,11 @@ const formatDate = (value: Date | string) =>
         <div class="home-composition">
             <div class="wall-art wall-art--left">
                 <HangingScroll
-                    src={assetUrl("/assets/art/scroll-wanghui.webp")}
-                    srcset={`${assetUrl("/assets/art/scroll-wanghui-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-wanghui.webp")} 900w`}
+                    src={assetUrl(HANGING_SCROLL.wanghui.src)}
+                    srcset={HANGING_SCROLL.wanghui.srcset}
+                    sizes={HANGING_SCROLL.wanghui.sizes}
                     alt="王翚《山水》立轴，层叠山峦与林间村舍"
                     credit="Wang Hui, 1693 · The Met · CC0"
-                    loading="eager"
                     fetchpriority="high"
                 />
             </div>
@@ -123,11 +154,12 @@ const formatDate = (value: Date | string) =>
 
             <div class="wall-art wall-art--right">
                 <HangingScroll
-                    src={assetUrl("/assets/art/scroll-morikage.webp")}
-                    srcset={`${assetUrl("/assets/art/scroll-morikage-sm.webp")} 480w, ${assetUrl("/assets/art/scroll-morikage.webp")} 900w`}
+                    src={assetUrl(HANGING_SCROLL.morikage.src)}
+                    srcset={HANGING_SCROLL.morikage.srcset}
+                    sizes={HANGING_SCROLL.morikage.sizes}
                     alt="久隅守景《山水》立轴，孤峰与江上帆船"
                     credit="Kusumi Morikage, 17c · The Met · CC0"
-                    loading="eager"
+                    fetchpriority="high"
                 />
             </div>
         </div>

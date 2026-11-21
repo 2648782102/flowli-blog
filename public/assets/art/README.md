@@ -2,16 +2,24 @@
 
 Two physically rendered hanging scrolls flank the homepage reading column.
 
-| File | Work | Artist | Date | Source |
-| --- | --- | --- | --- | --- |
-| `scroll-wanghui.webp` | Landscape | Wang Hui (王翚) | 1693 | The Met, CC0 |
-| `scroll-morikage.webp` | Landscape | Kusumi Morikage (久隅守景) | 17th century | The Met, CC0 |
+| Work | Artist | Date | Source |
+| --- | --- | --- | --- |
+| Landscape | Wang Hui (王翚) | 1693 | The Met, CC0 |
+| Landscape | Kusumi Morikage (久隅守景) | 17th century | The Met, CC0 |
+
+Each work ships at five widths — `-350`, `-480`, `-640`, `-880`, `-900` —
+because the mount's slot is set by `--wall-height` and spans roughly 170–550
+CSS pixels depending on the viewport. The widths are measured from the
+layout, not taken from a generic ladder: 350 covers 1× to 1919, 480 covers
+1× from 1920 and 2× to 1280, 640 covers 2× to 1919, and 880 covers 2× from
+1920 to 3200; 900 stays the 2× original above that. The previous pair of
+480/900 files meant a 2× 1600px display pulled the 173 KB original for a
+268px slot.
 
 The paintings and the silk damask mounting are cropped from public-domain
 museum photographs of the real mounts. The paper curvature, the slim 天杆 and
 the upper-left lighting are rendered in Three.js and baked to a transparent
-WebP, so the site itself ships no WebGL. `-sm.webp` are 480px variants for
-narrow/high-density screens.
+WebP, so the site itself ships no WebGL.
 
 There is deliberately no 地杆: at display size a wooden roller with bone end
 knobs reads as lacquered plastic long before the eye accepts it, so the mount

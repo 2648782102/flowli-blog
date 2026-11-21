@@ -52,6 +52,29 @@ http.createServer((req,res)=>{
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+/*
+ * One bake renders the tallest step, and every smaller step is derived from
+ * that supersampled PNG. Re-running the 3D scene per width would triple the
+ * bake time for pixels that are only ever downsampled.
+ *
+ * The widths follow what the layout actually renders, measured across
+ * 1240–3840px (see --wall-height and the 1792px root font-size ramp in
+ * theme.css): the wider mount is 172px at 1240, 218px at 1280, 268px for
+ * 1440–1919, 317px at 1920, 436px at 2560 and 549px at 3840.
+ *
+ * Exactly one step above the requested width is what a 2× display needs, so
+ * the ladder is spaced where that ceiling lands: 350 covers 1× to 1919,
+ * 480 covers 1× from 1920 and 2× to 1280, 640 covers 2× to 1919, 880 covers
+ * 2× from 1920 to 3200, and 900 is the 2× original above that. A 760 step
+ * was tried and dropped: the browser's candidate at 2560×2 is 872px, which
+ * skipped it and fetched 900 anyway.
+ *
+ * The old 480/900 pair jumped straight over the middle, so a 2× 1600px
+ * display pulled the 173 KB original for a 268px slot while a 1× 1280
+ * pulled the 51 KB 480px file for a 218px slot.
+ */
+const STEPS = [900, 880, 640, 480, 350];
+
 async function bake(art, name, width) {
     /*
      * Render at 2× and downsample. The sheet's silhouette is a gentle curve
@@ -83,15 +106,15 @@ async function bake(art, name, width) {
     await page.close();
 
     const sharp = require("sharp");
-    await sharp(png)
-        .resize({ width, kernel: "lanczos3" })
-        .webp({ quality: 88, effort: 6 })
-        .toFile(path.join(OUT_DIR, `${name}.webp`));
-    await sharp(png).resize({ width: 480, kernel: "lanczos3" }).webp({ quality: 84, effort: 6 })
-        .toFile(path.join(OUT_DIR, `${name}-sm.webp`));
+    for (const step of STEPS) {
+        await sharp(png)
+            .resize({ width: Math.min(step, width), kernel: "lanczos3" })
+            .webp({ quality: step === width ? 88 : 84, effort: 6 })
+            .toFile(path.join(OUT_DIR, `${name}-${step}.webp`));
+    }
     const fs = await import("node:fs");
     fs.unlinkSync(png);
-    console.log(`baked ${name}.webp`);
+    console.log(`baked ${name}-{${STEPS.join(",")}}.webp`);
 }
 
 let browser;
@@ -108,8 +131,22 @@ try {
         headless: true,
         args: ["--enable-unsafe-swiftshader", "--hide-scrollbars"],
     });
-    await bake("wanghui", "scroll-wanghui", 900);
-    await bake("morikage", "scroll-morikage", 900);
+    for (const [art, name] of [["wanghui", "scroll-wanghui"], ["morikage", "scroll-morikage"]]) {
+        /*
+         * `bake` renders the whole scene; skip it when every step already
+         * exists and only the derived sizes changed. `BAKE_FORCE=1` re-runs
+         * the 3D scene anyway.
+         */
+        const fs = await import("node:fs");
+        const haveAll = STEPS.every((step) =>
+            fs.existsSync(path.join(OUT_DIR, `${name}-${step}.webp`)),
+        );
+        if (haveAll && !process.env.BAKE_FORCE) {
+            console.log(`skip ${name}: all ${STEPS.length} steps exist`);
+            continue;
+        }
+        await bake(art, name, 900);
+    }
 } finally {
     if (browser) await browser.close();
     server.kill();

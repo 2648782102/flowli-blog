@@ -117,8 +117,14 @@
 首页两侧的挂画是中式立轴，不是画框：
 
 - 组件：`src/components/common/hangingScroll.astro`
-- 素材：`public/assets/art/scroll-wanghui.webp`（王翚，1693）与 `scroll-morikage.webp`（久隅守景，17 世纪），各带一个 480px 的 `-sm.webp`
+- 素材：`public/assets/art/scroll-{wanghui,morikage}-{350,480,640,880,900}.webp`（王翚，1693；久隅守景，17 世纪）
 - 来源：画心与暗花绫装裱裁自大都会博物馆的公有领域实物照片，CC0
+
+五档宽度是按布局实测取的，不是通用阶梯：`--wall-height` 决定画幅在约
+170–550 CSS 像素之间（1792px 以上根字号还会放大），`sizes` 按断点写实测
+宽度而不是 `vw` 百分比。旧版写 `24vw`、只提供 480/900 两档，2× 的 1600px
+屏幕会为 268px 的画幅拉 173 KB 的原图；而按 `19vw` 估，1920 下又会多算
+15%，同样落到 900 档。两张画都在首屏内，所以不惰性加载。
 
 三点值得注意：
 
