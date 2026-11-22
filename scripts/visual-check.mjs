@@ -111,6 +111,53 @@ const MATERIAL_CHECKS = [
         })()`,
     },
     {
+        name: "wall couplet stays beside the column and out of the flow",
+        /*
+         * Two regressions this caught in the first build of the couplet:
+         *
+         *   1. It was a flex child of `.home-composition`, so the composition's
+         *      2.5rem gap inserted a row above the header and pushed the whole
+         *      page down 40px.
+         *   2. The lines were `<p>`, and `#content-wrapper p` (ID specificity,
+         *      earlier in the cascade) replaced their ink with body-soft colour
+         *      at 1.85 leading. They looked like typed body copy.
+         *
+         * Both are silent in a screenshot of the group alone, so pin the
+         * measurable consequences: the composition still starts where the old
+         * flow put it, and the ink is not the body-soft tier.
+         */
+        js: `(() => {
+            const comp = document.querySelector(".home-composition");
+            /* Article, archive and projects states have no couplet; this is a
+               home-only behaviour, not a site-wide requirement. */
+            if (!comp) return null;
+            const line = document.querySelector(".wall-couplet__line");
+            if (!line) return "no couplet on the home page";
+            const first = comp.firstElementChild;
+            if (first && !first.classList.contains("wall-couplet"))
+                return "couplet is not the composition's first child";
+            /* It must be out of flow; a static/flex child adds a row. */
+            if (getComputedStyle(line.parentElement).position !== "absolute")
+                return "couplet container is in flow (should be absolute)";
+            /*
+             * Compare rendered colours, not token strings: the couplet uses
+             * color-mix(), so its computed value is color(srgb … / alpha) and
+             * cannot be compared to a hex token. Probe --ink-soft through a
+             * real element so both go through the same colour pipeline.
+             */
+            const probe = document.createElement("span");
+            probe.style.color = "var(--ink-soft)";
+            document.body.append(probe);
+            const soft = getComputedStyle(probe).color;
+            probe.remove();
+            if (getComputedStyle(line).color === soft)
+                return "couplet ink fell back to --ink-soft (" + soft + ")";
+            if (parseFloat(getComputedStyle(line).lineHeight) > parseFloat(getComputedStyle(line).fontSize) * 1.2)
+                return "couplet leading is body-copy tall: " + getComputedStyle(line).lineHeight;
+            return null;
+        })()`,
+    },
+    {
         name: "page transition is declared on the element Swup measures",
             /* Runs with motion enabled: under `reduce` the transition is
            intentionally zero, so the assertion would be meaningless. */

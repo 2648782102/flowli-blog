@@ -1,0 +1,173 @@
+---
+/*
+ * Two vertical lines of brushed characters on the wall either side of the
+ * reading column — the strip the hanging scrolls used to occupy.
+ *
+ * The lines are the closing couplet of 张伯端《西江月》其四:
+ *   还如果熟自然红，莫问如何修种。
+ *
+ * Right-hand line reads first, as on a hanging couplet.
+ *
+ * The face is Zhi Mang Xing (SIL OFL 1.1) cut down to these 12 characters,
+ * 4.4 KB. The full CJK face is 4 MB; slanting the serif would read as a
+ * rotated heading, not as writing. `pnpm font:couplet` regenerates the file;
+ * the OFL text ships next to it in public/assets/fonts/OFL.txt.
+ */
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const RIGHT = "还如果熟自然红";
+const LEFT = "莫问如何修种";
+---
+
+<div class:list={["wall-couplet", className]} aria-hidden="true">
+    {/* Spans, not <p>: `#content-wrapper p` sets body colour and 1.85 leading
+        at an ID's specificity, which overrode the ink and the one-line
+        leading these lines need. Decorative text has no paragraph semantics
+        to lose. */}
+    <span class="wall-couplet__line wall-couplet__line--right">{RIGHT}</span>
+    <span class="wall-couplet__line wall-couplet__line--left">{LEFT}</span>
+</div>
+
+<style>
+    @font-face {
+        font-family: "Brush Poem";
+        /* Resolved and fingerprinted by Vite. A `var()` here would not work:
+           `@font-face` sits outside the element tree, so custom properties
+           are not inherited into its descriptors. */
+        src: url("../../assets/fonts/brush-poem.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        /*
+         * `swap` showed the serif fallback first and then reflowed the lines
+         * once the 4.4 KB face arrived, which on a static wall reads as a
+         * glitch. The subset is small enough that `block` is a short blank.
+         */
+        font-display: block;
+        /* The file carries only these glyphs; the range stops the browser from
+           falling back into this face for other CJK text. */
+        unicode-range:
+            U+8FD8, U+5982, U+679C, U+719F, U+81EA, U+7136, U+7EA2,
+            U+83AB, U+95EE, U+4F55, U+4FEE, U+79CD;
+    }
+
+    /*
+     * Absolutely positioned rather than in flow: the couplet is decor beside
+     * the column. As a flex child of the composition it became a flex item
+     * and the 2.5rem row gap pushed the whole page down 40px.
+     *
+     * The container spans the reading column (`.home-composition` is already
+     * `position: relative` and exactly `--home-column` wide), so the lines
+     * only need to be offset outward from 100% / 0 rather than re-deriving
+     * the centred column from viewport units.
+     */
+    .wall-couplet {
+        position: absolute;
+        /* Flush with the top of the composition so the first character sits
+           on the same line as the intro kicker — measured 0px apart at 1440,
+           1920 and 3840 once the anchor moved to the composition. */
+        inset-block-start: 0;
+        inset-inline: 0;
+        display: none;
+        pointer-events: none;
+    }
+
+    /* Wide desktops only: below 1240px there is no free strip beside the
+       column. `display: none` also keeps the font from being requested. */
+    @media (min-width: 1240px) {
+        .wall-couplet {
+            display: block;
+        }
+    }
+
+    .wall-couplet__line {
+        position: absolute;
+        margin: 0;
+        writing-mode: vertical-rl;
+        /*
+         * A couplet line is one column, always. Without this, the shrink-to-fit
+         * block size of the absolutely positioned box is measured against a
+         * zero-height parent and every character wrapped into its own column —
+         * measured 179px wide for seven 26px characters.
+         */
+        white-space: nowrap;
+        /*
+         * `text-orientation: upright` keeps every character on its own,
+         * square-ish body; the face already draws them that way, so it mainly
+         * stops accidental rotation of the few Latin-shaped glyphs.
+         */
+        text-orientation: upright;
+        /*
+         * Wide letter-spacing, not line-height: in vertical writing the
+         * letter-spacing advances along the line, which is exactly the
+         * breathing room between characters. This brush face's glyphs are
+         * drawn wider than their em box and overlapped at 0.06em.
+         */
+        letter-spacing: 0.22em;
+        font-family: "Brush Poem", var(--editorial-serif);
+        font-size: var(--couplet-size);
+        line-height: 1;
+        /*
+         * Ink on the wall, not a label: the page ink at low opacity reads as
+         * darker plaster in the light theme and lifted plaster in the dark
+         * one. A fixed black disappears against the dark desk. The opacity is
+         * a theme token — see `--couplet-ink` — because the same mix reads far
+         * heavier in dark mode.
+         */
+        color: color-mix(in srgb, var(--ink) var(--couplet-ink), transparent);
+        user-select: none;
+    }
+
+    /*
+     * Centre each line in the strip of wall beside the column, rather than
+     * butting it against the text.
+     *
+     * The first version offset by a fixed gap from the column edge, which left
+     * the lines hugging the copy and ~450px of empty wall on their outside at
+     * 1916px — the pair read as two columns hanging off the article. The gutter
+     * is (100vw - column) / 2, so its middle sits a quarter of that out from the
+     * edge; `- 0.5em` then pulls back by half a character so the glyphs, not
+     * their line box, are what looks centred.
+     *
+     * The right-hand line is the couplet's opening, so it goes to the right of
+     * the column and is placed from `left: 100%`; measuring from the far edge
+     * would flip it.
+     */
+    .wall-couplet .wall-couplet__line--right {
+        left: calc(
+            100% + (100vw - 100%) / 4 - 0.5em
+        );
+    }
+
+    .wall-couplet .wall-couplet__line--left {
+        right: calc(
+            100% + (100vw - 100%) / 4 - 0.5em
+        );
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        /* A very slow settle on first paint, like ink soaking in. No loop, no
+           parallax: the wall is stationary. */
+        .wall-couplet__line {
+            animation: couplet-ink 1400ms var(--ease-settle, ease-out) both;
+        }
+
+        .wall-couplet__line--right {
+            animation-delay: 120ms;
+        }
+    }
+
+    @keyframes couplet-ink {
+        from {
+            opacity: 0;
+            translate: 0 -0.4rem;
+        }
+        to {
+            opacity: 1;
+            translate: 0 0;
+        }
+    }
+</style>
