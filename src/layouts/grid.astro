@@ -39,21 +39,41 @@ const containerClass = isHomePage ? "editorial-content-column is-home-layout" : 
     postSlug={postSlug}
 >
     <slot slot="head" name="head" />
-    <main id="swup-container" class:list={[containerClass, "transition-swup-fade"]} data-layout={layoutMode} data-page={postSlug ? "post" : undefined}>
+    {/*
+     * The rail is a sibling of the Swup container, not a child of it.
+     *
+     * Every non-home page renders the same four widgets (directory,
+     * categories, tags, TOC), 22KB of markup, and it lived inside
+     * #swup-container — so Swup rebuilt it on every navigation and the whole
+     * rail faded and slid with the page. Verified before the change: the rail
+     * was re-created on each visit (29396 → 24777 bytes of innerHTML) and took
+     * part in the container's leave animation.
+     *
+     * Moving it out does two things at once:
+     *   - it is no longer part of the container Swup replaces, so it survives
+     *     navigation and never animates;
+     *   - it becomes a layout-level column, which is what it always was
+     *     conceptually — chrome that frames every page, not page content.
+     *
+     * The grid moves up to #main-grid to keep the two-column layout. Sidebar
+     * internals that *do* depend on the current page (the TOC heading list)
+     * still have to refresh; that is handled by WidgetLayout, which re-reads
+     * the new page's headings after a visit.
+     */} <main id="swup-container" class:list={[containerClass, "transition-swup-fade"]} data-layout={layoutMode} data-page={postSlug ? "post" : undefined}>
         <div class="editorial-page-grid" data-layout={layoutMode}>
             <div id="content-wrapper" class="onload-animation-up transition-leaving">
                 <slot />
             </div>
-            {hasAnyComponents && (
-                <aside id="editorial-sidebar-rail" class="editorial-sidebar-rail" aria-label="站点信息" tabindex={postSlug ? 0 : undefined}>
-                    <Sidebar
-                        id="left-sidebar"
-                        side="middle"
-                        class="editorial-sidebar onload-animation-up"
-                        headings={headings}
-                    />
-                </aside>
-            )}
         </div>
     </main>
+    {hasAnyComponents && (
+        <aside id="editorial-sidebar-rail" class="editorial-sidebar-rail" aria-label="站点信息" tabindex={postSlug ? 0 : undefined} data-layout={layoutMode}>
+            <Sidebar
+                id="left-sidebar"
+                side="middle"
+                class="editorial-sidebar onload-animation-up"
+                headings={headings}
+            />
+        </aside>
+    )}
 </BaseLayout>

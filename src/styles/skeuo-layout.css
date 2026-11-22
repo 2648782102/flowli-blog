@@ -25,11 +25,18 @@
     padding-block: 2.25rem 0;
 }
 
-/* Reading pages: main column + sticky rail. */
-#swup-container[data-layout="with-rail"] .editorial-page-grid {
+/*
+ * Reading pages: the page grid is a single column now.
+ *
+ * It used to be `1fr 15rem` with the rail in the second track. The rail is a
+ * sibling of #swup-container (a layout-level column of #main-grid), so keeping
+ * the two-track definition here created a nested grid and squeezed the article
+ * column by ~280px.
+ */
+#main-grid > #swup-container > .editorial-page-grid {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) 15rem;
-    column-gap: clamp(1.5rem, 3vw, 2.5rem);
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
     align-items: start;
     justify-content: center;
 }
@@ -42,30 +49,32 @@
     margin-inline: 0;
 }
 
-#swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+#main-grid > #editorial-sidebar-rail {
     grid-column: 2;
     width: 100%;
 }
 
 /* Home is a single wide column. */
-#swup-container[data-layout="home"] .editorial-page-grid {
+#main-grid > #swup-container[data-layout="home"] > .editorial-page-grid {
     display: flex !important;
     flex-direction: column !important;
 }
 
-#swup-container[data-layout="home"] #content-wrapper {
+#main-grid > #swup-container[data-layout="home"] #content-wrapper {
     max-width: var(--home-column);
+    width: 100%;
     margin-inline: auto;
 }
 
 /* Reading-only pages centre their column. */
-#swup-container[data-layout="reading"] .editorial-page-grid {
+#main-grid > #swup-container[data-layout="reading"] > .editorial-page-grid {
     display: flex !important;
     flex-direction: column !important;
 }
 
-#swup-container[data-layout="reading"] #content-wrapper {
+#main-grid > #swup-container[data-layout="reading"] #content-wrapper {
     max-width: 46rem;
+    width: 100%;
     margin-inline: auto;
 }
 
@@ -77,9 +86,20 @@
 
 /* Keep two columns down to tablet portrait; only stack on phones. */
 @media (min-width: 768px) and (max-width: 1023px) {
-    #swup-container[data-layout="with-rail"] .editorial-page-grid {
-        grid-template-columns: minmax(0, 1fr) 10rem;
-        column-gap: 1.25rem;
+    #main-grid > #swup-container > .editorial-page-grid {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 0;
+    }
+
+    /* Below 1024px the rail drops under the article instead of beside it. */
+    #main-grid:has(> #editorial-sidebar-rail[data-layout="with-rail"]) {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    #main-grid > #editorial-sidebar-rail {
+        margin-top: 2rem;
+        padding-block-start: 0;
     }
 
     /* The rail is decorative at this width: tighten its internals. */
@@ -96,7 +116,7 @@
         max-width: none;
     }
 
-    #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+    #main-grid > #editorial-sidebar-rail {
         margin-top: 0;
     }
 
@@ -106,7 +126,7 @@
 }
 
 @media (max-width: 767px) {
-    #swup-container[data-layout="with-rail"] .editorial-page-grid {
+    #main-grid > #swup-container > .editorial-page-grid {
         display: flex !important;
         flex-direction: column !important;
     }
@@ -115,13 +135,13 @@
         max-width: none;
     }
 
-    #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+    #main-grid > #editorial-sidebar-rail {
         margin-top: 2rem;
     }
 }
 
 /* The rail must occupy row 1 beside the article, never drop below it. */
-#swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+#main-grid > #editorial-sidebar-rail {
     grid-row: 1 !important;
     grid-column: 2 !important;
     align-self: start;

@@ -53,8 +53,6 @@
 }
 
 .editorial-sidebar-rail {
-    grid-column: 1;
-    grid-row: 2;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -131,15 +129,11 @@
     margin-inline: auto;
 }
 
-#swup-container[data-layout="home"] .editorial-sidebar-rail,
-#swup-container[data-layout="reading"] .editorial-sidebar-rail {
-    display: none;
-}
-
-#swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
-    grid-column: 2;
-    grid-row: 1;
-}
+/*
+ * The rail is rendered only when a page has widgets (grid.astro), so `home`
+ * and `reading` simply do not output it — no display:none needed here. Its
+ * column placement lives in site-layout.css, beside the #main-grid definition.
+ */
 
 /*
  * Page-motion hooks live in transition.css now.
@@ -257,13 +251,13 @@ body:not(.is-post-page) #editorial-sidebar-rail #directory-middle {
 /* Responsive structure */
 @media (max-width: 1279px) {
     .editorial-page-grid,
-    #swup-container[data-layout="with-rail"] .editorial-page-grid {
+    #main-grid > #swup-container > .editorial-page-grid {
         grid-template-columns: minmax(0, 1fr);
         row-gap: 2.5rem;
     }
 
     .editorial-sidebar-rail,
-    #swup-container[data-layout="with-rail"] .editorial-sidebar-rail {
+    #main-grid > #editorial-sidebar-rail {
         grid-column: 1;
         grid-row: 2;
         position: static;
