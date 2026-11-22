@@ -121,16 +121,31 @@ const LEFT = "莫问如何修种";
         user-select: none;
     }
 
-    /* Distance out from the column edge, growing with the gutter so the pair
-       keeps its relationship to the text at 4K. The right line is the
-       opening, so it goes to the right of the column and is placed from
-       `left: 100%`; measuring from the far edge would flip it. */
+    /*
+     * Centre each line in the strip of wall beside the column, rather than
+     * butting it against the text.
+     *
+     * The first version offset by a fixed gap from the column edge, which left
+     * the lines hugging the copy and ~450px of empty wall on their outside at
+     * 1916px — the pair read as two columns hanging off the article. The gutter
+     * is (100vw - column) / 2, so its middle sits a quarter of that out from the
+     * edge; `- 0.5em` then pulls back by half a character so the glyphs, not
+     * their line box, are what looks centred.
+     *
+     * The right-hand line is the couplet's opening, so it goes to the right of
+     * the column and is placed from `left: 100%`; measuring from the far edge
+     * would flip it.
+     */
     .wall-couplet .wall-couplet__line--right {
-        left: calc(100% + clamp(2rem, 3vw, 4.5rem));
+        left: calc(
+            100% + (100vw - 100%) / 4 - 0.5em
+        );
     }
 
     .wall-couplet .wall-couplet__line--left {
-        right: calc(100% + clamp(2rem, 3vw, 4.5rem));
+        right: calc(
+            100% + (100vw - 100%) / 4 - 0.5em
+        );
     }
 
     @media (prefers-reduced-motion: no-preference) {
