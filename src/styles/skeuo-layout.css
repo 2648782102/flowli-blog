@@ -17,13 +17,11 @@
     padding-inline: clamp(1rem, 2.5vw, 1.25rem);
 }
 
-#content-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 2.25rem;
-    width: 100%;
-    padding-block: 2.25rem 0;
-}
+/*
+ * #content-wrapper is owned by site-layout.css (2rem / 2rem). This file used
+ * to declare a third copy at 2.25rem, which won on source order and silently
+ * shifted every page by 4px plus 4px of gap. Kept out of here on purpose.
+ */
 
 /*
  * Reading pages: the page grid is a single column now.

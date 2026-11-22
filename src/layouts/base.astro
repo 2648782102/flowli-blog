@@ -338,6 +338,22 @@ syncPostBackLink();
 const setup = () => {
     let pausedElementIds = new Set();
     window.swup.hooks.on('content:replace', () => {
+        /*
+         * Mirror the page's layout mode onto the rail.
+         *
+         * The rail is carried across visits by `data-swup-persist`, which
+         * means Swup restores the *outgoing* node — attributes included. Left
+         * alone, navigating home → archive would keep data-layout="home" and
+         * the rail would stay hidden. The container is the source of truth: it
+         * is rebuilt on every visit and always carries the new mode.
+         */
+        const mode = document.querySelector('#swup-container')?.getAttribute('data-layout');
+        const rail = document.getElementById('editorial-sidebar-rail');
+        if (mode && rail && rail.getAttribute('data-layout') !== mode) {
+            rail.setAttribute('data-layout', mode);
+            if (mode === 'with-rail') rail.removeAttribute('aria-hidden');
+            else rail.setAttribute('aria-hidden', 'true');
+        }
         document.body.classList.toggle('is-home', document.querySelector('#swup-container')?.getAttribute('data-layout') === 'home');
         // Restore pause-swup-transition class to newly replaced persistent elements
         pausedElementIds.forEach(id => {

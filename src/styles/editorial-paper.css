@@ -52,8 +52,13 @@
     min-width: 0;
 }
 
-.editorial-sidebar-rail {
-    display: flex;
+/*
+ * No `display` here: whether the rail is visible is a layout decision owned by
+ * site-layout.css. A bare `.editorial-sidebar-rail { display: flex }` made it
+ * visible on every page regardless of mode, and because this file loads after
+ * the layout file it won.
+ */
+#main-grid > #editorial-sidebar-rail {
     flex-direction: column;
     gap: 1.5rem;
     width: 100%;

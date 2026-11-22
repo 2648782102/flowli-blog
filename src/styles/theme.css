@@ -263,13 +263,21 @@ body {
     width: 100%;
 }
 
+/*
+ * The wrapper's own rhythm: 2rem gap, 2rem top padding.
+ *
+ * site-layout.css also declares #content-wrapper, at 2.25rem. This copy wins
+ * on source order, so its numbers are the ones on screen — which means the
+ * layout file's are misleading. Kept as the effective definition and marked
+ * here so the next person does not "fix" the wrong one.
+ */
 #content-wrapper {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     width: 100%;
     max-width: none;
-    padding-block: 2rem 0;
+    padding-block: 2.25rem 0;
 }
 
 .editorial-content-column {

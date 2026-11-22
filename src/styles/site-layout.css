@@ -42,13 +42,33 @@ body {
     flex: 1 1 auto;
 }
 
-.editorial-page-grid {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 0;
-}
+/*
+ * ---------- 4. Grid: one element decides the layout ----------
+ *
+ * #main-grid is the only grid in the page. It has two tracks when the rail is
+ * present and one when it is not, and the rail is simply the second track.
+ *
+ * `data-layout` on the rail carries the page mode (`home` / `with-rail` /
+ * `reading`) and is the single input driving both placement and visibility.
+ * The rail is rendered on every page (see layouts/grid.astro) and hidden
+ * everywhere except `with-rail`.
+ */
 
+/*
+ * The page's own rhythm: 2rem between blocks, 2rem above the first one.
+ *
+ * theme.css carries the same numbers; keeping both in sync matters because
+ * this file loads later and therefore wins.
+ */
+/*
+ * 2.25rem of breathing room above, 2rem between blocks — two different
+ * numbers, deliberately. The wrapper clears the fixed header by slightly more
+ * than it separates its own children, or the first heading sits too close to
+ * the rail.
+ *
+ * site-layout.css loads after theme.css, so this declaration is the effective
+ * one; theme.css mirrors the same pair.
+ */
 #content-wrapper {
     display: flex;
     flex-direction: column;
@@ -58,13 +78,12 @@ body {
     padding-block: 2.25rem 0;
 }
 
-/* ---------- 4. Two-column pages: grid ---------- */
+/* Hidden by default. */
+#main-grid > #editorial-sidebar-rail {
+    display: none;
+}
+
 @media (min-width: 768px) {
-    /*
-     * The two-column grid lives on #main-grid now, beside the Swup container
-     * rather than inside it, so the rail can be a layout-level column that
-     * survives navigation. See layouts/grid.astro for why.
-     */
     #main-grid:has(> #editorial-sidebar-rail[data-layout="with-rail"]) {
         display: grid;
         grid-template-columns: minmax(0, 1fr) clamp(9rem, 18vw, 15rem);
@@ -74,26 +93,14 @@ body {
         justify-content: center;
     }
 
-    #swup-container[data-layout="with-rail"] #content-wrapper {
+    #main-grid > #swup-container {
         grid-column: 1;
         grid-row: 1;
         min-width: 0;
-        max-width: none;
-        padding-block: 2.25rem 0;
     }
 
-    /*
-     * The page grid is single-column now: its second track used to hold the
-     * rail, but the rail is a sibling of #swup-container and takes #main-grid's
-     * second track instead. Leaving the old two-track definition here produced
-     * nested grids (896+240 outside, 616+240 inside), which narrowed the
-     * article column by ~280px.
-     */
-    #main-grid > #swup-container[data-layout="with-rail"] > .editorial-page-grid {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    #main-grid > #editorial-sidebar-rail {
+    /* The one rule that decides visibility. */
+    #main-grid > #editorial-sidebar-rail[data-layout="with-rail"] {
         display: flex;
         flex-direction: column;
         grid-column: 2;
@@ -102,13 +109,8 @@ body {
         width: 100%;
         min-width: 0;
         align-self: start;
-        position: static;
         margin: 0;
         padding-block-start: 2.25rem;
-    }
-
-    /* Rail stays in view while the main column scrolls (archive, custom pages, posts). */
-    #main-grid > #editorial-sidebar-rail {
         position: sticky;
         top: calc(3.5rem + 1px);
         max-height: calc(100dvh - 3.5rem - 1px);
@@ -291,16 +293,6 @@ body {
     display: flex !important;
     flex-direction: column !important;
     flex: 1 1 auto;
-}
-
-.editorial-sidebar-rail {
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-.editorial-page-grid {
-    display: flex !important;
-    flex-direction: column !important;
 }
 
 /* Grid model where two columns are intended. */
