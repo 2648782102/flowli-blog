@@ -4,7 +4,7 @@
 
 全站被当作**一张桌子**来布置：暖色桌面铺底，阅读区是一页纸，控件是搪瓷按键，站点头部是一条拉丝金属导轨，代码块和引用是从纸里挖出来的凹槽。
 
-拟物最容易失败的地方，是给每个面都叠一层「上亮下暗」的全高渐变、四边描白边、底下糊一圈灰模糊——那样看起来像贴纸。`src/styles/skeuo.css` 开头把这条反模式写死在注释里：真实材质读起来是真的，前提是**底色是平的**。
+拟物最容易失败的地方，是给每个面都叠一层「上亮下暗」的全高渐变、四边描白边、底下糊一圈灰模糊——那样看起来像贴纸。`src/styles/materials/skeuo.css` 开头把这条反模式写死在注释里：真实材质读起来是真的，前提是**底色是平的**。
 
 ## 四个要素
 
@@ -19,7 +19,7 @@
 
 ## 设计 Token
 
-全部定义在 `src/styles/skeuo.css` 的 `html:root` 与 `html:root.dark` 里。
+全部定义在 `src/styles/materials/skeuo.css` 的 `html:root` 与 `html:root.dark` 里。
 
 ### 光源
 
@@ -177,10 +177,22 @@
 
 ## 组件现状
 
+### CSS 结构评估（2026-11-24）
+
+当前不应整体重写 CSS。材质 token、亮暗层级和视觉回归基线已经把这套设计
+锁定得很紧；全站约 38–42 KB brotli 的 CSS 也不是性能瓶颈。真正的问题是
+`theme.css` 同时承担 token 与组件样式，以及高特异性选择器散落在多个文件。
+
+曾尝试把 `#content-wrapper` / `#main-grid` / `#post-container` /
+`#editorial-sidebar-rail` / `#swup-container` 的 ID 选择器一次性换成 class。
+构建与类型检查都通过，但文章页代码块的层叠顺序发生变化（代码块 `.frame`
+失去原有的零阴影状态），视觉差异达 1–2%。这说明当前层叠依赖 ID 特异性，
+重构必须逐部件进行，并在每步跑 `pnpm visual:check`，不能整批替换。
+
 | 部件 | 位置 |
 | --- | --- |
-| 材质工具类（`.mat-paper` / `.mat-enamel` / `.mat-metal` / `.mat-well` / `.mat-readout` / `.mat-float` / `.mat-key`） | `src/styles/skeuo.css` |
-| 头部导轨 | `src/styles/site-header.css` + `src/components/chrome/SiteHeader.astro` |
+| 材质工具类（`.mat-paper` / `.mat-enamel` / `.mat-metal` / `.mat-well` / `.mat-readout` / `.mat-float` / `.mat-key`） | `src/styles/materials/skeuo.css` |
+| 头部导轨 | `src/styles/components/site-header.css` + `src/components/chrome/SiteHeader.astro` |
 | 按钮 | `.btn-card`、`.btn-regular`（`skeuo-materials.css`） |
 | 浮层（搜索、翻译、主题） | `skeuo-materials.css` 中的 `#search-panel`、`#translate-panel`、`#light-dark-panel` |
 | 归档 / 工具页 | `skeuo-archive.css`、`skeuo-tools.css` |
@@ -234,7 +246,7 @@
 
 ## 特效：两处，都很克制
 
-`src/styles/motion.css` 只有两个效果，都用平台能力驱动，没有滚动监听脚本。
+`src/styles/motion/motion.css` 只有两个效果，都用平台能力驱动，没有滚动监听脚本。
 
 ### 1. 纸页受光随位置变化
 

@@ -1,6 +1,6 @@
 /**
  * Width breakpoints
- * Dynamically read from src/styles/main.css @theme configuration
+ * Dynamically read from src/styles/foundation/main.css @theme configuration
  */
 
 const getBreakpoint = (name: string, fallback: number): number => {

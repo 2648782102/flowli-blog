@@ -13,6 +13,8 @@
 		"astro": "astro",
 		"new-post": "node scripts/new-post.js",
 		"font:couplet": "node scripts/build-couplet-font.mjs",
+		"font:site": "node scripts/generate-site-fonts.mjs",
+		"css:check": "node scripts/check-css-architecture.mjs",
 		"visual:baseline": "node scripts/visual-check.mjs --update",
 		"visual:check": "node scripts/visual-check.mjs"
 	},

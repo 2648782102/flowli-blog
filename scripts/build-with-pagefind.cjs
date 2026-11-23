@@ -41,7 +41,7 @@ function copyFancyboxStyles() {
     cpSync(from, to);
 
     // 站点自己的灯箱覆盖样式，同样只在打开灯箱时才需要。
-    const theme = join(process.cwd(), 'src', 'styles', 'fancybox.css');
+    const theme = join(process.cwd(), 'src', 'styles', 'materials', 'fancybox.css');
     if (existsSync(theme)) {
         cpSync(theme, join(process.cwd(), 'dist', 'vendor', 'fancybox-theme.css'));
     }

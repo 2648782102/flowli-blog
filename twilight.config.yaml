@@ -34,10 +34,10 @@ site:
     # 字体配置：标题衬线 / 正文无衬线
     font:
         "EditorialSerif":
-            src: "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap"
+            src: "/assets/fonts/noto/noto-serif-sc-700.woff2"
             family: "Noto Serif SC"
         "EditorialSans":
-            src: "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap"
+            src: "/assets/fonts/noto/noto-sans-sc-400.woff2"
             family: "Noto Sans SC"
     # 主题色配置
     themeColor:

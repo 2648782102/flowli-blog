@@ -4,6 +4,9 @@
 # dependencies
 node_modules/
 
+# font generation scratch (source TTFs are large and not shipped)
+/work/fonts/
+
 # generated types
 .astro/
 .vercel/

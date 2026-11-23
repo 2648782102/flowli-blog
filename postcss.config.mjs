@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 
 const sourcePath = 'src/styles/markdown-extend.styl';
-const outputPath = 'src/styles/markdown-extend.generated.css';
+const outputPath = 'src/styles/foundation/markdown-extend.generated.css';
 const { render } = await import('stylus');
 
 fs.writeFileSync(

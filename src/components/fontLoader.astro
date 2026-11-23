@@ -1,5 +1,6 @@
 ---
 import { siteConfig } from "@/config";
+import { url } from "@utils/url";
 
 
 // Get all fonts from config
@@ -16,58 +17,55 @@ const selectedFontFamilies = fonts
 const fallbacks = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
 const customFontFamily = selectedFontFamilies.join(", ");
 const finalFontFamily = customFontFamily ? `${customFontFamily}, ${fallbacks}` : fallbacks;
+const localFontBase = url("/assets/fonts/noto");
 ---
 
 <!-- Font Loading -->
 {
+  /*
+   * Noto Serif/Sans SC used to come from Google Fonts: 300–450 CSS shards per
+   * family, loaded non-blocking but still downloading on every page. The
+   * committed woff2 subsets contain only the glyphs used by this site, so all
+   * faces are declared inline here — no third-party CSS or request at all.
+   */
   fonts.map((font) => {
-    const isCss = font.src.endsWith('.css') || font.src.includes('fonts.googleapis.com') || font.src.includes('unpkg.com');
-    if (isCss) {
-        // If it's a Google Font, we can append &display=swap if it's not already there
-        let fontSrc = font.src;
-        if (fontSrc.includes('fonts.googleapis.com') && !fontSrc.includes('display=')) {
-            fontSrc += (fontSrc.includes('?') ? '&' : '?') + 'display=swap';
-        }
-        /*
-         * 这里曾经是 <link rel="preload" as="style"> + <link rel="stylesheet">。
-         * 两个中文字体族（Noto Serif SC / Noto Sans SC）的 CSS 合计约 212KB，
-         * 是首屏唯一真正阻塞渲染的请求，而其中绝大部分是未被使用的字重与
-         * unicode 区间声明。
-         *
-         * 改成 media="print" + onload 切换：浏览器以低优先级、非阻塞的方式
-         * 取回样式，字体本身仍然是 font-display: swap。首屏先用系统字体
-         * 排好（fallback 已包含 PingFang SC 等），字体到位后自动替换。
-         * noscript 里保留同步版本，禁用 JS 时行为不变。
-         */
+    const localWeights = font.family === "Noto Serif SC"
+      ? [500, 600, 700]
+      : font.family === "Noto Sans SC"
+        ? [400, 500, 600, 700]
+        : [];
+
+    if (localWeights.length === 0) {
+      if (!font.src.endsWith('.css') && font.src) {
         return (
-            <>
-                <link
-                    rel="stylesheet"
-                    href={fontSrc}
-                    media="print"
-                    onload="this.media='all'"
-                />
-                <noscript>
-                    <link rel="stylesheet" href={fontSrc} />
-                </noscript>
-            </>
+          <>
+            <link rel="preload" href={font.src} as="font" crossorigin="anonymous" />
+            <style set:html={`
+                @font-face {
+                    font-family: "${font.family}";
+                    src: url("${font.src}");
+                    font-display: swap;
+                }
+            `} />
+          </>
         );
-    } else if (font.src) {
-        // Assume it's a font file (ttf, woff, woff2, etc.)
-        return (
-            <>
-                <link rel="preload" href={font.src} as="font" crossorigin="anonymous" />
-                <style set:html={`
-                    @font-face {
-                        font-family: "${font.family}";
-                        src: url("${font.src}");
-                        font-display: swap;
-                    }
-                `} />
-            </>
-        );
+      }
+      return null;
     }
-    return null;
+
+    const base = localFontBase;
+    const slug = font.family === "Noto Serif SC" ? "serif" : "sans";
+    const faceCss = localWeights.map((weight) => `
+        @font-face {
+            font-family: "${font.family}";
+            font-style: normal;
+            font-weight: ${weight};
+            font-display: swap;
+            src: url("${base}/noto-${slug}-sc-${weight}.woff2") format("woff2");
+        }
+    `).join("\n");
+
+    return <style set:html={faceCss} />;
   })
 }
 

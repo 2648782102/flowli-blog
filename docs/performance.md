@@ -109,9 +109,13 @@ Pages 的真实传输量。
 产物**——已实测这些类在 `dist/_astro/*.css` 中出现 0 次，Tailwind 的
 按需裁剪已经把未使用的 utility 剔掉了。清理它们只有可读性收益。
 
-**字体仍来自 Google Fonts。** 去阻塞解决了首屏，但 212 KB 的 CSS 仍然在
-下载，且依赖第三方可用性。彻底的做法是子集化自托管（例如只保留标题需要的
-字重，用 `fonttools` 生成常用字子集）。
+**字体已自托管。** 2026-11-24 起，Noto Serif/Sans SC 不再引用 Google Fonts：
+`scripts/download-font-sources.py` 从 Google Fonts CSS 下载源 TTF，
+`scripts/generate-site-fonts.mjs` 用 fontTools 按站点内容与常用标点切成 7 个
+woff2（3 档 Serif + 4 档 Sans），放在 `public/assets/fonts/noto/`。
+字体声明由 `fontLoader.astro` 直接输出，首屏不再请求 300–450 KB 的第三方
+CSS，也不再依赖 `fonts.googleapis.com` / `fonts.gstatic.com`。
+字体子集只包含当前站点用字；新增常用字后运行 `pnpm font:site` 重新切字。
 
 ## 验证方法
 
