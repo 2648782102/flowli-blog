@@ -58,15 +58,15 @@ const getTypeIcon = (type: string) => {
 const getTypeColor = (type: string) => {
     switch (type) {
         case "education":
-            return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+            return "tool-chip tool-chip--accent";
         case "work":
-            return "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300";
+            return "tool-chip tool-chip--accent";
         case "project":
-            return "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300";
+            return "tool-chip tool-chip--accent";
         case "achievement":
-            return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+            return "tool-chip tool-chip--accent";
         default:
-            return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+            return "tool-chip";
     }
 };
 
@@ -172,23 +172,23 @@ const itemColor = item.color || "#3B82F6";
             <div class={`timeline-node relative z-10 rounded-full flex items-center justify-center shrink-0 ${sizeClasses.node}`} style={`background-color: color-mix(in srgb, ${itemColor} 55%, var(--surface, #0b1d38)); border: 1px solid color-mix(in srgb, ${itemColor} 70%, transparent)`}>
                 <Icon
                     icon={item.icon || getTypeIcon(item.type)}
-                    class={`text-white ${sizeClasses.nodeIcon}`}
+                    class={`tool-node-icon ${sizeClasses.nodeIcon}`}
                     color="white"
                 />
             </div>
         )}
-        <div class="timeline-card flex-1 bg-white dark:bg-gray-800 rounded-lg border border-black/10 dark:border-white/10 hover:shadow-lg transition-shadow duration-300">
+        <div class="timeline-card flex-1 transition-shadow duration-300">
             <div class={sizeClasses.container}>
                 <div class="flex items-start justify-between mb-3">
                     <div>
-                        <h3 class={`font-semibold text-black/90 dark:text-white/90 mb-1 ${sizeClasses.title}`}>
+                        <h3 class={`font-semibold mb-1 ${sizeClasses.title}`}>
                             {item.title}
                             {item.featured && (
-                                <span class="ml-2 text-blue-400">⭐</span>
+                                <span class="ml-2 text-(--accent)">⭐</span>
                             )}
                         </h3>
                         {item.organization && (
-                            <div class={`text-black/70 dark:text-white/70 ${sizeClasses.meta}`}>
+                            <div class={`tool-stat-label ${sizeClasses.meta}`}>
                                 {item.organization} {item.position && `• ${item.position}`}
                             </div>
                         )}
@@ -197,7 +197,7 @@ const itemColor = item.color || "#3B82F6";
                         {getTypeText(item.type)}
                     </span>
                 </div>
-                <div class={`flex items-center gap-4 mb-3 text-black/60 dark:text-white/60 ${sizeClasses.meta}`}>
+                <div class={`flex items-center gap-4 mb-3 tool-stat-label ${sizeClasses.meta}`}>
                     <div>
                         {formatDate(item.startDate)} - {item.endDate ? formatDate(item.endDate) : i18n(I18nKey.timelinePresent)}
                     </div>
@@ -210,18 +210,18 @@ const itemColor = item.color || "#3B82F6";
                         </>
                     )}
                 </div>
-                <p class={`text-black/70 dark:text-white/70 mb-4 ${sizeClasses.description}`}>
+                <p class={`tool-stat-label mb-4 ${sizeClasses.description}`}>
                     {item.description}
                 </p>
                 {item.achievements && item.achievements.length > 0 && (
                     <div class="mb-4">
-                        <h4 class={`font-semibold text-black/80 dark:text-white/80 mb-2 ${sizeClasses.meta}`}>
+                        <h4 class={`font-semibold tool-stat-label mb-2 ${sizeClasses.meta}`}>
                             {i18n(I18nKey.timelineAchievements)}
                         </h4>
                         <ul class="space-y-1">
                             {item.achievements.map((achievement) => (
-                                <li class={`text-black/70 dark:text-white/70 flex items-start gap-2 ${sizeClasses.description}`}>
-                                    <span class="text-blue-500 mt-1">•</span>
+                                <li class={`tool-stat-label flex items-start gap-2 ${sizeClasses.description}`}>
+                                    <span class="text-(--accent) mt-1">•</span>
                                     <span>{achievement}</span>
                                 </li>
                             ))}
@@ -232,7 +232,7 @@ const itemColor = item.color || "#3B82F6";
                     <div class="mb-4">
                         <div class="flex flex-wrap gap-1">
                             {item.skills.map((skill) => (
-                                <span class={`px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-sm ${sizeClasses.badge}`}>
+                                <span class={`px-2 py-1 tool-chip rounded-sm ${sizeClasses.badge}`}>
                                     {skill}
                                 </span>
                             ))}
@@ -258,7 +258,7 @@ const itemColor = item.color || "#3B82F6";
         </div>
     </div>
 ) : (
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-black/10 dark:border-white/10 hover:shadow-lg transition-shadow duration-300">
+    <div class="timeline-card rounded-lg transition-shadow duration-300">
         <div class={sizeClasses.container}>
             <div class="flex items-start gap-4 mb-3">
                 <div class={`rounded-lg flex items-center justify-center shrink-0 ${sizeClasses.node}`} style={`background-color: ${itemColor}20`}>
@@ -270,10 +270,10 @@ const itemColor = item.color || "#3B82F6";
                 </div>
                 <div class="flex-1">
                     <div class="flex items-start justify-between mb-2">
-                        <h3 class={`font-semibold text-black/90 dark:text-white/90 ${sizeClasses.title}`}>
+                        <h3 class={`font-semibold ${sizeClasses.title}`}>
                             {item.title}
                             {item.featured && (
-                                <span class="ml-2 text-blue-400">⭐</span>
+                                <span class="ml-2 text-(--accent)">⭐</span>
                             )}
                         </h3>
                         <span class={`px-2 py-1 rounded-full shrink-0 ml-2 ${sizeClasses.badge} ${getTypeColor(item.type)}`}>
@@ -281,37 +281,37 @@ const itemColor = item.color || "#3B82F6";
                         </span>
                     </div>
                     {item.organization && (
-                        <div class={`text-black/70 dark:text-white/70 mb-1 ${sizeClasses.meta}`}>
+                        <div class={`tool-stat-label mb-1 ${sizeClasses.meta}`}>
                             {item.organization} {item.position && `• ${item.position}`}
                         </div>
                     )}
                     {item.location && (
-                        <div class={`text-black/60 dark:text-white/60 mb-2 ${sizeClasses.meta}`}>
+                        <div class={`tool-stat-label mb-2 ${sizeClasses.meta}`}>
                             📍 {item.location}
                         </div>
                     )}
                 </div>
             </div>
-            <div class={`text-black/70 dark:text-white/70 mb-3 ${sizeClasses.meta}`}>
+            <div class={`tool-stat-label mb-3 ${sizeClasses.meta}`}>
                 {formatDate(item.startDate)} - {item.endDate ? formatDate(item.endDate) : i18n(I18nKey.timelinePresent)} ({getDuration(item.startDate, item.endDate)})
             </div>
-            <p class={`text-black/60 dark:text-white/60 mb-4 ${sizeClasses.description}`}>
+            <p class={`tool-stat-label mb-4 ${sizeClasses.description}`}>
                 {item.description}
             </p>
             {item.achievements && item.achievements.length > 0 && (
                 <div class="mb-4">
-                    <h4 class={`font-semibold text-black/80 dark:text-white/80 mb-2 ${sizeClasses.meta}`}>
+                    <h4 class={`font-semibold tool-stat-label mb-2 ${sizeClasses.meta}`}>
                         {i18n(I18nKey.timelineAchievements)}
                     </h4>
                     <ul class="space-y-1">
                         {item.achievements.slice(0, 3).map((achievement) => (
-                            <li class={`text-black/70 dark:text-white/70 flex items-start gap-2 ${sizeClasses.description}`}>
-                                <span class="text-blue-500 mt-1">•</span>
+                            <li class={`tool-stat-label flex items-start gap-2 ${sizeClasses.description}`}>
+                                <span class="text-(--accent) mt-1">•</span>
                                 <span>{achievement}</span>
                             </li>
                         ))}
                         {item.achievements.length > 3 && (
-                            <li class={`text-black/60 dark:text-white/60 ${sizeClasses.description}`}>
+                            <li class={`tool-stat-label ${sizeClasses.description}`}>
                                 ... 还有 {item.achievements.length - 3} 项成就
                             </li>
                         )}
@@ -322,12 +322,12 @@ const itemColor = item.color || "#3B82F6";
                 {item.skills && item.skills.length > 0 && (
                     <div class="flex flex-wrap gap-1">
                         {item.skills.slice(0, 3).map((skill) => (
-                            <span class={`px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-sm ${sizeClasses.badge}`}>
+                            <span class={`px-2 py-1 tool-chip rounded-sm ${sizeClasses.badge}`}>
                                 {skill}
                             </span>
                         ))}
                         {item.skills.length > 3 && (
-                            <span class={`px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400 rounded-sm ${sizeClasses.badge}`}>
+                            <span class={`px-2 py-1 tool-chip rounded-sm ${sizeClasses.badge}`}>
                                 +{item.skills.length - 3}
                             </span>
                         )}

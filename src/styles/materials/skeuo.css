@@ -122,9 +122,9 @@ html:root {
     --enamel-deep: #eae2d4;
 
     /* Metal: brushed aluminium for the header rail. */
-    --metal-hi: #f4f6f8;
-    --metal-mid: #dde2e8;
-    --metal-lo: #bfc6d0;
+    --metal-hi: #f3eee2;
+    --metal-mid: #ded6c7;
+    --metal-lo: #c3b9a8;
 
     /*
      * Ink wells: recessed slots cut into paper.
@@ -252,9 +252,9 @@ html:root.dark {
     --enamel: #232c39;
     --enamel-deep: #1c2430;
 
-    --metal-hi: #2f3843;
-    --metal-mid: #262e38;
-    --metal-lo: #1a2029;
+    --metal-hi: #30343a;
+    --metal-mid: #272b31;
+    --metal-lo: #1b1e23;
 
     /*
      * Wells are cut into whatever contains them, so they only need to read as

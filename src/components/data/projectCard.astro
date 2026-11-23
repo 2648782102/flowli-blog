@@ -37,13 +37,13 @@ const {
 const getStatusStyle = (status: string) => {
     switch (status) {
         case "completed":
-            return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+            return "tool-chip tool-chip--accent";
         case "in-progress":
-            return "bg-blue-50 text-blue-500 dark:bg-blue-900/20 dark:text-blue-300";
+            return "tool-chip";
         case "planned":
-            return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+            return "tool-chip";
         default:
-            return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+            return "tool-chip";
     }
 };
 
@@ -94,7 +94,7 @@ const getSizeClasses = (size: string) => {
 const sizeClasses = getSizeClasses(size);
 ---
 
-<div class="project-card bg-white dark:bg-gray-800 rounded-lg border border-black/10 dark:border-white/10 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+<div class="project-card overflow-hidden transition-all duration-300 group">
     <!-- 项目图片 -->
     {showImage && project.image && (
         <div class={`overflow-hidden ${size === 'large' ? 'aspect-video' : 'aspect-4/3'}`}>
@@ -110,35 +110,35 @@ const sizeClasses = getSizeClasses(size);
     <div class={sizeClasses.container}>
         <!-- 标题和状态 -->
         <div class="flex items-start justify-between mb-3">
-            <h3 class={`font-semibold text-black/90 dark:text-white/90 ${sizeClasses.title} ${size === 'small' ? 'line-clamp-1' : ''}`}>
+            <h3 class={`font-semibold ${sizeClasses.title} ${size === 'small' ? 'line-clamp-1' : ''}`}>
                 {project.title}
             </h3>
-            <span class={`px-2 py-1 text-xs rounded-full shrink-0 ml-2 ${getStatusStyle(project.status)}`}>
+            <span class={`px-2 py-1 text-xs shrink-0 ml-2 ${getStatusStyle(project.status)}`}>
                 {getStatusText(project.status)}
             </span>
         </div>
         <!-- 分类标签 -->
         {project.category && (
             <div class="mb-2">
-                <span class="px-2 py-1 text-xs bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 rounded-sm">
+                <span class="tool-chip tool-chip--accent px-2 py-1 text-xs">
                     {project.category}
                 </span>
             </div>
         )}
         <!-- 项目描述 -->
-        <p class={`text-black/60 dark:text-white/60 mb-4 ${sizeClasses.description}`}>
+        <p class={`tool-stat-label mb-4 ${sizeClasses.description}`}>
             {project.description}
         </p>
         <!-- 技术栈 -->
         {project.techStack && project.techStack.length > 0 && (
             <div class="flex flex-wrap gap-1 mb-4">
                 {project.techStack.slice(0, maxTechStack).map((tech) => (
-                    <span class={`px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-sm ${sizeClasses.tech}`}>
+                    <span class={`tool-chip px-2 py-1 ${sizeClasses.tech}`}>
                         {tech}
                     </span>
                 ))}
                 {project.techStack.length > maxTechStack && (
-                    <span class={`px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400 rounded-sm ${sizeClasses.tech}`}>
+                    <span class={`tool-chip px-2 py-1 ${sizeClasses.tech}`}>
                         +{project.techStack.length - maxTechStack}
                     </span>
                 )}
@@ -148,7 +148,7 @@ const sizeClasses = getSizeClasses(size);
         {project.tags && project.tags.length > 0 && (
             <div class="flex flex-wrap gap-1 mb-4">
                 {project.tags.map((tag) => (
-                    <span class={`px-2 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-sm ${sizeClasses.tech}`}>
+                    <span class={`tool-chip tool-chip--accent px-2 py-1 ${sizeClasses.tech}`}>
                         #{tag}
                     </span>
                 ))}
@@ -161,7 +161,7 @@ const sizeClasses = getSizeClasses(size);
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class={`inline-flex items-center px-3 py-1.5 rounded-md border border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 font-medium transition-colors ${sizeClasses.links}`}
+                    class={`tool-link tool-link--accent inline-flex items-center px-3 py-1.5 font-medium ${sizeClasses.links}`}
                 >
                     {i18n(I18nKey.projectsDemo)}
                 </a>
@@ -171,7 +171,7 @@ const sizeClasses = getSizeClasses(size);
                     href={project.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class={`inline-flex items-center px-3 py-1.5 rounded-md border border-gray-400 text-gray-700 dark:border-gray-500 dark:text-gray-200 bg-gray-50/80 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium transition-colors ${sizeClasses.links}`}
+                    class={`tool-link inline-flex items-center px-3 py-1.5 font-medium ${sizeClasses.links}`}
                 >
                     {i18n(I18nKey.projectsSource)}
                 </a>

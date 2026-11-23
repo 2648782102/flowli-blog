@@ -29,6 +29,20 @@ html:root {
     --primary-hover: #1d3557;
     --primary-light: rgb(43 74 114 / 0.08);
 
+    /* Unified component tokens. One accent, no page-local blue. */
+    --stat-face: var(--well);
+    --stat-ink: var(--ink);
+    --stat-label: var(--ink-faint);
+    --chip-face: var(--surface-muted);
+    --chip-border: var(--hairline);
+    --chip-ink: var(--ink-soft);
+    --chip-accent-face: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    --chip-accent-ink: var(--accent);
+    --track-face: var(--well-deep);
+    --track-fill: var(--accent);
+    --button-quiet-face: var(--surface-muted);
+    --button-quiet-hover: var(--btn-regular-bg-hover);
+
     --hairline: rgb(21 28 38 / 0.10);
     --hairline-strong: rgb(21 28 38 / 0.22);
     --line-divider: var(--hairline);
@@ -99,7 +113,7 @@ html:root {
     --home-column: 52rem;
     /* Wall couplet: the brushed lines either side of the column. In rem, so the
        root-size ramp scales them with the rest of the page. */
-    --couplet-size: 3.4rem;
+    --couplet-size: 2.8rem;
     /*
      * Ink density, not a fixed colour: the line is the page ink mixed into the
      * desk, so one number controls how far it recedes in each theme. 58% lands
@@ -107,7 +121,7 @@ html:root {
      * same value in dark mode gives 6.1:1 — brighter than body copy — because
      * light-on-dark gains contrast faster; 44% brings it back to ~4.1:1.
      */
-    --couplet-ink: 58%;
+    --couplet-ink: 48%;
 }
 
 @media (min-width: 1240px) {
@@ -124,7 +138,7 @@ html:root {
          * 1440, 65px at 1916 and 82px at 3840, always clearly larger than the
          * heading without competing with it (the ink is still mixed down).
          */
-        --couplet-size: 3.4rem;
+    --couplet-size: 2.8rem;
     }
 }
 
@@ -142,7 +156,7 @@ html:root {
 html:root.dark {
     color-scheme: dark;
 
-    --couplet-ink: 44%;
+    --couplet-ink: 38%;
 
     --paper: #0b0f15;
     --paper-deep: #080b10;
@@ -174,6 +188,19 @@ html:root.dark {
     --primary: var(--accent);
     --primary-hover: #b7d0f0;
     --primary-light: rgb(143 180 226 / 0.12);
+
+    --stat-face: var(--well);
+    --stat-ink: var(--ink);
+    --stat-label: var(--ink-faint);
+    --chip-face: var(--surface-muted);
+    --chip-border: var(--hairline);
+    --chip-ink: var(--ink-soft);
+    --chip-accent-face: color-mix(in srgb, var(--accent) 14%, var(--surface));
+    --chip-accent-ink: var(--accent);
+    --track-face: var(--well-deep);
+    --track-fill: var(--accent);
+    --button-quiet-face: var(--surface-muted);
+    --button-quiet-hover: var(--btn-regular-bg-hover);
 
     --hairline: rgb(237 241 246 / 0.085);
     --hairline-strong: rgb(237 241 246 / 0.20);
@@ -341,7 +368,7 @@ h3,
 h4 {
     color: var(--ink);
     font-family: var(--editorial-serif);
-    font-weight: 650;
+    font-weight: 700;
     letter-spacing: -0.01em;
     text-wrap: pretty;
 }
@@ -407,7 +434,7 @@ h4 {
 .intro-block h1 {
     margin: 0;
     font-size: clamp(1.9rem, 4.2vw, 2.6rem);
-    font-weight: 620;
+    font-weight: 600;
     letter-spacing: -0.03em;
     line-height: 1.25;
 }
@@ -450,7 +477,7 @@ h4 {
     color: var(--ink);
     font-family: var(--editorial-serif);
     font-size: 1.2rem;
-    font-weight: 620;
+    font-weight: 600;
     line-height: 1.4;
     text-decoration: none;
     transition: color 140ms ease;
@@ -545,7 +572,7 @@ h4 {
 .home-feed-label strong {
     color: var(--ink);
     font-size: 0.95rem;
-    font-weight: 620;
+    font-weight: 600;
 }
 
 .home-feed-row {
@@ -624,7 +651,7 @@ h4 {
 
 #content-wrapper h1 {
     font-size: clamp(1.7rem, 2.6vw, 2.2rem);
-    font-weight: 620;
+    font-weight: 600;
 }
 
 #post-container .license-container {
@@ -681,7 +708,7 @@ h4 {
     color: var(--ink) !important;
     font-family: var(--editorial-sans) !important;
     font-size: 0.78rem !important;
-    font-weight: 620 !important;
+    font-weight: 600 !important;
     letter-spacing: 0.02em;
 }
 
@@ -773,7 +800,7 @@ h4 {
     margin-top: 2.2em;
     color: var(--ink);
     font-family: var(--editorial-serif);
-    font-weight: 620;
+    font-weight: 600;
 }
 
 #post-container :is(.custom-md, .markdown-body) :is(p, li) {

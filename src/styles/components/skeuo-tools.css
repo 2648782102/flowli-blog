@@ -3,6 +3,106 @@
  * All share one raised panel language with inset readouts.
  */
 
+/* Shared page furniture: one accent, one chip, one quiet button. */
+.tools-eyebrow {
+    color: var(--ink-faint);
+    font-family: var(--editorial-sans);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+}
+
+.tools-subtitle {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.tool-stat {
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    background: var(--stat-face);
+    box-shadow: var(--sink-1);
+    padding: 1rem;
+}
+
+.tool-stat-value {
+    color: var(--stat-ink);
+    font-family: var(--editorial-serif);
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+}
+
+.tool-stat-label {
+    margin-top: 0.3rem;
+    color: var(--stat-label);
+    font-size: 0.8rem;
+}
+
+.tool-section-title {
+    color: var(--ink);
+    font-family: var(--editorial-serif);
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.tool-section-count {
+    color: var(--ink-faint);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-left: 0.4rem;
+}
+
+.tool-divider {
+    border-top: 1px solid var(--hairline);
+}
+
+.tool-progress {
+    background: var(--track-face);
+    box-shadow: var(--sink-1);
+}
+
+.tool-progress > div {
+    background: var(--track-fill);
+}
+
+.tool-chip {
+    border: 1px solid var(--chip-border);
+    border-radius: 999px;
+    background: var(--chip-face);
+    color: var(--chip-ink);
+}
+
+.tool-chip--accent {
+    background: var(--chip-accent-face);
+    color: var(--chip-accent-ink);
+}
+
+.tool-link {
+    border: 1px solid var(--chip-border);
+    border-radius: var(--r-sm);
+    background: var(--button-quiet-face);
+    color: var(--ink);
+    transition: background-color var(--motion-touch), color var(--motion-touch);
+}
+
+.tool-link:hover {
+    background: var(--button-quiet-hover);
+    color: var(--accent);
+}
+
+.tool-link--accent {
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+    background: var(--chip-accent-face);
+    color: var(--accent);
+}
+
+.tool-node-icon {
+    color: var(--surface);
+}
+
 /* Page header plates */
 #content-wrapper .card-base > header h1,
 #content-wrapper .card-base > div > header h1 {
