@@ -318,7 +318,7 @@ html:root.dark {
             rgb(255 255 255 / 0.1) 2px,
             rgb(255 255 255 / 0) 2.4rem
         ),
-        url("/flowli-blog/assets/scroll/paper-light.png") !important;
+        url("/assets/scroll/paper-light.png") !important;
     background-size: auto, 256px 256px !important;
     /*
      * `multiply` against a white-based tooth tile — and this took measuring to
@@ -350,7 +350,7 @@ html:root.dark .scroll-edge {
             rgb(255 255 255 / 0.055) 0,
             rgb(255 255 255 / 0) 1.6rem
         ),
-        url("/flowli-blog/assets/scroll/paper-dark.png") !important;
+        url("/assets/scroll/paper-dark.png") !important;
     background-size: auto, 256px 256px !important;
     /*
      * Same tile and the same operator as light mode: multiply against a

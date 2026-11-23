@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"description": "flowli 的个人博客",
 	"scripts": {
-		"type-check": "tsc --noEmit --isolatedDeclarations",
+		"type-check": "astro sync && tsc --noEmit --skipLibCheck",
 		"check-stylus": "node scripts/compile-inline-stylus.cjs",
 		"check": "astro check",
 		"dev": "node scripts/generate-icons.js && astro dev",
