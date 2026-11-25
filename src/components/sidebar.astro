@@ -69,10 +69,11 @@ function renderComponent(component: any, index: number) {
     let componentClass = widgetManager.getComponentClass(originalComponent, index, side);
     const componentStyle = widgetManager.getComponentStyle(component);
 
-    // 如果组件需要动画，添加 transition-swup-fade 类
-    if (component.shouldAnimate) {
-        componentClass += " transition-swup-fade";
-    }
+    // The rail is persistent and lives outside #swup-container. Animating its
+    // widgets here made the whole sidebar fade and slide on every visit, even
+    // when the exact same widgets were rendered on both sides of the visit.
+    // Keep the flag in the data model but do not apply the Swup transition.
+    void component.shouldAnimate;
 
     return {
         Component: ComponentToRender,

@@ -81,6 +81,17 @@ body {
 /* Hidden by default. */
 #main-grid > #editorial-sidebar-rail {
     display: none;
+    overflow: visible;
+}
+
+/* Defensive: if a persistent rail widget still carries the Swup marker from
+   older markup, keep it fully opaque and stationary. This does not touch
+   ordinary hover/collapse transitions inside the sidebar. */
+#editorial-sidebar-rail .transition-swup-fade,
+html.is-animating #editorial-sidebar-rail .transition-swup-fade {
+    opacity: 1 !important;
+    translate: none !important;
+    transition-property: color, background-color, border-color, box-shadow, max-height !important;
 }
 
 @media (min-width: 768px) {
@@ -114,8 +125,8 @@ body {
         position: sticky;
         top: calc(3.5rem + 1px);
         max-height: calc(100dvh - 3.5rem - 1px);
-        overflow-x: hidden;
         overflow-y: auto;
+        overscroll-behavior: contain;
         scrollbar-width: thin;
     }
 }

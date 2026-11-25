@@ -359,13 +359,21 @@ const setup = () => {
                 el.classList.add('pause-swup-transition');
             }
         });
+        /*
+         * Scroll once, after the new document has replaced the old one. Doing
+         * this on visit:start reset the page while the outgoing sheet was
+         * still visible, which read as a flash back to the top before the
+         * transition. Anchors keep their native scroll target.
+         */
+        if (!window.location.hash) {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
     })
     window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
         // Disable scroll protection when a link is clicked to prevent interference with page jump scrolling to top
         if ((window as any).scrollProtectionManager && typeof (window as any).scrollProtectionManager.disable === 'function') {
             (window as any).scrollProtectionManager.disable();
         }
-        window.scrollTo({ top: 0, behavior: 'instant' });
         pausedElementIds.clear();
     });
     window.swup.hooks.on('page:view', (visit: {
@@ -399,7 +407,6 @@ const setup = () => {
             }, "");
         }
         syncPostBackLink();
-        window.scrollTo({ top: 0, behavior: 'instant' });
         // Check if the current page is a post page, if so, trigger a custom event to initialize the comment system
         setTimeout(() => {
             if (document.querySelector('[data-comment-root]')) {
