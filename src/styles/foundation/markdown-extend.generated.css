@@ -69,14 +69,14 @@
   background: var(--admonitions-color-caution);
 }
 .custom-md img {
-  border-radius: 0.75rem;
+  border-radius: var(--r-lg);
 }
 .custom-md hr {
   border-color: var(--line-divider);
   border-style: dashed;
 }
 .custom-md iframe {
-  border-radius: 0.75rem;
+  border-radius: var(--r-lg);
   margin-left: auto;
   margin-right: auto;
   max-width: 100%;
@@ -236,7 +236,7 @@ a.card-github.fetch-waiting .gc-repo {
 }
 a.card-github.fetch-waiting .gc-description,
 a.card-github.fetch-waiting .gc-infobar {
-  border-radius: 0.5rem;
+  border-radius: var(--r-md);
 }
 a.card-github.fetch-error {
   pointer-events: all;
@@ -270,7 +270,7 @@ a.card-github.fetch-error {
 .mermaid svg {
   max-width: 100%;
   height: auto;
-  border-radius: 0.5rem;
+  border-radius: var(--r-md);
   user-select: none;
   pointer-events: all;
 }
@@ -286,7 +286,7 @@ a.card-github.fetch-error {
   color: var(--admonitions-color-warning);
   background: rgba(239,68,68,0.1);
   border: 1px solid var(--admonitions-color-warning);
-  border-radius: 0.5rem;
+  border-radius: var(--r-md);
   padding: 1rem;
   margin: 1rem 0;
   text-align: center;
@@ -323,7 +323,7 @@ a.card-github.fetch-error {
 }
 .mermaid-diagram-container {
   margin: 1rem 0;
-  border-radius: 0.75rem;
+  border-radius: var(--r-lg);
   overflow: hidden;
   background: var(--card-bg);
   transition: all var(--transition-duration-medium) ease;
@@ -359,7 +359,7 @@ a.card-github.fetch-error {
   min-width: 120px;
   height: 120px;
   flex-shrink: 0;
-  border-radius: 0.5rem;
+  border-radius: var(--r-md);
   background-size: cover;
   background-position: center;
   background-color: var(--card-bg);
@@ -373,7 +373,7 @@ a.card-github.fetch-error {
   background: rgba(0,0,0,0.1);
   opacity: 0;
   transition: opacity var(--transition-duration-medium);
-  border-radius: 0.5rem;
+  border-radius: var(--r-md);
 }
 .card-music:hover .card-music .music-cover::after {
   opacity: 1;

@@ -36,19 +36,17 @@ const formatDate = (value: Date | string) =>
 
             {latestPost && (
                 <section class="featured-plate scroll-edge" aria-labelledby="featured-title">
+                    <a class="featured-plate-link" href={getPostUrl(latestPost)} aria-labelledby="featured-title">
                     <div class="featured-plate-inner">
                         <p class="featured-eyebrow">最新 · {formatDate(latestPost.data.published!)}</p>
                         <h2 id="featured-title">
-                            <a href={getPostUrl(latestPost)}>{latestPost.data.title}</a>
+                            {latestPost.data.title}
                         </h2>
                         {latestPost.data.description && (
                             <p class="featured-desc">{latestPost.data.description}</p>
                         )}
-                        <a class="featured-cta" href={getPostUrl(latestPost)}>
-                            阅读全文
-                            <Icon name="material-symbols:arrow-forward-rounded" aria-hidden="true" />
-                        </a>
                     </div>
+                    </a>
                 </section>
             )}
 

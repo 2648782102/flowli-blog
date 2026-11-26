@@ -34,7 +34,7 @@
 .photo-container {
     position: relative;
     overflow: hidden;
-    border-radius: 0.5rem;
+    border-radius: var(--r-md);
 }
 
 .photo-image {
@@ -85,7 +85,7 @@
     max-width: 100%;
     max-height: 80vh;
     object-fit: contain;
-    border-radius: 0.5rem;
+    border-radius: var(--r-md);
 }
 
 
@@ -104,7 +104,7 @@
 /* 灯箱信息面板 */
 #lightbox-info {
     backdrop-filter: blur(8px);
-    border-radius: 0.5rem;
+    border-radius: var(--r-md);
     max-height: 30vh;
     overflow-y: auto;
 }

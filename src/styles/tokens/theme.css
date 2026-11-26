@@ -7,27 +7,41 @@
 html:root {
     color-scheme: light;
 
-    --paper: #f6f4ef;
-    --paper-deep: #efece4;
-    --surface: #fffdfa;
-    --surface-muted: #f1eee7;
-
-    --ink: #151c26;
-    --ink-soft: #47535f;
     /*
-     * Darkened from #7b8794. This tier was already under-contrast on the old
-     * paper (3.54:1 against #fdfbf5, below the 4.5 minimum for body text), and
-     * warming the sheet has cost it further since. #5d6870 clears 4.5:1 on all
-     * three light surfaces (paper 5.00, desk 4.57, card 4.87) while staying
-     * visibly lighter than --ink-soft (6.90:1), so the hierarchy holds.
+     * Neutral white paper.
+     *
+     * The sheet is no longer tinted amber. Warmth is carried by the paper tooth,
+     * the fibre direction and a single very soft light pool — not by a yellow
+     * base colour. Keeping the base near-neutral is what lets the texture read
+     * as paper instead of as a printed colour wash.
+     *
+     * The ladder stays desk < enamel < paper, as the material audit requires:
+     * a slightly recessed desk, a coated panel just below the sheet, and the
+     * sheet itself the brightest plane.
      */
-    --ink-faint: #5d6870;
+    --paper: #fbfbf9;
+    --paper-deep: #f8f7f4;
+    --surface: #ffffff;
+    --surface-muted: #f4f3ef;
 
-    --accent: #2b4a72;
+    --ink: #16181a;
+    --ink-soft: #4a4f55;
+    /*
+     * #5f656b clears 4.5:1 on the lightest card and still reads clearly lighter
+     * than --ink-soft, so the three text tiers survive the white sheet.
+     */
+    --ink-faint: #5f656b;
+
+    /*
+     * Slightly deeper and cooler than the previous #2b4a72, so the one
+     * saturated colour reads as ink rather than as a bright UI blue next to
+     * warm paper. Contrast on the sheet rises from 7.9:1 to 9.0:1.
+     */
+    --accent: #274261;
     --accent-warm: #a4643c;
     --primary: var(--accent);
-    --primary-hover: #1d3557;
-    --primary-light: rgb(43 74 114 / 0.08);
+    --primary-hover: #1b3350;
+    --primary-light: rgb(39 66 97 / 0.08);
 
     /* Unified component tokens. One accent, no page-local blue. */
     --stat-face: var(--well);
@@ -43,8 +57,8 @@ html:root {
     --button-quiet-face: var(--surface-muted);
     --button-quiet-hover: var(--btn-regular-bg-hover);
 
-    --hairline: rgb(21 28 38 / 0.10);
-    --hairline-strong: rgb(21 28 38 / 0.22);
+    --hairline: rgb(22 24 26 / 0.10);
+    --hairline-strong: rgb(22 24 26 / 0.22);
     --line-divider: var(--hairline);
     --line-color: var(--hairline);
     --meta-divider: var(--hairline-strong);
@@ -53,19 +67,19 @@ html:root {
     --glass-fill-hover: #fff;
     --glass-border: var(--hairline);
     --glass-border-strong: var(--hairline-strong);
-    --glass-shadow: 0 1px 2px rgb(21 28 38 / 0.04);
+    --glass-shadow: 0 1px 2px rgb(22 24 26 / 0.04);
 
     --page-bg: var(--paper);
     --card-bg: var(--surface);
     --card-bg-transparent: var(--surface);
     --btn-content: var(--ink);
-    --btn-regular-bg: rgb(21 28 38 / 0.05);
-    --btn-regular-bg-hover: rgb(21 28 38 / 0.09);
-    --btn-regular-bg-active: rgb(21 28 38 / 0.13);
-    --btn-plain-bg-hover: rgb(21 28 38 / 0.05);
-    --btn-plain-bg-active: rgb(21 28 38 / 0.09);
-    --btn-card-bg-hover: rgb(21 28 38 / 0.04);
-    --btn-card-bg-active: rgb(21 28 38 / 0.07);
+    --btn-regular-bg: rgb(22 24 26 / 0.05);
+    --btn-regular-bg-hover: rgb(22 24 26 / 0.09);
+    --btn-regular-bg-active: rgb(22 24 26 / 0.13);
+    --btn-plain-bg-hover: rgb(22 24 26 / 0.05);
+    --btn-plain-bg-active: rgb(22 24 26 / 0.09);
+    --btn-card-bg-hover: rgb(22 24 26 / 0.04);
+    --btn-card-bg-active: rgb(22 24 26 / 0.07);
     --deep-text: var(--ink);
     --title-active: var(--accent);
     --content-meta: var(--ink-soft);
@@ -77,9 +91,9 @@ html:root {
     --codeblock-topbar-bg: #1c242e;
     --license-block-bg: var(--surface-muted);
     --link-underline: rgb(43 74 114 / 0.32);
-    --link-hover: rgb(21 28 38 / 0.05);
-    --link-active: rgb(21 28 38 / 0.08);
-    --float-panel-bg: #fffdfa;
+    --link-hover: rgb(22 24 26 / 0.05);
+    --link-active: rgb(22 24 26 / 0.08);
+    --float-panel-bg: #ffffff;
     --toc-badge-bg: var(--surface-muted);
     --toc-btn-hover: var(--btn-regular-bg-hover);
     --toc-btn-active: var(--btn-regular-bg-active);
@@ -88,10 +102,12 @@ html:root {
     --navy-bright: #16283f;
     --mist: var(--ink-faint);
     --amber: var(--accent-warm);
-    --paper-shadow: 0 1px 2px rgb(21 28 38 / 0.05);
-    --radius-paper: 0.25rem;
-    --radius-glass: 0.5rem;
-    --radius-large: 0.5rem;
+    --paper-shadow: 0 1px 2px rgb(22 24 26 / 0.05);
+    /* Legacy aliases now resolve to the three-step radius scale in
+       materials/skeuo.css, so old components inherit the same hierarchy. */
+    --radius-paper: var(--r-sm);
+    --radius-glass: var(--r-md);
+    --radius-large: var(--r-lg);
 
     --editorial-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, serif;
     --editorial-sans: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", system-ui, sans-serif;
@@ -183,11 +199,13 @@ html:root.dark {
      */
     --ink-faint: #7e8ea3;
 
-    --accent: #8db6e8;
+    /* A touch less electric than #8db6e8, so it reads as a cool ink against
+       the dark sheet rather than as glowing UI chrome. */
+    --accent: #93b9e3;
     --accent-warm: #d3a377;
     --primary: var(--accent);
-    --primary-hover: #b7d0f0;
-    --primary-light: rgb(143 180 226 / 0.12);
+    --primary-hover: #a8c6e6;
+    --primary-light: rgb(147 185 227 / 0.12);
 
     --stat-face: var(--well);
     --stat-ink: var(--ink);
@@ -546,9 +564,10 @@ h4 {
 
 #archive-index .archive-row-title {
     color: var(--ink);
-    font-family: var(--editorial-sans);
-    font-size: 0.98rem;
-    font-weight: 500;
+    font-family: var(--editorial-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
     transition: color 140ms ease;
 }
 

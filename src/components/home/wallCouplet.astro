@@ -66,10 +66,15 @@ const LEFT = "莫问如何修种";
      */
     .wall-couplet {
         position: absolute;
-        /* Flush with the top of the composition so the first character sits
-           on the same line as the intro kicker — measured 0px apart at 1440,
-           1920 and 3840 once the anchor moved to the composition. */
-        inset-block-start: 0;
+        /*
+         * Nudged down from the composition's top edge.
+         *
+         * Flush with the kicker, the first character sat on the same line as
+         * "独立写作 / …" and read as part of the header block rather than as
+         * writing on the wall. A small block offset drops the pair so the
+         * couplet starts beside the headline instead.
+         */
+        inset-block-start: clamp(1.5rem, 2.2vw, 2.75rem);
         inset-inline: 0;
         display: none;
         pointer-events: none;

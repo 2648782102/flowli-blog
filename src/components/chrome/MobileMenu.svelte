@@ -92,7 +92,7 @@ onMount(() => {
         height: 2.25rem;
         padding: 0;
         border: 0;
-        border-radius: 0.4rem;
+        border-radius: var(--r-sm);
         background: transparent;
         color: var(--ink);
         cursor: pointer;
@@ -140,7 +140,7 @@ onMount(() => {
         min-width: 11rem;
         padding: 0.4rem;
         border: 0;
-        border-radius: var(--r-lg, 0.5rem);
+        border-radius: var(--r-lg, 0.875rem);
         background-color: var(--paper-stock, #fdfbf5);
         background-image: linear-gradient(
             175deg,
@@ -157,7 +157,7 @@ onMount(() => {
         display: flex;
         align-items: center;
         padding: 0.6rem 0.75rem;
-        border-radius: var(--r-sm, 0.25rem);
+        border-radius: var(--r-sm, 0.375rem);
         color: var(--ink-soft, var(--ink));
         font-size: 0.9rem;
         font-weight: 500;

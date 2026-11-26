@@ -53,8 +53,8 @@ onMount(() => {
 
     .reading-progress-bar {
         height: 100%;
-        background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, white));
-        box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 45%, transparent);
+        background: var(--accent);
+        box-shadow: none;
         transition: width 90ms linear;
     }
 

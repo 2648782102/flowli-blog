@@ -14,7 +14,7 @@
 
 /* Meta strip sits in a shallow well. */
 #post-container > .onload-animation-up .meta-icon {
-    border-radius: 0.3rem;
+    border-radius: var(--r-sm);
     background: linear-gradient(180deg, var(--mat-surface-sunken), var(--mat-surface));
     box-shadow: var(--shadow-inset);
     display: inline-flex;
@@ -55,7 +55,7 @@
 /* Inline code as a tiny inset chip. */
 #post-container :is(.custom-md, .markdown-body) :not(pre) > code {
     padding: 0.12em 0.38em;
-    border-radius: 0.28rem;
+    border-radius: var(--r-sm);
     background: var(--mat-surface-sunken) !important;
     box-shadow: var(--shadow-inset);
     font-size: 0.88em;
@@ -65,7 +65,7 @@
 /* Code blocks: recessed panel with a metal top bar. */
 #post-container .expressive-code {
     margin-block: 1.6rem;
-    border-radius: 0.5rem;
+    border-radius: var(--r-md);
     box-shadow: var(--shadow-float);
     overflow: hidden;
 }
@@ -82,7 +82,7 @@
 #post-container :is(.custom-md, .markdown-body) table {
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: 0.4rem;
+    border-radius: var(--r-md);
     overflow: hidden;
     box-shadow: var(--shadow-raised);
 }
@@ -100,7 +100,7 @@
 
 /* Images: framed like a print. */
 #post-container :is(.custom-md, .markdown-body) img {
-    border-radius: 0.35rem;
+    border-radius: var(--r-sm);
     box-shadow: var(--shadow-float);
     background: var(--mat-surface);
     padding: 0.35rem;
@@ -135,7 +135,7 @@
 
 /* Table of contents as a service panel. */
 #editorial-sidebar-rail table-of-contents a {
-    border-radius: 0.3rem;
+    border-radius: var(--r-sm);
     transition: background-color var(--motion-touch), box-shadow var(--motion-touch);
 }
 

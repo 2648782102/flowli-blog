@@ -52,13 +52,27 @@
     letter-spacing: -0.015em;
 }
 
-.featured-plate h2 a {
-    color: var(--ink);
+/*
+ * The whole plate is the link.
+ *
+ * There used to be a separate "阅读全文" link directly below the title pointing
+ * at the same post — two targets for one destination, and the second one read
+ * as filler. The title is the affordance; the hit area is the whole sheet.
+ */
+.featured-plate-link {
+    display: block;
+    color: inherit;
     text-decoration: none;
 }
 
-.featured-plate h2 a:hover {
+.featured-plate-link:hover h2 {
     color: var(--accent);
+}
+
+.featured-plate-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    border-radius: var(--r-lg);
 }
 
 .featured-desc {
@@ -67,51 +81,6 @@
     font-size: 0.9rem;
     line-height: 1.8;
     color: var(--ink-soft);
-}
-
-/*
- * A small enamel key resting on the sheet.
- *
- * Flat body, one lit rim on the top edge, a tight contact shadow — the four
- * ingredients skeuo.css sets out. It used to carry a full-height white ramp
- * (0.9 → 0.2 → near-transparent) that read as chrome: on the dark theme it
- * was the *light* theme's ramp on a #1e252e body, so the top half of the
- * button turned silver and it looked like a 2010 web control. A surface this
- * small has no room for a gradient; the height has to be told by the rim and
- * the shadow alone.
- */
-.featured-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-top: 1.1rem;
-    padding: 0.42rem 0.8rem;
-    border-radius: var(--r-md);
-    background-color: var(--enamel);
-    box-shadow: var(--lift-1);
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--ink) !important;
-    text-decoration: none;
-    transition:
-        box-shadow var(--motion-press),
-        translate var(--motion-press),
-        color var(--motion-press);
-}
-
-.featured-cta:hover {
-    box-shadow: var(--lift-2);
-    color: var(--foil) !important;
-}
-
-.featured-cta:active {
-    translate: 0 1px;
-    box-shadow: var(--sink-1);
-}
-
-.featured-cta svg {
-    width: 0.9rem;
-    height: 0.9rem;
 }
 
 /* A rule scored into the desk: dark line, lit lip beneath it. */
@@ -201,7 +170,6 @@ html:root.dark .post-item + .post-item::before {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .featured-cta,
     .post-item {
         transition: none;
     }

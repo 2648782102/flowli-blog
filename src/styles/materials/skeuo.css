@@ -45,9 +45,9 @@ html:root {
     --rim-soft: rgb(255 255 255 / 0.55);
 
     /* ---------- Shadow ---------- */
-    --contact: rgb(38 30 18 / 0.20);
-    --contact-tight: rgb(38 30 18 / 0.14);
-    --ambient: rgb(38 30 18 / 0.08);
+    --contact: rgb(32 32 30 / 0.20);
+    --contact-tight: rgb(32 32 30 / 0.14);
+    --ambient: rgb(32 32 30 / 0.08);
 
     /* ---------- Materials ---------- */
     /*
@@ -83,8 +83,16 @@ html:root {
      * #f2ecd7 is L* 93.4 against the paper's 95.5 — a 2-level step, enough to
      * catch the cast shadow, not enough to read as a different material.
      */
-    --desk: #eee5d7;
-    --desk-deep: #e5ddcf;
+    /*
+     * Neutral desk, kept close to the sheet.
+     *
+     * It still sits below paper so the cast shadow lands on something, but the
+     * step is ~3 L* instead of ~6: at 6 the empty margins read as a grey board
+     * surrounding a white card, which is exactly the "grey" impression the
+     * white palette is meant to avoid.
+     */
+    --desk: #f3f2ef;
+    --desk-deep: #eceae6;
 
     /*
      * Paper: warm ivory stock, the dominant material.
@@ -104,9 +112,15 @@ html:root {
      * The texture tile multiplies this by ~0.993, so it renders around
      * #f7f1dd — the palette value, minus a hair for the tooth.
      */
-    --paper-stock: #f8efe0;
-    --paper-stock-warm: #f4ebda;
-    --paper-fibre: rgb(120 100 70 / 0.016);
+    /*
+     * The stock is almost neutral white. Paper character comes from the tile
+     * consumed by `multiply` plus a faint horizontal fibre, not from a yellow
+     * base: a tinted stock is what made the previous sheet read as "yellow
+     * quality" rather than as paper under a lamp.
+     */
+    --paper-stock: #fbfbf9;
+    --paper-stock-warm: #f8f7f4;
+    --paper-fibre: rgb(96 96 92 / 0.020);
 
     /*
      * Enamel: coated panels — smooth, high specular.
@@ -118,44 +132,53 @@ html:root {
      * into the same family — still the cooler end, no longer a different
      * colour — at R−B 15.
      */
-    --enamel: #f5ecdd;
-    --enamel-deep: #eae2d4;
+    /*
+     * Coated panels stay *below* paper in light mode — that is the rule the
+     * material ladder asserts, because a slightly darker panel is what carries
+     * the specular band. What changed is the gap: #f5ecdd sat only 1.1 L* under
+     * the sheet, so a card was legible almost entirely by its shadow. #f4eada
+     * opens that to 1.7 L* — about 55% more separation, while staying close
+     * enough to the stock that it still reads as a coated panel rather than a
+     * recessed well.
+     */
+    --enamel: #f7f6f3;
+    --enamel-deep: #efeeea;
 
     /* Metal: brushed aluminium for the header rail. */
-    --metal-hi: #f3eee2;
-    --metal-mid: #ded6c7;
-    --metal-lo: #c3b9a8;
+    --metal-hi: #f8f7f4;
+    --metal-mid: #e6e4df;
+    --metal-lo: #cdcbc5;
 
     /*
      * Ink wells: recessed slots cut into paper.
      * Kept close to the stock colour on purpose — a recess should be defined
      * by its shadow, not by a darker fill, or it reads as a coloured block.
      */
-    --well: #f4f0e6;
-    --well-deep: #eee9dc;
+    --well: #f9f8f5;
+    --well-deep: #f4f3f0;
 
     /* Accent foil: the one saturated material. */
-    --foil: #2b4a72;
-    --foil-lit: #3c6193;
+    --foil: #274261;
+    --foil-lit: #365a80;
 
     /* ---------- Elevation ramps ----------
        Each step is a *pair*: the light rim and the contact shadow. Keeping
        them paired is what makes the depth read consistently. */
     --lift-1:
         0 1px 0 rgb(255 255 255 / 0.75) inset,
-        0 -1px 0 rgb(38 30 18 / 0.05) inset,
+        0 -1px 0 rgb(32 32 30 / 0.05) inset,
         0 1px 2px var(--contact-tight),
         0 2px 6px -2px var(--ambient);
 
     --lift-2:
         0 1px 0 rgb(255 255 255 / 0.85) inset,
-        0 -1px 0 rgb(38 30 18 / 0.06) inset,
+        0 -1px 0 rgb(32 32 30 / 0.06) inset,
         0 2px 4px -1px var(--contact-tight),
         0 6px 14px -6px var(--ambient);
 
     --lift-3:
         0 1px 0 rgb(255 255 255 / 0.9) inset,
-        0 -1px 0 rgb(38 30 18 / 0.07) inset,
+        0 -1px 0 rgb(32 32 30 / 0.07) inset,
         0 3px 6px -2px var(--contact),
         0 12px 26px -12px var(--ambient);
 
@@ -163,23 +186,36 @@ html:root {
        crisp contact line — a single soft blur looks synthetic. */
     --lift-float:
         0 1px 0 rgb(255 255 255 / 0.9) inset,
-        0 14px 34px -14px rgb(38 30 18 / 0.30),
-        0 4px 10px -4px rgb(38 30 18 / 0.16),
-        0 1px 2px rgb(38 30 18 / 0.10);
+        0 14px 34px -14px rgb(32 32 30 / 0.30),
+        0 4px 10px -4px rgb(32 32 30 / 0.16),
+        0 1px 2px rgb(32 32 30 / 0.10);
 
     /* Recess: inverted light. Top goes dark, bottom picks up the bounce. */
     --sink-1:
-        0 1px 2px rgb(38 30 18 / 0.14) inset,
+        0 1px 2px rgb(32 32 30 / 0.14) inset,
         0 -1px 0 rgb(255 255 255 / 0.65) inset;
 
     --sink-2:
-        0 2px 5px rgb(38 30 18 / 0.18) inset,
+        0 2px 5px rgb(32 32 30 / 0.18) inset,
         0 -1px 0 rgb(255 255 255 / 0.55) inset;
 
     /* ---------- Shape ---------- */
-    --r-sm: 0.25rem;
-    --r-md: 0.375rem;
-    --r-lg: 0.5rem;
+    /*
+     * Radius is a three-step hierarchy, not a dial.
+     *
+     * Before this, the stylesheet carried ~20 near-identical values
+     * (0.18 / 0.25 / 0.28 / 0.3 / 0.35 / 0.375 / 0.4 / 0.45 / 0.5 / 0.55rem,
+     * plus 3px, 8px, 10px…). Individually each looked fine; together they made
+     * every surface feel slightly differently machined, which reads as
+     * inconsistency rather than polish.
+     *
+     *   --r-sm  6px   small parts: chips, keys, inline code, inputs
+     *   --r-md  10px  panels: cards, code blocks, table wells
+     *   --r-lg  14px  large surfaces: the reading sheet, floating panels
+     */
+    --r-sm: 0.375rem;
+    --r-md: 0.625rem;
+    --r-lg: 0.875rem;
 
     /* ---------- Motion ----------
        Each elevation step gets a duration and a curve, because how fast a
@@ -208,7 +244,7 @@ html:root {
     --mat-metal-b: var(--metal-lo);
 
     --skeuo-edge: var(--rim-soft);
-    --skeuo-groove: rgb(38 30 18 / 0.14);
+    --skeuo-groove: rgb(32 32 30 / 0.14);
 
     --shadow-raised: var(--lift-1);
     --shadow-inset: var(--sink-1);
@@ -265,8 +301,8 @@ html:root.dark {
     --well: #19212b;
     --well-deep: #151c25;
 
-    --foil: #8db6e8;
-    --foil-lit: #a8c8ee;
+    --foil: #93b9e3;
+    --foil-lit: #aac9ea;
 
     --lift-1:
         0 1px 0 rgb(255 255 255 / 0.07) inset,
@@ -309,7 +345,7 @@ html:root.dark {
     isolation: isolate;
     overflow: hidden;
     box-sizing: border-box;
-    border-radius: 0.18rem !important;
+    border-radius: var(--r-lg) !important;
     background-color: var(--paper-stock) !important;
     background-image:
         linear-gradient(
@@ -319,7 +355,7 @@ html:root.dark {
             rgb(255 255 255 / 0) 2.4rem
         ),
         url("/assets/scroll/paper-light.png") !important;
-    background-size: auto, 256px 256px !important;
+    background-size: auto, 512px 512px !important;
     /*
      * `multiply` against a white-based tooth tile — and this took measuring to
      * get right.
@@ -337,9 +373,9 @@ html:root.dark {
      */
     background-blend-mode: normal, multiply !important;
     box-shadow:
-        0 1px 1px rgb(38 30 18 / 0.06),
-        0 3px 10px -4px rgb(38 30 18 / 0.14),
-        0 14px 32px -20px rgb(38 30 18 / 0.22) !important;
+        0 1px 1px rgb(32 32 30 / 0.06),
+        0 3px 10px -4px rgb(32 32 30 / 0.14),
+        0 14px 32px -20px rgb(32 32 30 / 0.22) !important;
 }
 
 html:root.dark .scroll-edge {
@@ -351,7 +387,7 @@ html:root.dark .scroll-edge {
             rgb(255 255 255 / 0) 1.6rem
         ),
         url("/assets/scroll/paper-dark.png") !important;
-    background-size: auto, 256px 256px !important;
+    background-size: auto, 512px 512px !important;
     /*
      * Same tile and the same operator as light mode: multiply against a
      * white-based tooth.
@@ -451,8 +487,8 @@ html:root {
     background-color: var(--well);
     background-image: linear-gradient(
         180deg,
-        rgb(38 30 18 / 0.05) 0,
-        rgb(38 30 18 / 0) 2rem
+        rgb(32 32 30 / 0.05) 0,
+        rgb(32 32 30 / 0) 2rem
     );
     box-shadow: var(--sink-1);
 }
@@ -481,7 +517,7 @@ html:root {
         180deg,
         rgb(255 255 255 / 0.85) 0,
         rgb(255 255 255 / 0.15) 50%,
-        rgb(38 30 18 / 0.03) 100%
+        rgb(32 32 30 / 0.03) 100%
     );
     box-shadow: var(--lift-1);
 }
@@ -537,7 +573,7 @@ html:root {
    key and a full-width row should not move the same amount.
    ========================================================================== */
 
-:is(.btn-card, .btn-regular, .featured-cta, .site-header__link,
+:is(.btn-card, .btn-regular, .site-header__link,
    .menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item) {
     transition:
         box-shadow var(--motion-touch) var(--ease-settle),
@@ -546,7 +582,7 @@ html:root {
 
 /* Small objects lift a pixel; sheets lift two. The shadow carries the depth —
    the translate only stops the change from looking printed on. */
-:is(.btn-card, .btn-regular, .featured-cta, .site-header__link):hover {
+:is(.btn-card, .btn-regular, .site-header__link):hover {
     translate: 0 -1px;
 }
 
@@ -559,7 +595,7 @@ html:root {
  * Scoped to items that have just been lifted or pressed, so an untouched
  * element never carries a 300ms hover-out curve.
  */
-:is(.btn-card, .btn-regular, .featured-cta, .site-header__link,
+:is(.btn-card, .btn-regular, .site-header__link,
    .menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item):hover:not(:active) {
     transition:
         box-shadow var(--motion-touch) var(--ease-settle),
@@ -571,7 +607,7 @@ html:root {
  * fraction of a pixel and settles — the only cue that separates "a key on a
  * panel" from "a colour that changed".
  */
-:is(.btn-card, .btn-regular, .featured-cta, .site-header__link,
+:is(.btn-card, .btn-regular, .site-header__link,
    .menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item):active {
     translate: 0 1px;
     box-shadow: var(--sink-1);
@@ -583,7 +619,7 @@ html:root {
 @media (prefers-reduced-motion: reduce) {
     /* Keep the depth cue, drop the travel: shadow only, no overshoot.
        Removing the response entirely reads as broken rather than calm. */
-    :is(.btn-card, .btn-regular, .featured-cta, .site-header__link,
+    :is(.btn-card, .btn-regular, .site-header__link,
        .menu-card, .album-card, .skill-card, .project-card, .timeline-card, .moment-item) {
         translate: none !important;
         transition: box-shadow var(--motion-press) linear !important;

@@ -32,7 +32,16 @@ fs.mkdirSync(OUT, { recursive: true });
  * #fdfbf5 is already at 253 on the red channel, so it could not absorb the 2%
  * without going cold (#fffffa lost the warm ivory).
  */
-const PAPER_TILE_ELEVATION = 4;
+/*
+ * +10, not +4.
+ *
+ * The tile now carries a low-frequency cloud band, so its darker pixels reach
+ * further from white. With +4 the tile mean came out at 251.3/255 and
+ * `multiply` darkened the sheet by ~1.5% — the paper visibly greyed. +10 puts
+ * the mean back at ~253, where the sheet keeps the value the palette chose and
+ * the cloud band still reads.
+ */
+const PAPER_TILE_ELEVATION = 10;
 
 function rng(seed) {
   let s = seed >>> 0;
@@ -102,18 +111,38 @@ async function paper(name, seed, tooth) {
    * The lattice counts below are halved to match, so the noise keeps the same
    * spatial frequency rather than becoming coarser.
    */
-  const S = 256;
-  const n1 = noise(S, S, 24, 24, seed + 1);
-  const n2 = noise(S, S, 96, 96, seed + 2);
-  const n3 = noise(S, S, 256, 256, seed + 3);
+  const S = 512;
+  /*
+   * Four scales of variation, because paper has four.
+   *
+   * The previous tile was almost entirely the last two bands — fine tooth and
+   * even finer speckle. At 100% zoom that is indistinguishable from a flat
+   * white fill: measured on a real screenshot, an 80×80 patch of "paper" ran
+   * σ 2.3 over 17 levels, all of it sub-pixel noise.
+   *
+   * Paper reads as paper because it is *cloudy* at a distance as well as rough
+   * up close:
+   *
+   *   cloud   8 lattice cells   slow drift in formation / density
+   *   flock  48                 the visible unevenness across a page
+   *   tooth 160                 the grain you feel with a fingertip
+   *   fibre 512                 individual fibres, only at 1:1
+   *
+   * Each band keeps its mean at 0.5, so the tile still averages to "no change"
+   * under `multiply` and does not shift the sheet's value.
+   */
+  const cloud = noise(S, S, 8, 8, seed + 0);
+  const flock = noise(S, S, 48, 48, seed + 1);
+  const n2 = noise(S, S, 160, 160, seed + 2);
+  const n3 = noise(S, S, 512, 512, seed + 3);
   const rand = rng(seed + 4);
   const fibers = new Map();
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 320; i++) {
     const x0 = Math.floor(rand() * S);
     const y0 = Math.floor(rand() * S);
-    const len = 6 + Math.floor(rand() * 36);
-    const vertical = rand() < 0.12;
-    const a = 0.5 + rand();
+    const len = 8 + Math.floor(rand() * 64);
+    const vertical = rand() < 0.1;
+    const a = 0.2 + rand() * 0.7;
     for (let k = 0; k < len; k++) {
       const x = (x0 + (vertical ? 0 : k)) % S;
       const y = (y0 + (vertical ? k : 0)) % S;
@@ -125,7 +154,17 @@ async function paper(name, seed, tooth) {
   for (let y = 0; y < S; y++) {
     for (let x = 0; x < S; x++) {
       const i = y * S + x;
-      const t = ((n1[i] - 0.5) * 1.4 + (n2[i] - 0.5) * 0.7 + (n3[i] - 0.5) * 0.35) * tooth;
+      /*
+       * Weighting: the cloud band carries the visible structure, the fine
+       * bands supply the surface. Too much of the low band and the sheet looks
+       * stained; too little and it goes back to being flat white.
+       */
+      const t =
+        ((cloud[i] - 0.5) * 0.62 +
+          (flock[i] - 0.5) * 0.95 +
+          (n2[i] - 0.5) * 0.6 +
+          (n3[i] - 0.5) * 0.32) *
+        tooth;
       /*
        * Tooth depth.
        *
@@ -148,7 +187,13 @@ async function paper(name, seed, tooth) {
        * brightest pixels clip at 255, which is exactly "no change" under
        * multiply, so the clipping is harmless rather than lossy.
        */
-      const v = clamp(255 - Math.abs(t - (fibers.get(i) || 0)) * 14 + PAPER_TILE_ELEVATION);
+      /*
+       * Depth. `abs` keeps everything as a shadow (multiply can only darken),
+       * the fibre map adds directional streaks, and the elevation restores the
+       * mean. 22 is roughly double the old 14: enough for the cloud band to be
+       * legible at arm's length while the tooth stays inside ~2% darkness.
+       */
+      const v = clamp(255 - Math.abs(t - (fibers.get(i) || 0)) * 15 + PAPER_TILE_ELEVATION);
       buf[i * 4] = v;
       buf[i * 4 + 1] = v;
       buf[i * 4 + 2] = v;

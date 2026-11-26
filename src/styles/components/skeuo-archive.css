@@ -19,12 +19,12 @@
 #archive-index .archive-year h2::before {
     content: "";
     display: inline-block;
-    width: 0.45rem;
-    height: 0.45rem;
+    width: 0.38rem;
+    height: 0.38rem;
     margin-right: 0.55rem;
     border-radius: 50%;
-    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 55%, black));
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.35), 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+    background: var(--accent);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.22);
     vertical-align: middle;
 }
 
@@ -37,7 +37,7 @@
     margin: 0.35rem 0;
     padding: 0.7rem 0.9rem !important;
     border: 0 !important;
-    border-radius: 0.4rem !important;
+    border-radius: var(--r-sm) !important;
     background: transparent !important;
     box-shadow: none;
     transition: box-shadow var(--motion-touch), background-color var(--motion-touch);
@@ -73,18 +73,26 @@
 
 #editorial-sidebar-rail #categories-middle .rail-row,
 #editorial-sidebar-rail #tags-middle a {
-    border-radius: 0.35rem !important;
-    transition: box-shadow var(--motion-touch), background-color var(--motion-touch);
+    border-radius: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    letter-spacing: 0.01em;
+    transition: color var(--motion-touch);
 }
 
 #editorial-sidebar-rail .rail-row {
     position: relative;
     width: 100%;
-    min-height: 2rem;
+    min-height: 1.9rem;
+    height: 2.1rem !important;
+    margin-block: 0.18rem;
     border-radius: 0 !important;
     cursor: pointer;
     color: var(--ink-soft);
-    transition: background-color var(--motion-touch), color var(--motion-touch) !important;
+    transition: color var(--motion-touch) !important;
 }
 
 #editorial-sidebar-rail a[href],
@@ -118,6 +126,22 @@
 
 #editorial-sidebar-rail .rail-row:active {
     background: color-mix(in srgb, var(--ink) 3%, transparent) !important;
+}
+
+#editorial-sidebar-rail #tags-middle a {
+    border-radius: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    transition: color var(--motion-touch);
+}
+
+#editorial-sidebar-rail #tags-middle a:hover {
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--accent) !important;
 }
 
 #editorial-sidebar-rail .rail-row:focus-visible {

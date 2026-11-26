@@ -57,9 +57,9 @@
     width: 1.65rem;
     height: 1.65rem;
     border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
-    border-radius: 0.4rem;
+    border-radius: var(--r-sm);
     background: var(--enamel);
-    color: var(--accent, #2b4a72);
+    color: var(--accent, #274261);
     font-family: var(--editorial-serif, serif);
     font-size: 0.95rem;
     font-weight: 700;
@@ -92,7 +92,7 @@
     gap: 0.35rem;
     height: 2.15rem;
     padding-inline: 0.7rem;
-    border-radius: 0.4rem;
+    border-radius: var(--r-sm);
     color: color-mix(in srgb, var(--ink) 62%, transparent);
     font-size: 0.85rem;
     font-weight: 500;
@@ -222,7 +222,7 @@
     align-items: center;
     width: 2.25rem;
     height: 2.25rem;
-    border-radius: 0.4rem;
+    border-radius: var(--r-sm);
     background: transparent;
     overflow: hidden;
     cursor: text;
