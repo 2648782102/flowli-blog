@@ -110,7 +110,12 @@ async function computeRawSortedPosts(): Promise<ResolvedPost[]> {
         // 如果置顶状态相同，则按发布日期排序
         const dateA = new Date(a.data.published!);
         const dateB = new Date(b.data.published!);
-        return dateA > dateB ? -1 : 1;
+        const timeA = dateA.getTime();
+        const timeB = dateB.getTime();
+        if (timeA !== timeB) return timeB - timeA;
+
+        // 同一天发布的文章必须有稳定顺序，否则排序结果会随读取顺序抖动。
+        return a.id.localeCompare(b.id);
     });
 
     return sorted as ResolvedPost[];

@@ -1,6 +1,6 @@
 ---
 title: AI 应用开发，真正做的是上下文设计
-published: 2026-08-14
+published: 2026-07-22
 category: AI
 tags:
   - context

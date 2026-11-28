@@ -1,6 +1,6 @@
 ---
 title: Tool Calling 与 MCP：模型怎么用工具，能力怎么被接入
-published: 2026-07-26
+published: 2026-08-19
 category: AI
 tags:
   - mcp

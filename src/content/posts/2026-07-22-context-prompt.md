@@ -1,6 +1,6 @@
 ---
 title: Prompt 到底在做什么：改写上下文，而不只是提要求
-published: 2026-07-09
+published: 2026-07-22
 category: AI
 tags:
   - context
