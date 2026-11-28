@@ -61,7 +61,13 @@ const STATE_BUDGET = 0;
 
 const STATES = [
     { name: "home", path: "/" },
-    { name: "article", path: "/posts/2026-11-15-skeuo-material-system/" },
+    /*
+     * A *live* article, not a fixed historical one: this state used to point at
+     * 2026-11-15-skeuo-material-system, which was deleted from the CMS and is
+     * now a 404. The regression then reported "page did not finish loading"
+     * on every run, which looks like a layout bug and is not one.
+     */
+    { name: "article", path: "/posts/2026-11-18-11-00-14-agent/" },
     { name: "archive", path: "/archive/" },
     { name: "projects", path: "/projects/" },
 ];
