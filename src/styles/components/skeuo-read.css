@@ -176,3 +176,115 @@
     margin: 0 0 0.75rem;
     font-size: clamp(1.85rem, 3.2vw, 2.35rem);
 }
+
+/*
+ * Inline diagram plates.
+ *
+ * The notes are short; a photo or an AI illustration would break the print
+ * language and add nothing. These figures are drawn as ink lines on the same
+ * paper — no gradient, no bitmap — and every stroke reads from the theme
+ * tokens, so they re-ink themselves in dark mode instead of carrying a baked
+ * background. A plate, not a card: hairline edge, no shadow, no fill.
+ */
+#post-container :is(.custom-md, .markdown-body) .note-figure {
+    margin: 1.85rem 0 1.95rem;
+    padding: 1.15rem 1.3rem 0.9rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    background: none;
+    max-width: 100%;
+}
+
+#post-container .note-figure svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    color: var(--ink-soft);
+}
+
+#post-container .note-figure-scroll {
+    overflow: visible;
+}
+
+/* The hint only explains the sideways scroll on narrow screens. */
+#post-container .note-figure-hint {
+    display: none;
+    margin: 0.55rem 0 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-faint);
+    opacity: 0.75;
+}
+
+#post-container .note-figure text {
+    font-family: var(--editorial-sans);
+    font-size: 11px;
+    fill: currentColor;
+}
+
+#post-container .note-figure text.fm {
+    font-family: var(--editorial-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    fill-opacity: 0.6;
+}
+
+#post-container .note-figure text.fs {
+    font-size: 10.5px;
+    fill-opacity: 0.82;
+}
+
+#post-container .note-figure text.acc {
+    fill: var(--accent);
+    fill-opacity: 1;
+}
+
+#post-container .note-figure .dashed {
+    stroke-dasharray: 4 5;
+}
+
+#post-container .note-figure .accent {
+    stroke: var(--accent);
+}
+
+#post-container .note-figure figcaption {
+    margin-top: 0.75rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--hairline);
+    font-size: 0.78rem;
+    line-height: 1.65;
+    color: var(--ink-faint);
+    letter-spacing: 0.005em;
+}
+
+@media (max-width: 640px) {
+    #post-container :is(.custom-md, .markdown-body) .note-figure {
+        margin: 1.5rem 0 1.6rem;
+        padding: 0.9rem 0.9rem 0.75rem;
+    }
+
+    /*
+     * The diagrams are drawn at a 720-unit width. Scaling them into a 350px
+     * column shrinks the labels to ~5px, which is decoration rather than a
+     * figure. Keep the drawing near its true size and scroll that layer only —
+     * the caption must stay put, so it is a sibling of the scroll box.
+     */
+    #post-container .note-figure-scroll {
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: thin;
+    }
+
+    #post-container .note-figure svg {
+        min-width: 600px;
+    }
+
+    #post-container .note-figure-hint {
+        display: block;
+    }
+
+    #post-container .note-figure figcaption {
+        font-size: 0.75rem;
+    }
+}
